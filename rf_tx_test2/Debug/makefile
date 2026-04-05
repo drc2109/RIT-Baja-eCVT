@@ -66,8 +66,8 @@ all: main-build
 main-build: rf_tx_test2.elf secondary-outputs
 
 # Tool invocations
-rf_tx_test2.elf rf_tx_test2.map: $(OBJS) $(USER_OBJS) C:\Users\donov\STM32CubeIDE\workspace_2.0.0\rf_tx_test2\STM32H753ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "rf_tx_test2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\donov\STM32CubeIDE\workspace_2.0.0\rf_tx_test2\STM32H753ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="rf_tx_test2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+rf_tx_test2.elf rf_tx_test2.map: $(OBJS) $(USER_OBJS) C:\Users\donov\git\RIT-Baja-eCVT\rf_tx_test2\STM32H753ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "rf_tx_test2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\donov\git\RIT-Baja-eCVT\rf_tx_test2\STM32H753ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="rf_tx_test2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -43,8 +43,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/user_diskio.h \
  ../Core/Inc/spi.h ../Core/Inc/main.h ../Core/Inc/tim.h \
  ../Core/Inc/usart.h ../Core/Inc/gpio.h \
- C:/Users/donov/STM32CubeIDE/workspace_2.0.0/rf_tx_test2/Drivers/nrf24/NRF24.h \
- C:/Users/donov/STM32CubeIDE/workspace_2.0.0/rf_tx_test2/Drivers/nrf24/NRF24_reg_addresses.h
+ C:/Users/donov/git/RIT-Baja-eCVT/rf_tx_test2/Drivers/nrf24/NRF24.h \
+ C:/Users/donov/git/RIT-Baja-eCVT/rf_tx_test2/Drivers/nrf24/NRF24_reg_addresses.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -96,5 +96,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/tim.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/gpio.h:
-C:/Users/donov/STM32CubeIDE/workspace_2.0.0/rf_tx_test2/Drivers/nrf24/NRF24.h:
-C:/Users/donov/STM32CubeIDE/workspace_2.0.0/rf_tx_test2/Drivers/nrf24/NRF24_reg_addresses.h:
+C:/Users/donov/git/RIT-Baja-eCVT/rf_tx_test2/Drivers/nrf24/NRF24.h:
+C:/Users/donov/git/RIT-Baja-eCVT/rf_tx_test2/Drivers/nrf24/NRF24_reg_addresses.h:

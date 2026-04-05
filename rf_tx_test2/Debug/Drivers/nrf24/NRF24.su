@@ -50,6 +50,6 @@
 ../Drivers/nrf24/NRF24.c:548:6:nrf24_stop_const_carrier	4	static
 ../Drivers/nrf24/NRF24.c:552:6:nrf24_defaults	16	static
 ../Drivers/nrf24/NRF24.c:584:6:nrf24_init	8	static
-../Drivers/nrf24/NRF24.c:600:6:nrf24_mode_tx	8	static
-../Drivers/nrf24/NRF24.c:615:6:nrf24_mode_rx	8	static
-../Drivers/nrf24/NRF24.c:622:9:nrf24_transmit_wait	24	static
+../Drivers/nrf24/NRF24.c:615:6:nrf24_mode_tx	16	static
+../Drivers/nrf24/NRF24.c:641:6:nrf24_mode_rx	16	static
+../Drivers/nrf24/NRF24.c:658:9:nrf24_transmit_wait	24	static

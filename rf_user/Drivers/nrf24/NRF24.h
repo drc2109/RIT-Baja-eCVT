@@ -364,9 +364,8 @@ void nrf24_stop_const_carrier();
  */
 void delay_us(uint16_t del_time);
 
-void nrf24_mode_tx(void);
-
-void nrf24_mode_rx(void);
+void nrf24_mode_tx(uint8_t *dest_addr);
+void nrf24_mode_rx(uint8_t *local_addr);
 
 /**
  * @brief Transmits data and blocks until success, failure, or timeout.

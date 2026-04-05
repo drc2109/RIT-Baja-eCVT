@@ -597,26 +597,62 @@ void nrf24_init(void){
 	nrf24_clear_max_rt();
 }
 
-void nrf24_mode_tx(void) {
-    ce_low();               // Stop any active radio operation
-    nrf24_stop_listen();    // Sets PRIM_RX = 0
+//void nrf24_mode_tx(void) {
+//    ce_low();               // Stop any active radio operation
+//    nrf24_stop_listen();    // Sets PRIM_RX = 0
+//
+//    // Clear all interrupt flags to start with a clean state
+//    nrf24_clear_rx_dr();    //
+//    nrf24_clear_tx_ds();    //
+//    nrf24_clear_max_rt();   //
+//
+//    nrf24_flush_tx();       // Ensure the FIFO is empty so Status Bit 0 (TX_FULL) clears
+//
+//    // Mandatory transition delay for the PLL to lock (~130us)
+//    delay_us(150);
+//}
 
-    // Clear all interrupt flags to start with a clean state
-    nrf24_clear_rx_dr();    //
-    nrf24_clear_tx_ds();    //
-    nrf24_clear_max_rt();   //
+void nrf24_mode_tx(uint8_t *dest_addr)
+{
+    ce_low();
 
-    nrf24_flush_tx();       // Ensure the FIFO is empty so Status Bit 0 (TX_FULL) clears
+    // BOTH must be the SAME for ACK to work
+    nrf24_open_tx_pipe(dest_addr);
+    nrf24_open_rx_pipe(0, dest_addr);
 
-    // Mandatory transition delay for the PLL to lock (~130us)
+    nrf24_stop_listen();
+
+    nrf24_clear_rx_dr();
+    nrf24_clear_tx_ds();
+    nrf24_clear_max_rt();
+
+    nrf24_flush_tx();
+
     delay_us(150);
 }
 
-void nrf24_mode_rx(void) {
+//void nrf24_mode_rx(void) {
+//    ce_low();
+//    nrf24_listen();         // Set PRIM_RX = 1 and CE high
+//    nrf24_clear_rx_dr();    // Clear "Data Ready" flag
+//    // The radio is now actively scanning the air
+//}
+
+void nrf24_mode_rx(uint8_t *local_addr)
+{
     ce_low();
-    nrf24_listen();         // Set PRIM_RX = 1 and CE high
-    nrf24_clear_rx_dr();    // Clear "Data Ready" flag
-    // The radio is now actively scanning the air
+
+    nrf24_open_tx_pipe(local_addr);
+    nrf24_open_rx_pipe(0, local_addr);
+
+    nrf24_clear_rx_dr();
+    nrf24_clear_tx_ds();
+    nrf24_clear_max_rt();
+
+    nrf24_flush_rx();
+
+    nrf24_listen();
+    delay_us(130);
 }
 
 uint8_t nrf24_transmit_wait(uint8_t *data, uint8_t size) {
