@@ -97,6 +97,12 @@ uint32_t timeout;
 bool logging = false;
 double log_rate = 0; // Default logging rate in ms
 
+typedef struct __attribute__((packed)) {
+    uint32_t time;
+    uint16_t engine_rpm;
+    uint16_t box_rpm;
+} CompactLogEntry;
+
 typedef struct
 {
     float Kp;
@@ -158,7 +164,7 @@ int main(void)
   nrf24_init();
   nrf24_tx_pwr(_0dbm);
   nrf24_data_rate(_2mbps);
-  nrf24_set_channel(99);
+  nrf24_set_channel(7);
   nrf24_set_crc(en_crc, _1byte);
   nrf24_pipe_pld_size(0, PLD_SIZE);
 
@@ -173,6 +179,7 @@ int main(void)
   nrf24_auto_retr_limit(15);      // Try up to 15 times before giving up
   nrf24_mode_rx(addr_ecvt);
   INIT_PID();
+  //nrf24_scan_channels(&huart3);
   /* USER CODE END 2 */
 
   /* Initialize leds */
@@ -454,7 +461,9 @@ void PRINT_PID(){
 }
 
 void TRANSMIT_LOG(){
-	char time[8], engine_rpm[8], box_rpm[8];
+	//char time[8], engine_rpm[8], box_rpm[8];
+	CompactLogEntry entry;
+
 	// Switch to transmit
 	nrf24_mode_tx(addr_gui);
 
@@ -484,7 +493,7 @@ void TRANSMIT_LOG(){
 	uint8_t result;
 	for(int i = 0; i< 50; i++){
 	   result = nrf24_transmit_wait((uint8_t*)log_lines_str, strlen(log_lines_str));
-	   HAL_Delay(100);
+	   HAL_Delay(10);
 	   BSP_LED_On(LED_RED);
 	   if(result == 0){
 		   BSP_LED_Off(LED_RED);
@@ -493,44 +502,43 @@ void TRANSMIT_LOG(){
 	}
 	nrf_irq_flag = 0;
 	int error_i = 0;
+	char line[64];
+	uint8_t status;
 	// Begin log file transmission
 	if (result == 0) {
-		for(int i = 0; i < log_lines; i++){
-			f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil);
-			sscanf((TCHAR*)SDreadBuf, "%s %s %s", time, engine_rpm, box_rpm);
+		while (f_gets(line, sizeof(line), &fil)) {
+			// Parse text file into our binary struct
+			if(sscanf(line, "%lu %hu %hu", &entry.time, &entry.engine_rpm, &entry.box_rpm) >= 3) {
 
-			if(nrf24_transmit_wait((uint8_t*)time, strlen(time)) != 0){
-				error_i ++;;
-				DEBUG_RF();
-				//BSP_LED_On(LED_RED);
+				// Send binary struct
+				while(1){
+					status = nrf24_transmit_wait((uint8_t*)&entry, sizeof(entry));
+					DEBUG_RF();
+					if (status == 0) {
+						break;
+					}
+				}
+
+				if (status != 0) {
+					error_i++;
+					nrf24_flush_tx(); // Clear the failed packet from buffer
+				}
 			}
-			HAL_Delay(10);
-			if(nrf24_transmit_wait((uint8_t*)engine_rpm, strlen(engine_rpm)) != 0){
-				error_i ++;;
-				DEBUG_RF();
-				//BSP_LED_On(LED_RED);
-			}
-			HAL_Delay(10);
-			if(nrf24_transmit_wait((uint8_t*)box_rpm, strlen(box_rpm)) != 0){
-				error_i ++;;
-				DEBUG_RF();
-				//BSP_LED_On(LED_RED);
-			}
-			HAL_Delay(10);
 		}
-
-
 
 	} else {
 		sprintf(msg, "Error in initial transmission\r\n");
 		HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
-		DEBUG_RF();
 
 	}
 
-	result = nrf24_transmit_wait((uint8_t*)complete_msg, strlen(complete_msg));
-
-	sprintf(msg, "%d\r\n", error_i);
+	for(int i = 0; i< 50; i++){
+		result = nrf24_transmit_wait((uint8_t*)complete_msg, strlen(complete_msg));
+		if(result == 0){
+			break;
+		}
+	}
+	sprintf(msg, "Packets lost: %d\r\n", error_i);
 	HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
 	if(result == 0){
 		sprintf(msg, "Success\r\n");
@@ -556,8 +564,8 @@ void TRANSMIT_LOG(){
 void DEBUG_RF(){
 	//Status register
 	uint8_t status = nrf24_r_status();
-	uint8_t fifo_status = nrf24_r_reg(FIFO_STATUS, 1);
-	uint8_t observe = nrf24_r_reg(OBSERVE_TX, 1);
+//	uint8_t fifo_status = nrf24_r_reg(FIFO_STATUS, 1);
+//	uint8_t observe = nrf24_r_reg(OBSERVE_TX, 1);
 //	sprintf(msg, "%d %d %d\r\n", status, fifo_status, observe);
 //	HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
 
@@ -572,6 +580,8 @@ void DEBUG_RF(){
 	// Check for "Carrier Detect" - helps identify interference
 	if (nrf24_carrier_detect()) {
 		BSP_LED_On(LED_RED);
+	} else{
+		BSP_LED_Off(LED_RED);
 	}
 }
 
@@ -661,39 +671,37 @@ int FIND_LOG_LINES(){
 }
 
 void nrf24_scan_channels(UART_HandleTypeDef *huart) {
-    char msg[64];
-    uint8_t jam_count;
+	uint8_t best_channel = 0;
+	uint32_t min_noise = 0xFFFFFFFF;
+	uint8_t noise_map[126];
 
-    sprintf(msg, "\r\n--- Starting 2.4GHz Scan ---\r\n");
-    HAL_UART_Transmit(huart, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+	sprintf(msg, "Scanning for cleanest channel...\r\n");
+	HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), 100);
 
-    // Initial hardware prep
-    ce_low();
-    nrf24_pwr_up();
-    HAL_Delay(2); // Vital: Give the crystal time to stabilize
-    nrf24_listen(); // PRIM_RX = 1, CE = High
+	for (uint8_t i = 0; i < 126; i++) {
+		uint32_t channel_noise = 0;
+		nrf24_set_channel(i);
+		nrf24_mode_rx(addr_gui); // Must be in RX mode to detect carrier
 
-    for (uint8_t i = 0; i <= 125; i++) {
-        nrf24_set_channel(i);
-        jam_count = 0;
+		// Sample the channel 100 times to catch "bursty" noise
+		for (int samples = 0; samples < 100; samples++) {
+			if (nrf24_carrier_detect()) {
+				channel_noise++;
+			}
+			delay_us(50); // Quick samples
+		}
 
-        // Sample the RPD (Received Power Detector) bit
-        for (int j = 0; j < 50; j++) {
-            if (nrf24_carrier_detect()) {
-                jam_count++;
-            }
-            delay_us(100);
-        }
+		noise_map[i] = channel_noise;
 
-        // Only report channels with detected interference (>10% hits)
-        if (jam_count > 5) {
-            sprintf(msg, "Channel %i: Noise Level %i%%\r\n", i, jam_count * 2);
-            HAL_UART_Transmit(huart, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
-        }
-    }
+		// Keep track of the winner
+		if (channel_noise < min_noise) {
+			min_noise = channel_noise;
+			best_channel = i;
+		}
+	}
 
-    sprintf(msg, "--- Scan Complete ---\r\n");
-    HAL_UART_Transmit(huart, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+	sprintf(msg, "Best Channel: %d (Noise: %d%%)\r\n", best_channel, (int)min_noise);
+	HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), 100);
 }
 /* USER CODE END 4 */
 

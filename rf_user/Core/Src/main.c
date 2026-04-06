@@ -85,6 +85,12 @@ uint32_t timeout;
 bool logging = false;
 uint16_t log_rate = 100; // Default logging rate in ms
 
+typedef struct __attribute__((packed)) {
+    uint32_t time;
+    uint16_t engine_rpm;
+    uint16_t box_rpm;
+} CompactLogEntry;
+
 typedef struct
 {
     float Kp;
@@ -146,7 +152,7 @@ int main(void)
   nrf24_init();
   nrf24_tx_pwr(_0dbm);
   nrf24_data_rate(_2mbps);
-  nrf24_set_channel(99);
+  nrf24_set_channel(7);
   nrf24_set_crc(en_crc, _1byte);
   nrf24_pipe_pld_size(0, PLD_SIZE);
 
@@ -307,7 +313,6 @@ void RECEIVE_LOG(){
 
   uint32_t rx_timeout = HAL_GetTick();
 
-  int log_entry_index = 0;
   int log_index = 0;
   int log_lines = 0;
 
@@ -325,7 +330,6 @@ void RECEIVE_LOG(){
 	  nrf24_mode_tx(addr_ecvt);
 	  DEBUG_RF();
 	  BSP_LED_On(LED_RED);
-	  while(1);
 	  return;
   } else{
 	  sscanf((char*)data_Rx, "%d", &log_lines);
@@ -333,11 +337,10 @@ void RECEIVE_LOG(){
   }
 
   // Malloc memory to save log file in memory
-  LogEntry *log_buffer = malloc(log_lines * sizeof(LogEntry));
+  CompactLogEntry *log_buffer = malloc(log_lines * sizeof(CompactLogEntry));
   if (log_buffer == NULL) {
       // Allocation failed
       nrf24_mode_tx(addr_ecvt);
-      while(1);
       return;
   }
 
@@ -353,25 +356,8 @@ void RECEIVE_LOG(){
 			  break;
 		  }
 
-		  switch(log_entry_index){
-		  	case 0:
-		  		log_buffer[log_index].time = atoi((char*)&data_Rx);
-		  		break;
-
-		  	case 1:
-		  		log_buffer[log_index].engine_rpm = atoi((char*)&data_Rx);
-		  		break;
-
-		  	case 2:
-		  		log_buffer[log_index].box_rpm = atoi((char*)&data_Rx);
-		  		break;
-
-		  }
-		  log_entry_index++;
-		  if(log_entry_index%3 == 0){
-			  log_index++;
-		  }
-		  log_entry_index = log_entry_index%3;
+		  log_buffer[log_index] = *(CompactLogEntry*)data_Rx;
+		  log_index++;
 
 	  }
   }
@@ -380,31 +366,34 @@ void RECEIVE_LOG(){
 
   // Begin sending data over USART
   char logfile_buf[128];
-  for(int i = 0; i < log_lines; i++){
-	  sprintf(logfile_buf, "%u %u %u\r\n", (int)log_buffer[i].time, (int)log_buffer[log_index].engine_rpm, (int)log_buffer[log_index].box_rpm);
-	  HAL_UART_Transmit(&huart3, (uint8_t*)logfile_buf, strlen(logfile_buf), HAL_MAX_DELAY);
+  for(int i = 0; i < log_index; i++){
+	  sprintf(logfile_buf, "%lu, %u, %u\r\n",
+	              log_buffer[i].time,
+	              (unsigned int)log_buffer[i].engine_rpm,
+	              (unsigned int)log_buffer[i].box_rpm);
+	  HAL_UART_Transmit(&huart3, (uint8_t*)logfile_buf, strlen(logfile_buf), 100);
   }
 }
 
 void DEBUG_RF(){
 	//Status register
-	uint8_t status = nrf24_r_status();
-	uint8_t fifo_status = nrf24_r_reg(FIFO_STATUS, 1);
+//	uint8_t status = nrf24_r_status();
+//	uint8_t fifo_status = nrf24_r_reg(FIFO_STATUS, 1);
 	//uint8_t observe = nrf24_r_reg(OBSERVE_TX, 1);
 //	sprintf(msg, "%d %d %d\r\n", status, fifo_status, observe);
 //	HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
 
-	if (status & (1 << MAX_RT)) {
-		//BSP_LED_On(LED_RED);
-	}
-
-	if (status & (1 << TX_FULL)) {
-		//BSP_LED_On(LED_RED);
-	}
-
-	if (fifo_status & (1 << RX_FULL)) {
-		//BSP_LED_On(LED_RED);
-	}
+//	if (status & (1 << MAX_RT)) {
+//		BSP_LED_On(LED_RED);
+//	}
+//
+//	if (status & (1 << TX_FULL)) {
+//		BSP_LED_On(LED_RED);
+//	}
+//
+//	if (fifo_status & (1 << RX_FULL)) {
+//		BSP_LED_On(LED_RED);
+//	}
 
 	// Check for "Carrier Detect" - helps identify interference
 	if (nrf24_carrier_detect()) {
