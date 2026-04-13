@@ -1,0 +1,5 @@
+../Core/Src/motor_control.c:18:10:update_setpoint	16	static
+../Core/Src/motor_control.c:38:10:pid_loop	32	static
+../Core/Src/motor_control.c:68:10:scale_command	16	static
+../Core/Src/motor_control.c:73:6:init_pidconfig	16	static
+../Core/Src/motor_control.c:93:6:update_pidconfig	16	static

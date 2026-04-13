@@ -1,0 +1,5 @@
+../Core/Src/freertos.c:170:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:249:6:StartDefaultTask	1
+../Core/Src/freertos.c:267:6:Start_Sensor_Reading	3
+../Core/Src/freertos.c:351:6:Start_Motor_Control	6
+../Core/Src/freertos.c:472:6:Start_Debug_Disp	5

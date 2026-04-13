@@ -1,0 +1,2 @@
+../Core/Src/sensor_conversion.c:9:7:pickup_dt_to_rad_per_sec	16	static
+../Core/Src/sensor_conversion.c:14:7:adc12b_to_rad	16	static

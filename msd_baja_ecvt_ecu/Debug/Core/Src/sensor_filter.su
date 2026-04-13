@@ -1,0 +1,14 @@
+../Core/Src/sensor_filter.c:14:6:dma_speed_fifo_init	16	static
+../Core/Src/sensor_filter.c:20:6:dma_ang_fifo_init	16	static
+../Core/Src/sensor_filter.c:28:10:dma_speed_fifo_tail	16	static
+../Core/Src/sensor_filter.c:32:10:dma_speed_fifo_available	24	static
+../Core/Src/sensor_filter.c:40:10:dma_speed_fifo_read_single	24	static
+../Core/Src/sensor_filter.c:46:6:dma_speed_fifo_read	40	static
+../Core/Src/sensor_filter.c:54:10:dma_ang_fifo_tail	16	static
+../Core/Src/sensor_filter.c:58:10:dma_ang_fifo_available	24	static
+../Core/Src/sensor_filter.c:66:9:dma_ang_fifo_read_single	24	static
+../Core/Src/sensor_filter.c:72:6:dma_ang_fifo_read	32	static
+../Core/Src/sensor_filter.c:79:10:moving_average_filter_helix	16	static
+../Core/Src/sensor_filter.c:95:10:moving_average_filter_throttle	16	static
+../Core/Src/sensor_filter.c:111:10:moving_average_filter_prim_speed	16	static
+../Core/Src/sensor_filter.c:127:10:moving_average_filter_sec_speed	16	static

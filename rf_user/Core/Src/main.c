@@ -219,6 +219,11 @@ int main(void)
 
 		  else if(strncmp((char*)uart_buf, "PID",3) == 0){
 			  BSP_LED_Toggle(LED_GREEN);
+			  if(result == 0){ // Success
+				  HAL_UART_Transmit(&huart3, (uint8_t*)complete_msg, 10, HAL_MAX_DELAY);
+			  } else{ 		   // Failed
+				  HAL_UART_Transmit(&huart3, (uint8_t*)rf_error_msg, 10, HAL_MAX_DELAY);
+			  }
 		  }
 
 		  else if(strncmp((char*)uart_buf, "TEST_RF", 7) == 0){
