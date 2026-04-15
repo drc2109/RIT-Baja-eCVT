@@ -232,16 +232,16 @@ struct P_Controller_P7_T_ {
   real_T Int_RPM_Low;                  /* Variable: Int_RPM_Low
                                         * Referenced by: '<S198>/Integral Gain'
                                         */
-  real_T Omega_High;                   /* Variable: Omega_High
+  real_T Omega_High;                   /* Variable: Omega_High RPM High SP
                                         * Referenced by: '<S5>/RPM_Hi'
                                         */
-  real_T Omega_Low;                    /* Variable: Omega_Low
+  real_T Omega_Low;                    /* Variable: Omega_Low RPM Low SP
                                         * Referenced by: '<S6>/Constant'
                                         */
-  real_T Phi_max;                      /* Variable: Phi_max
+  real_T Phi_max;                      /* Variable: Phi_max Low Gear SP
                                         * Referenced by: '<S4>/Ratio Max'
                                         */
-  real_T Phi_min;                      /* Variable: Phi_min
+  real_T Phi_min;                      /* Variable: Phi_min High Gear SP
                                         * Referenced by: '<S3>/Ratio Min'
                                         */
   real_T Prop_GR_High;                 /* Variable: Prop_GR_High

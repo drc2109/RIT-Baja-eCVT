@@ -29,7 +29,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "Controller_P7.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -61,11 +64,20 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 int _read(int file, char *ptr, int len);
 int __io_getchar(void);
+// PID Functions
+int INIT_PID               (void);
+int CHANGE_PID             (char* code, uint16_t value);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+// some variables for FatFs
+FATFS FatFs;
+FIL fil;
+FRESULT fres;
+BYTE SDreadBuf[64];
+char msg[128];
+double log_rate = 100; // Default logging rate in ms
 /* USER CODE END 0 */
 
 /**
@@ -114,6 +126,9 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   printf("\x1B[?25l\x1B[2J\x1B[H");
+  if(!INIT_PID()){ // Attempts to open SD card PID.txt to init PID files
+	  //TODO: Set safe PID Values instead
+  }
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -253,6 +268,215 @@ int __io_getchar(void)
     uint8_t ch;
     HAL_UART_Receive(&hcom_uart[COM1], &ch, 1, HAL_MAX_DELAY);
     return ch;
+}
+
+int INIT_PID(){
+	int temp_int;
+	float temp_float;
+	fres = f_mount(&FatFs, "", 1);
+	  if (fres != FR_OK) {
+	      return 0;
+	  }
+
+	// Open file
+	fres = f_open(&fil, "PID.txt", FA_READ);
+    if (fres != FR_OK) {
+    	return 0;
+    }
+
+	// 1. Read Log Rate (Line 1)
+	if (f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil)) {
+		// "Log Rate %lf" skips the text and reads the double
+		sscanf((TCHAR*)SDreadBuf, "Log Rate %lf", &log_rate);
+	} else {
+		return 0;
+	}
+
+	// 2. Read the 4 PID sets (4 lines each)
+	for (int i = 0; i < 16; i++) {
+	    // Read P line
+	    if (f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil)) {
+	        if(i == 3 || i == 11){ // All values except RPM Low and High set points are floats
+	        	sscanf((TCHAR*)SDreadBuf, " %*s %d", &temp_int);
+	        } else{
+	        	sscanf((TCHAR*)SDreadBuf, " %*s %f", &temp_float);
+	        }
+	        // Set correct variable in control scheme
+
+	        switch(i){
+				case 0: // P1
+					Controller_P7_P.Prop_RPM_Low = temp_float;
+					break;
+				case 1: // I1
+					Controller_P7_P.Int_RPM_Low = temp_float;
+					break;
+				case 2: // D1
+					Controller_P7_P.Der_RPM_Low = temp_float;
+					break;
+				case 3: // Low RPM SP
+					Controller_P7_P.Omega_Low = temp_int;
+					break;
+				case 4: // P2
+					Controller_P7_P.Prop_GR_Low = temp_float;
+					break;
+				case 5: // I2
+					Controller_P7_P.Int_GR_Low = temp_float;
+					break;
+				case 6: // D2
+					Controller_P7_P.Der_GR_Low = temp_float;
+					break;
+				case 7: // Low Gear SP
+					Controller_P7_P.Phi_max = temp_float;
+					break;
+				case 8: // P3
+					Controller_P7_P.Prop_RPM_High = temp_float;
+					break;
+				case 9: // I3
+					Controller_P7_P.Int_RPM_High = temp_float;
+					break;
+				case 10: // D3
+					Controller_P7_P.Der_RPM_High = temp_float;
+					break;
+				case 11: // High RPM SP
+					Controller_P7_P.Omega_High = temp_int;
+					break;
+				case 12: // P4
+					Controller_P7_P.Prop_GR_High = temp_float;
+					break;
+				case 13: // I4
+					Controller_P7_P.Int_GR_High = temp_float;
+					break;
+				case 14: // D4
+					Controller_P7_P.Der_GR_High = temp_float;
+					break;
+				case 15: // High Gear SP
+					Controller_P7_P.Phi_min = temp_float;
+					break;
+	        }
+	    } else {
+	       return 0;
+	    }
+	}
+
+    // Close file
+    f_close(&fil);
+
+    // De-mount drive
+    f_mount(NULL, "", 0);
+
+    return 1;
+
+}
+
+int CHANGE_PID(char* code, uint16_t value){
+
+	if (strncmp(code, "P1", 2) == 0) {
+	    Controller_P7_P.Prop_RPM_Low = (real_T) value;
+	} else if (strncmp(code, "I1", 2) == 0) {
+	    Controller_P7_P.Int_RPM_Low = (real_T) value;
+	} else if (strncmp(code, "D1", 2) == 0) {
+	    Controller_P7_P.Der_RPM_Low = (real_T) value;
+	} else if (strncmp(code, "SP1", 3) == 0) {
+	    Controller_P7_P.Omega_Low = (real_T) value;
+	} else if (strncmp(code, "P2", 2) == 0) {
+	    Controller_P7_P.Prop_GR_Low = (real_T) value;
+	} else if (strncmp(code, "I2", 2) == 0) {
+	    Controller_P7_P.Int_GR_Low = (real_T) value;
+	} else if (strncmp(code, "D2", 2) == 0) {
+	    Controller_P7_P.Der_GR_Low = (real_T) value;
+	} else if (strncmp(code, "SP2", 3) == 0) {
+	    Controller_P7_P.Phi_max = (real_T) value;
+	} else if (strncmp(code, "P3", 2) == 0) {
+	    Controller_P7_P.Prop_RPM_High = (real_T) value;
+	} else if (strncmp(code, "I3", 2) == 0) {
+	    Controller_P7_P.Int_RPM_High = (real_T) value;
+	} else if (strncmp(code, "D3", 2) == 0) {
+	    Controller_P7_P.Der_RPM_High = (real_T) value;
+	} else if (strncmp(code, "SP3", 3) == 0) {
+	    Controller_P7_P.Omega_High = (real_T) value;
+	} else if (strncmp(code, "P4", 2) == 0) {
+	    Controller_P7_P.Prop_GR_High = (real_T) value;
+	} else if (strncmp(code, "I4", 2) == 0) {
+	    Controller_P7_P.Int_GR_High = (real_T) value;
+	} else if (strncmp(code, "D4", 2) == 0) {
+	    Controller_P7_P.Der_GR_High = (real_T) value;
+	} else if (strncmp(code, "SP4", 3) == 0) {
+	    Controller_P7_P.Phi_min = (real_T) value;
+	} else {
+	    return 0;
+	}
+
+	// Mount drive
+	fres = f_mount(&FatFs, "", 1);
+	if (fres != FR_OK) {
+	    return 0;
+	}
+
+	// Open file
+	fres = f_open(&fil, "PID.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
+	if (fres != FR_OK) {
+	    return 0;
+	}
+
+	char line_buffer[64];
+
+	// Write logging rate
+	sprintf(line_buffer, "Log Rate %0.2f\n", (double)log_rate);
+	f_puts(line_buffer, &fil);
+	// P1
+	sprintf(line_buffer, "P1 %0.3f\r\n", (double)Controller_P7_P.Prop_RPM_Low);
+	f_puts(line_buffer, &fil);
+	// I1
+	sprintf(line_buffer, "I1 %0.3f\r\n", (double)Controller_P7_P.Int_RPM_Low);
+	f_puts(line_buffer, &fil);
+	// D1
+	sprintf(line_buffer, "D1 %0.3f\r\n", (double)Controller_P7_P.Der_RPM_Low);
+	f_puts(line_buffer, &fil);
+	// SP1
+	sprintf(line_buffer, "SP1 %0.3f\r\n", (double)Controller_P7_P.Omega_Low);
+	f_puts(line_buffer, &fil);
+	// P2
+	sprintf(line_buffer, "P2 %0.3f\r\n", (double)Controller_P7_P.Prop_GR_Low);
+	f_puts(line_buffer, &fil);
+	// I2
+	sprintf(line_buffer, "I2 %0.3f\r\n", (double)Controller_P7_P.Int_GR_Low);
+	f_puts(line_buffer, &fil);
+	// D2
+	sprintf(line_buffer, "D2 %0.3f\r\n", (double)Controller_P7_P.Der_GR_Low);
+	f_puts(line_buffer, &fil);
+	// SP2
+	sprintf(line_buffer, "SP2 %0.3f\r\n", (double)Controller_P7_P.Phi_max);
+	f_puts(line_buffer, &fil);
+	// P3
+	sprintf(line_buffer, "P3 %0.3f\r\n", (double)Controller_P7_P.Prop_RPM_High);
+	f_puts(line_buffer, &fil);
+	// I3
+	sprintf(line_buffer, "I3 %0.3f\r\n", (double)Controller_P7_P.Int_RPM_High);
+	f_puts(line_buffer, &fil);
+	// D3
+	sprintf(line_buffer, "D3 %0.3f\r\n", (double)Controller_P7_P.Der_RPM_High);
+	f_puts(line_buffer, &fil);
+	// SP3
+	sprintf(line_buffer, "SP3 %0.3f\r\n", (double)Controller_P7_P.Omega_High);
+	f_puts(line_buffer, &fil);
+	// P4
+	sprintf(line_buffer, "P4 %0.3f\r\n", (double)Controller_P7_P.Prop_GR_High);
+	f_puts(line_buffer, &fil);
+	// I4
+	sprintf(line_buffer, "I4 %0.3f\r\n", (double)Controller_P7_P.Int_GR_High);
+	f_puts(line_buffer, &fil);
+	// D4
+	sprintf(line_buffer, "D4 %0.3f\r\n", (double)Controller_P7_P.Der_GR_High);
+	f_puts(line_buffer, &fil);
+	// SP4
+	sprintf(line_buffer, "SP4 %0.3f\r\n", (double)Controller_P7_P.Phi_min);
+	f_puts(line_buffer, &fil);
+
+	// Close file
+	f_close(&fil);
+	// De-mount drive
+	f_mount(NULL, "", 0);
+	return 1;
 }
 /* USER CODE END 4 */
 

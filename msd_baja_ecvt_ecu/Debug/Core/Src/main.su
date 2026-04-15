@@ -1,7 +1,9 @@
-../Core/Src/main.c:75:5:main	8	static
-../Core/Src/main.c:163:6:SystemClock_Config	120	static
-../Core/Src/main.c:222:6:PeriphCommonClock_Config	200	static
-../Core/Src/main.c:245:5:_read	24	static
-../Core/Src/main.c:251:5:__io_getchar	16	static
-../Core/Src/main.c:267:6:HAL_TIM_PeriodElapsedCallback	16	static
-../Core/Src/main.c:285:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:87:5:main	8	static
+../Core/Src/main.c:178:6:SystemClock_Config	120	static
+../Core/Src/main.c:237:6:PeriphCommonClock_Config	200	static
+../Core/Src/main.c:260:5:_read	24	static
+../Core/Src/main.c:266:5:__io_getchar	16	static
+../Core/Src/main.c:273:5:INIT_PID	24	static
+../Core/Src/main.c:371:5:CHANGE_PID	80	static
+../Core/Src/main.c:491:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/main.c:509:6:Error_Handler	4	static,ignoring_inline_asm

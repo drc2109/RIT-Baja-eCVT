@@ -73,6 +73,23 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 #define SD_SPI_HANDLE hspi2
+#define P1 13
+#define I1 5
+#define D1 17
+#define P2 11
+#define I2 3
+#define D2 1
+#define P3 12
+#define I3 4
+#define D3 16
+#define P4 10
+#define I4 2
+#define D4 0
+#define SP1 7
+#define SP2 8
+#define SP3 6
+#define SP4 9
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

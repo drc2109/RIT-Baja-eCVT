@@ -461,7 +461,6 @@ void PRINT_PID(){
 }
 
 void TRANSMIT_LOG(){
-	//char time[8], engine_rpm[8], box_rpm[8];
 	CompactLogEntry entry;
 
 	// Switch to transmit
