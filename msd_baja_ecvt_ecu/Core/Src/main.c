@@ -64,9 +64,13 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 int _read(int file, char *ptr, int len);
 int __io_getchar(void);
-// PID Functions
-int INIT_PID               (void);
-int CHANGE_PID             (char* code, uint16_t value);
+// SD Card Functions
+int  INIT_PID              (void);
+int  CHANGE_PID            (char* code, uint16_t value);
+int  START_LOG			   (void);
+void STOP_LOG			   (void);
+int  LOG_DATA_POINT		   (int time, int engine_rpm, int box_rpm);
+int  FIND_LOG_LINES		   (void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -270,6 +274,8 @@ int __io_getchar(void)
     return ch;
 }
 
+// Reads the PID.txt saved PID values and assigns them to the PID data structure (Controller_P7_P)
+// Returns 0 if the file was unable to be opened and 1 if the PID value assignments were successful
 int INIT_PID(){
 	int temp_int;
 	float temp_float;
@@ -368,6 +374,9 @@ int INIT_PID(){
 
 }
 
+// Changes the PID values in the PID structure and overwrites the value in PID.txt
+// Takes in the code in string (Ex. P1, I4, SP2) and the value to change it to
+// Returns 0 if the file writing was unsuccessful and 1 if it was successfully written to PID.txt
 int CHANGE_PID(char* code, uint16_t value){
 
 	if (strncmp(code, "P1", 2) == 0) {
@@ -476,6 +485,80 @@ int CHANGE_PID(char* code, uint16_t value){
 	f_close(&fil);
 	// De-mount drive
 	f_mount(NULL, "", 0);
+	return 1;
+}
+
+// Creates "LOG.txt" which overwrites (clears) the previously created log file
+// Opens the global file variable
+// Returns 1 if successful and 0 if unsuccessful
+int START_LOG(){
+	// Mount drive
+	fres = f_mount(&FatFs, "", 1);
+	if (fres != FR_OK) {
+		return 0;
+	}
+	// Clear file
+	fres = f_open(&fil, "LOG.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
+	if (fres != FR_OK) {
+		return 0;
+	}
+
+	return 1;
+}
+
+// Closes the global log file (LOG.txt)
+void STOP_LOG(){
+	// Close file
+	f_close(&fil);
+	// De-mount drive
+	f_mount(NULL, "", 0);
+}
+
+// Finds the amount of logged data points in LOG.txt (# of lines)
+// Returns a positive integer if successful and -1 if not
+int FIND_LOG_LINES(){
+	int lines_count = 0;
+
+	// Mount drive
+	fres = f_mount(&FatFs, "", 1);
+	if (fres != FR_OK) {
+		return -1;
+	}
+	// Open file
+	fres = f_open(&fil, "LOG.txt", FA_READ);
+	if (fres != FR_OK) {
+		return -1;
+	}
+
+
+	while(f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil)){
+		lines_count++;
+	}
+	if (lines_count > 0) {
+	    lines_count++; // account for last line without newline
+	}
+	// Close file
+	f_close(&fil);
+	// De-mount drive
+	f_mount(NULL, "", 0);
+
+	return lines_count;
+}
+
+// Logs a data point (one line) into LOG.txt (Assumes LOG.txt is open)
+// Takes in the data to be logged (time, engine_rpm, and box_rpm)
+// Returns 1 if the data point was siccessfully logged and 0 if the f_puts fails
+int LOG_DATA_POINT(int time, int engine_rpm, int box_rpm){
+
+	f_lseek(&fil, f_size(&fil));
+
+	char line_buffer[64];
+	// Write logging rate
+	sprintf(line_buffer, "%d %d %d\n", time, engine_rpm, box_rpm);
+	if (f_puts(line_buffer, &fil) < 0) {
+		return 0;
+	}
+
 	return 1;
 }
 /* USER CODE END 4 */

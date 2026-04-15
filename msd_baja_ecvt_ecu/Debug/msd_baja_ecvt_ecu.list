@@ -7,41 +7,41 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         000231c8  080002a0  080002a0  000012a0  2**4
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       000019a4  08023468  08023468  00024468  2**3
+  2 .rodata       000019b4  08023468  08023468  00024468  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM          00000008  08024e0c  08024e0c  00025e0c  2**2
+  3 .ARM          00000008  08024e1c  08024e1c  00025e1c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  4 .init_array   00000004  08024e14  08024e14  00025e14  2**2
+  4 .init_array   00000004  08024e24  08024e24  00025e24  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .fini_array   00000004  08024e18  08024e18  00025e18  2**2
+  5 .fini_array   00000004  08024e28  08024e28  00025e28  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  6 .data         00000ab8  24000000  08024e1c  00026000  2**3
+  6 .data         00000ab8  24000000  08024e2c  00026000  2**3
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .bss          00005f44  24000ab8  080258d4  00026ab8  2**3
+  7 .bss          00005f44  24000ab8  080258e4  00026ab8  2**3
                   ALLOC
-  8 ._user_heap_stack 00000604  240069fc  080258d4  000279fc  2**0
+  8 ._user_heap_stack 00000604  240069fc  080258e4  000279fc  2**0
                   ALLOC
   9 .ARM.attributes 0000002e  00000000  00000000  00026ab8  2**0
                   CONTENTS, READONLY
- 10 .debug_info   0003c6be  00000000  00000000  00026ae6  2**0
+ 10 .debug_info   0003c786  00000000  00000000  00026ae6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 11 .debug_abbrev 0000740f  00000000  00000000  000631a4  2**0
+ 11 .debug_abbrev 00007443  00000000  00000000  0006326c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 12 .debug_aranges 00002af0  00000000  00000000  0006a5b8  2**3
+ 12 .debug_aranges 00002b10  00000000  00000000  0006a6b0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_rnglists 0000220a  00000000  00000000  0006d0a8  2**0
+ 13 .debug_rnglists 00002223  00000000  00000000  0006d1c0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_macro  00045872  00000000  00000000  0006f2b2  2**0
+ 14 .debug_macro  00045872  00000000  00000000  0006f3e3  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_line   00040a65  00000000  00000000  000b4b24  2**0
+ 15 .debug_line   00040b3c  00000000  00000000  000b4c55  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    0019f4e1  00000000  00000000  000f5589  2**0
+ 16 .debug_str    0019f531  00000000  00000000  000f5791  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      00000043  00000000  00000000  00294a6a  2**0
+ 17 .comment      00000043  00000000  00000000  00294cc2  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  0000cd58  00000000  00000000  00294ab0  2**2
+ 18 .debug_frame  0000cdd8  00000000  00000000  00294d08  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_line_str 00000061  00000000  00000000  002a1808  2**0
+ 19 .debug_line_str 00000061  00000000  00000000  002a1ae0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2107,34 +2107,34 @@ void MX_FREERTOS_Init(void) {
 }
  80012f8:	bf00      	nop
  80012fa:	bd80      	pop	{r7, pc}
- 80012fc:	08024148 	.word	0x08024148
+ 80012fc:	0802415c 	.word	0x0802415c
  8001300:	24000dec 	.word	0x24000dec
- 8001304:	08024160 	.word	0x08024160
+ 8001304:	08024174 	.word	0x08024174
  8001308:	24000df0 	.word	0x24000df0
- 800130c:	08024178 	.word	0x08024178
+ 800130c:	0802418c 	.word	0x0802418c
  8001310:	24000df4 	.word	0x24000df4
- 8001314:	08024190 	.word	0x08024190
+ 8001314:	080241a4 	.word	0x080241a4
  8001318:	24000df8 	.word	0x24000df8
- 800131c:	080241a8 	.word	0x080241a8
+ 800131c:	080241bc 	.word	0x080241bc
  8001320:	24000dfc 	.word	0x24000dfc
- 8001324:	080241c0 	.word	0x080241c0
+ 8001324:	080241d4 	.word	0x080241d4
  8001328:	24000e00 	.word	0x24000e00
- 800132c:	080241d8 	.word	0x080241d8
+ 800132c:	080241ec 	.word	0x080241ec
  8001330:	24000e04 	.word	0x24000e04
- 8001334:	080241f0 	.word	0x080241f0
+ 8001334:	08024204 	.word	0x08024204
  8001338:	24000e08 	.word	0x24000e08
- 800133c:	08024208 	.word	0x08024208
+ 800133c:	0802421c 	.word	0x0802421c
  8001340:	24000e0c 	.word	0x24000e0c
- 8001344:	080240b8 	.word	0x080240b8
+ 8001344:	080240cc 	.word	0x080240cc
  8001348:	08001375 	.word	0x08001375
  800134c:	24000ddc 	.word	0x24000ddc
- 8001350:	080240dc 	.word	0x080240dc
+ 8001350:	080240f0 	.word	0x080240f0
  8001354:	08001385 	.word	0x08001385
  8001358:	24000de0 	.word	0x24000de0
- 800135c:	08024100 	.word	0x08024100
+ 800135c:	08024114 	.word	0x08024114
  8001360:	08001641 	.word	0x08001641
  8001364:	24000de4 	.word	0x24000de4
- 8001368:	08024124 	.word	0x08024124
+ 8001368:	08024138 	.word	0x08024138
  800136c:	08001809 	.word	0x08001809
  8001370:	24000de8 	.word	0x24000de8
 
@@ -3404,11 +3404,11 @@ int _read(int file, char *ptr, int len)
  8001c58:	24001650 	.word	0x24001650
 
 08001c5c <INIT_PID>:
-    uint8_t ch;
-    HAL_UART_Receive(&hcom_uart[COM1], &ch, 1, HAL_MAX_DELAY);
     return ch;
 }
 
+// Reads the PID.txt saved PID values and assigns them to the PID data structure (Controller_P7_P)
+// Returns 0 if the file was unable to be opened and 1 if the PID value assignments were successful
 int INIT_PID(){
  8001c5c:	b580      	push	{r7, lr}
  8001c5e:	b084      	sub	sp, #16
@@ -3490,9 +3490,9 @@ int INIT_PID(){
  8001ccc:	4603      	mov	r3, r0
  8001cce:	2b00      	cmp	r3, #0
  8001cd0:	f000 80bc 	beq.w	8001e4c <INIT_PID+0x1f0>
-	        if(i == 7 || i == 11){ // All values except RPM Low and High set points are floats
+	        if(i == 3 || i == 11){ // All values except RPM Low and High set points are floats
  8001cd4:	68fb      	ldr	r3, [r7, #12]
- 8001cd6:	2b07      	cmp	r3, #7
+ 8001cd6:	2b03      	cmp	r3, #3
  8001cd8:	d002      	beq.n	8001ce0 <INIT_PID+0x84>
  8001cda:	68fb      	ldr	r3, [r7, #12]
  8001cdc:	2b0b      	cmp	r3, #11
@@ -4021,7 +4021,7 @@ void print_debug_sensor_vals(uint32_t prim_rpm, uint32_t sec_rpm, uint16_t throt
  80020ca:	3710      	adds	r7, #16
  80020cc:	46bd      	mov	sp, r7
  80020ce:	bd80      	pop	{r7, pc}
- 80020d0:	0802369c 	.word	0x0802369c
+ 80020d0:	080236b0 	.word	0x080236b0
 
 080020d4 <pickup_dt_to_rad_per_sec>:
  *  Created on: Apr 9, 2026
@@ -6850,7 +6850,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8003124:	24000ab8 	.word	0x24000ab8
   ldr r2, =_sidata
- 8003128:	08024e1c 	.word	0x08024e1c
+ 8003128:	08024e2c 	.word	0x08024e2c
   ldr r2, =_sbss
  800312c:	24000ab8 	.word	0x24000ab8
   ldr r4, =_ebss
@@ -6997,7 +6997,7 @@ int32_t BSP_LED_Init(Led_TypeDef Led)
  8003214:	bd80      	pop	{r7, pc}
  8003216:	bf00      	nop
  8003218:	58024400 	.word	0x58024400
- 800321c:	08024230 	.word	0x08024230
+ 800321c:	08024244 	.word	0x08024244
  8003220:	24000014 	.word	0x24000014
 
 08003224 <BSP_LED_Toggle>:
@@ -7055,7 +7055,7 @@ int32_t BSP_LED_Toggle(Led_TypeDef Led)
  800326c:	bd80      	pop	{r7, pc}
  800326e:	bf00      	nop
  8003270:	24000014 	.word	0x24000014
- 8003274:	08024230 	.word	0x08024230
+ 8003274:	08024244 	.word	0x08024244
 
 08003278 <BSP_PB_Init>:
   *            @arg  BUTTON_MODE_GPIO: Button will be used as simple IO
@@ -7183,7 +7183,7 @@ int32_t BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
  8003344:	58024400 	.word	0x58024400
  8003348:	24000020 	.word	0x24000020
  800334c:	24001648 	.word	0x24001648
- 8003350:	08024238 	.word	0x08024238
+ 8003350:	0802424c 	.word	0x0802424c
  8003354:	24000024 	.word	0x24000024
  8003358:	24000028 	.word	0x24000028
 
@@ -7613,7 +7613,7 @@ HAL_StatusTypeDef HAL_Init(void)
  80035b8:	46bd      	mov	sp, r7
  80035ba:	bd80      	pop	{r7, pc}
  80035bc:	58024400 	.word	0x58024400
- 80035c0:	08024220 	.word	0x08024220
+ 80035c0:	08024234 	.word	0x08024234
  80035c4:	2400000c 	.word	0x2400000c
  80035c8:	24000008 	.word	0x24000008
 
@@ -15960,7 +15960,7 @@ static uint32_t DMA_CalcBaseAndBitshift(DMA_HandleTypeDef *hdma)
  8006be4:	400204a0 	.word	0x400204a0
  8006be8:	400204b8 	.word	0x400204b8
  8006bec:	aaaaaaab 	.word	0xaaaaaaab
- 8006bf0:	0802423c 	.word	0x0802423c
+ 8006bf0:	08024250 	.word	0x08024250
  8006bf4:	fffffc00 	.word	0xfffffc00
 
 08006bf8 <DMA_CheckFifoParam>:
@@ -17015,7 +17015,7 @@ HAL_StatusTypeDef HAL_FDCAN_Init(FDCAN_HandleTypeDef *hfdcan)
  80071e8:	f042 0220 	orr.w	r2, r2, #32
  80071ec:	619a      	str	r2, [r3, #24]
  80071ee:	e00b      	b.n	8007208 <HAL_FDCAN_Init+0x234>
- 80071f0:	080236f4 	.word	0x080236f4
+ 80071f0:	08023708 	.word	0x08023708
  80071f4:	4000a000 	.word	0x4000a000
       }
     }
@@ -20492,7 +20492,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef  *RCC_ClkInitStru
  80086e0:	bd80      	pop	{r7, pc}
  80086e2:	bf00      	nop
  80086e4:	58024400 	.word	0x58024400
- 80086e8:	08024220 	.word	0x08024220
+ 80086e8:	08024234 	.word	0x08024234
  80086ec:	2400000c 	.word	0x2400000c
  80086f0:	24000008 	.word	0x24000008
  80086f4:	2400002c 	.word	0x2400002c
@@ -20894,7 +20894,7 @@ uint32_t HAL_RCC_GetHCLKFreq(void)
  8008a38:	46bd      	mov	sp, r7
  8008a3a:	bd80      	pop	{r7, pc}
  8008a3c:	58024400 	.word	0x58024400
- 8008a40:	08024220 	.word	0x08024220
+ 8008a40:	08024234 	.word	0x08024234
  8008a44:	2400000c 	.word	0x2400000c
  8008a48:	24000008 	.word	0x24000008
 
@@ -20928,7 +20928,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8008a6c:	4618      	mov	r0, r3
  8008a6e:	bd80      	pop	{r7, pc}
  8008a70:	58024400 	.word	0x58024400
- 8008a74:	08024220 	.word	0x08024220
+ 8008a74:	08024234 	.word	0x08024234
 
 08008a78 <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -20959,7 +20959,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  8008a98:	4618      	mov	r0, r3
  8008a9a:	bd80      	pop	{r7, pc}
  8008a9c:	58024400 	.word	0x58024400
- 8008aa0:	08024220 	.word	0x08024220
+ 8008aa0:	08024234 	.word	0x08024234
 
 08008aa4 <HAL_RCC_GetClockConfig>:
   * will be configured.
@@ -26053,7 +26053,7 @@ uint32_t HAL_RCCEx_GetD3PCLK1Freq(void)
  800aa5c:	4618      	mov	r0, r3
  800aa5e:	bd80      	pop	{r7, pc}
  800aa60:	58024400 	.word	0x58024400
- 800aa64:	08024220 	.word	0x08024220
+ 800aa64:	08024234 	.word	0x08024234
 
 0800aa68 <HAL_RCCEx_GetPLL2ClockFreq>:
   *         right PLL2CLK value. Otherwise, any configuration based on this function will be incorrect.
@@ -36579,7 +36579,7 @@ HAL_StatusTypeDef UART_SetConfig(UART_HandleTypeDef *huart)
  800ee7a:	e0b5      	b.n	800efe8 <UART_SetConfig+0xa94>
  800ee7c:	03d09000 	.word	0x03d09000
  800ee80:	003d0900 	.word	0x003d0900
- 800ee84:	08024244 	.word	0x08024244
+ 800ee84:	08024258 	.word	0x08024258
  800ee88:	58024400 	.word	0x58024400
       }
     }
@@ -36795,7 +36795,7 @@ HAL_StatusTypeDef UART_SetConfig(UART_HandleTypeDef *huart)
  800f014:	58024400 	.word	0x58024400
  800f018:	03d09000 	.word	0x03d09000
  800f01c:	003d0900 	.word	0x003d0900
- 800f020:	08024244 	.word	0x08024244
+ 800f020:	08024258 	.word	0x08024258
 
 0800f024 <UART_AdvFeatureConfig>:
   * @brief Configure the UART peripheral advanced features.
@@ -43246,7 +43246,7 @@ void Controller_P7_step(void)
  80124dc:	24001c6c 	.word	0x24001c6c
  80124e0:	24001d40 	.word	0x24001d40
  80124e4:	24001e08 	.word	0x24001e08
- 80124e8:	08023740 	.word	0x08023740
+ 80124e8:	08023754 	.word	0x08023754
  80124ec:	00000000 	.word	0x00000000
 
 080124f0 <Controller_P7_initialize>:
@@ -43597,8 +43597,8 @@ void Controller_P7_initialize(void)
  80126e0:	24001e08 	.word	0x24001e08
  80126e4:	40140000 	.word	0x40140000
  80126e8:	24001e38 	.word	0x24001e38
- 80126ec:	08023754 	.word	0x08023754
- 80126f0:	08023758 	.word	0x08023758
+ 80126ec:	08023768 	.word	0x08023768
+ 80126f0:	0802376c 	.word	0x0802376c
  80126f4:	240016f0 	.word	0x240016f0
  80126f8:	24001ce8 	.word	0x24001ce8
  80126fc:	24001df0 	.word	0x24001df0
@@ -44551,7 +44551,7 @@ static void rt_LoadModifiedLogVarName(const RTWLogInfo *li,         /* in  */
  8012c7e:	46bd      	mov	sp, r7
  8012c80:	bd80      	pop	{r7, pc}
  8012c82:	bf00      	nop
- 8012c84:	080239a8 	.word	0x080239a8
+ 8012c84:	080239bc 	.word	0x080239bc
 
 08012c88 <rt_GetActualDTypeID>:
 #if defined(_MSC_VER)
@@ -45447,7 +45447,7 @@ static void rt_DestroyStructLogVar(StructLogVar *head)
  80133f6:	4413      	add	r3, r2
  80133f8:	681b      	ldr	r3, [r3, #0]
  80133fa:	e002      	b.n	8013402 <rt_InitSignalsStruct+0x57a>
- 80133fc:	08024338 	.word	0x08024338
+ 80133fc:	0802434c 	.word	0x0802434c
  8013400:	2301      	movs	r3, #1
  8013402:	f507 72c8 	add.w	r2, r7, #400	@ 0x190
  8013406:	f5a2 729c 	sub.w	r2, r2, #312	@ 0x138
@@ -45743,7 +45743,7 @@ static void rt_DestroyStructLogVar(StructLogVar *head)
  80136b8:	f8c7 318c 	str.w	r3, [r7, #396]	@ 0x18c
  80136bc:	e070      	b.n	80137a0 <rt_InitSignalsStruct+0x918>
  80136be:	bf00      	nop
- 80136c0:	080243b8 	.word	0x080243b8
+ 80136c0:	080243cc 	.word	0x080243cc
             MatrixData *mtxData = &(sig->labels[i]);
  80136c4:	f8d7 3120 	ldr.w	r3, [r7, #288]	@ 0x120
  80136c8:	695a      	ldr	r2, [r3, #20]
@@ -46073,8 +46073,8 @@ static void rt_DestroyStructLogVar(StructLogVar *head)
  801399c:	f8c7 3150 	str.w	r3, [r7, #336]	@ 0x150
  80139a0:	e01b      	b.n	80139da <rt_InitSignalsStruct+0xb52>
  80139a2:	bf00      	nop
- 80139a4:	080243f8 	.word	0x080243f8
- 80139a8:	08024478 	.word	0x08024478
+ 80139a4:	0802440c 	.word	0x0802440c
+ 80139a8:	0802448c 	.word	0x0802448c
                     mtxData->dims[j] = *(dims + dimsOffset + j);
  80139ac:	f8d7 2180 	ldr.w	r2, [r7, #384]	@ 0x180
  80139b0:	f8d7 3150 	ldr.w	r3, [r7, #336]	@ 0x150
@@ -46581,7 +46581,7 @@ static void rt_DestroyStructLogVar(StructLogVar *head)
  8013e28:	f8c7 318c 	str.w	r3, [r7, #396]	@ 0x18c
  8013e2c:	e0ac      	b.n	8013f88 <rt_InitSignalsStruct+0x1100>
  8013e2e:	bf00      	nop
- 8013e30:	08024438 	.word	0x08024438
+ 8013e30:	0802444c 	.word	0x0802444c
             MatrixData *mtxData = &(sig->blockNames[i]);
  8013e34:	f8d7 3120 	ldr.w	r3, [r7, #288]	@ 0x120
  8013e38:	6a19      	ldr	r1, [r3, #32]
@@ -46949,11 +46949,11 @@ static void rt_DestroyStructLogVar(StructLogVar *head)
  8014178:	2300      	movs	r3, #0
  801417a:	f8c7 318c 	str.w	r3, [r7, #396]	@ 0x18c
  801417e:	e0b3      	b.n	80142e8 <rt_InitSignalsStruct+0x1460>
- 8014180:	080242f4 	.word	0x080242f4
- 8014184:	080244bc 	.word	0x080244bc
- 8014188:	080247c4 	.word	0x080247c4
- 801418c:	08024338 	.word	0x08024338
- 8014190:	08024680 	.word	0x08024680
+ 8014180:	08024308 	.word	0x08024308
+ 8014184:	080244d0 	.word	0x080244d0
+ 8014188:	080247d8 	.word	0x080247d8
+ 801418c:	0802434c 	.word	0x0802434c
+ 8014190:	08024694 	.word	0x08024694
             MatrixData *mtxData = &(sig->stateNames[i]);
  8014194:	f8d7 3120 	ldr.w	r3, [r7, #288]	@ 0x120
  8014198:	6a59      	ldr	r1, [r3, #36]	@ 0x24
@@ -47222,9 +47222,9 @@ static void rt_DestroyStructLogVar(StructLogVar *head)
  8014408:	f8c7 318c 	str.w	r3, [r7, #396]	@ 0x18c
  801440c:	e089      	b.n	8014522 <rt_InitSignalsStruct+0x169a>
  801440e:	bf00      	nop
- 8014410:	080245fc 	.word	0x080245fc
- 8014414:	080244bc 	.word	0x080244bc
- 8014418:	080247c4 	.word	0x080247c4
+ 8014410:	08024610 	.word	0x08024610
+ 8014414:	080244d0 	.word	0x080244d0
+ 8014418:	080247d8 	.word	0x080247d8
             MatrixData *mtxData = &(sig->crossMdlRef[i]);
  801441c:	f8d7 3120 	ldr.w	r3, [r7, #288]	@ 0x120
  8014420:	6a99      	ldr	r1, [r3, #40]	@ 0x28
@@ -47479,10 +47479,10 @@ static void rt_DestroyStructLogVar(StructLogVar *head)
  801464e:	f507 77ca 	add.w	r7, r7, #404	@ 0x194
  8014652:	46bd      	mov	sp, r7
  8014654:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
- 8014658:	0802463c 	.word	0x0802463c
+ 8014658:	08024650 	.word	0x08024650
  801465c:	240008fc 	.word	0x240008fc
- 8014660:	080239b0 	.word	0x080239b0
- 8014664:	0802425c 	.word	0x0802425c
+ 8014660:	080239c4 	.word	0x080239c4
+ 8014664:	08024270 	.word	0x08024270
 
 08014668 <local_CreateStructLogVar>:
     int_T                   maxRows,
@@ -47964,11 +47964,11 @@ static void rt_DestroyStructLogVar(StructLogVar *head)
  8014992:	3768      	adds	r7, #104	@ 0x68
  8014994:	46bd      	mov	sp, r7
  8014996:	bd80      	pop	{r7, pc}
- 8014998:	08024274 	.word	0x08024274
- 801499c:	080242f4 	.word	0x080242f4
+ 8014998:	08024288 	.word	0x08024288
+ 801499c:	08024308 	.word	0x08024308
  80149a0:	240008fc 	.word	0x240008fc
- 80149a4:	080239f4 	.word	0x080239f4
- 80149a8:	0802425c 	.word	0x0802425c
+ 80149a4:	08023a08 	.word	0x08023a08
+ 80149a8:	08024270 	.word	0x08024270
 
 080149ac <rt_StartDataLoggingForOutput>:
 static const char_T *rt_StartDataLoggingForOutput(RTWLogInfo   *li,
@@ -48455,7 +48455,7 @@ static const char_T *rt_StartDataLoggingForOutput(RTWLogInfo   *li,
  8014d44:	f8c7 30ac 	str.w	r3, [r7, #172]	@ 0xac
  8014d48:	e003      	b.n	8014d52 <rt_StartDataLoggingForOutput+0x3a6>
  8014d4a:	bf00      	nop
- 8014d4c:	0802425c 	.word	0x0802425c
+ 8014d4c:	08024270 	.word	0x08024270
                 goto NEXT_NAME;
  8014d50:	bf00      	nop
         NEXT_NAME:
@@ -48559,8 +48559,8 @@ static const char_T *rt_StartDataLoggingForOutput(RTWLogInfo   *li,
  8014dfc:	bdb0      	pop	{r4, r5, r7, pc}
  8014dfe:	bf00      	nop
  8014e00:	240008fc 	.word	0x240008fc
- 8014e04:	08023a18 	.word	0x08023a18
- 8014e08:	0802425c 	.word	0x0802425c
+ 8014e04:	08023a2c 	.word	0x08023a2c
+ 8014e08:	08024270 	.word	0x08024270
 
 08014e0c <rt_ReallocLogVar>:
  * Abstract:
@@ -48991,12 +48991,12 @@ static void rt_ReallocLogVar(LogVar *var, boolean_T isVarDims)
  801512c:	bdf0      	pop	{r4, r5, r6, r7, pc}
  801512e:	bf00      	nop
  8015130:	240008fc 	.word	0x240008fc
- 8015134:	08023a4c 	.word	0x08023a4c
- 8015138:	08023a6c 	.word	0x08023a6c
- 801513c:	08023a7c 	.word	0x08023a7c
- 8015140:	08023a80 	.word	0x08023a80
- 8015144:	08023b28 	.word	0x08023b28
- 8015148:	08023bdc 	.word	0x08023bdc
+ 8015134:	08023a60 	.word	0x08023a60
+ 8015138:	08023a80 	.word	0x08023a80
+ 801513c:	08023a90 	.word	0x08023a90
+ 8015140:	08023a94 	.word	0x08023a94
+ 8015144:	08023b3c 	.word	0x08023b3c
+ 8015148:	08023bf0 	.word	0x08023bf0
 
 0801514c <rt_UpdateLogVarWithDiscontiguousData>:
 const char_T *rt_UpdateLogVarWithDiscontiguousData(LogVar                 *var,
@@ -49372,9 +49372,9 @@ const char_T *rt_UpdateLogVarWithDiscontiguousData(LogVar                 *var,
  80153a2:	46bd      	mov	sp, r7
  80153a4:	bd80      	pop	{r7, pc}
  80153a6:	bf00      	nop
- 80153a8:	08023c84 	.word	0x08023c84
+ 80153a8:	08023c98 	.word	0x08023c98
  80153ac:	240008fc 	.word	0x240008fc
- 80153b0:	08023cac 	.word	0x08023cac
+ 80153b0:	08023cc0 	.word	0x08023cc0
  80153b4:	00000000 	.word	0x00000000
 
 080153b8 <rt_CreateLogVarWithConvert>:
@@ -49798,10 +49798,10 @@ const char_T *rt_UpdateLogVarWithDiscontiguousData(LogVar                 *var,
  8015734:	41efffff 	.word	0x41efffff
  8015738:	240008c8 	.word	0x240008c8
  801573c:	240008fc 	.word	0x240008fc
- 8015740:	08023cb4 	.word	0x08023cb4
- 8015744:	08023cf4 	.word	0x08023cf4
- 8015748:	08023d98 	.word	0x08023d98
- 801574c:	08023e38 	.word	0x08023e38
+ 8015740:	08023cc8 	.word	0x08023cc8
+ 8015744:	08023d08 	.word	0x08023d08
+ 8015748:	08023dac 	.word	0x08023dac
+ 801574c:	08023e4c 	.word	0x08023e4c
     }
 
     /* Allocate memory for the circular buffer (real part) */
@@ -50197,10 +50197,10 @@ const char_T *rt_UpdateLogVarWithDiscontiguousData(LogVar                 *var,
  8015aa0:	e0c1      	b.n	8015c26 <rt_CreateLogVarWithConvert+0x86e>
  8015aa2:	bf00      	nop
  8015aa4:	240008fc 	.word	0x240008fc
- 8015aa8:	08023e64 	.word	0x08023e64
- 8015aac:	08023e9c 	.word	0x08023e9c
- 8015ab0:	08023f3c 	.word	0x08023f3c
- 8015ab4:	08024378 	.word	0x08024378
+ 8015aa8:	08023e78 	.word	0x08023e78
+ 8015aac:	08023eb0 	.word	0x08023eb0
+ 8015ab0:	08023f50 	.word	0x08023f50
+ 8015ab4:	0802438c 	.word	0x0802438c
         } else { /* The current signal is a variable-size signal. */
             /* The "valueDimensions" must be double, so re-assign element size */
             elementSize = sizeof(real_T);
@@ -50471,9 +50471,9 @@ const char_T *rt_UpdateLogVarWithDiscontiguousData(LogVar                 *var,
  8015cd8:	bdb0      	pop	{r4, r5, r7, pc}
  8015cda:	bf00      	nop
  8015cdc:	240008fc 	.word	0x240008fc
- 8015ce0:	08023e64 	.word	0x08023e64
- 8015ce4:	08023e9c 	.word	0x08023e9c
- 8015ce8:	0802425c 	.word	0x0802425c
+ 8015ce0:	08023e78 	.word	0x08023e78
+ 8015ce4:	08023eb0 	.word	0x08023eb0
+ 8015ce8:	08024270 	.word	0x08024270
 
 08015cec <rt_StartDataLoggingWithStartTime>:
 const char_T *rt_StartDataLoggingWithStartTime(RTWLogInfo   *li,
@@ -50844,7 +50844,7 @@ const char_T *rt_StartDataLoggingWithStartTime(RTWLogInfo   *li,
  8015f62:	2b00      	cmp	r3, #0
  8015f64:	d14c      	bne.n	8016000 <rt_StartDataLoggingWithStartTime+0x314>
  8015f66:	e067      	b.n	8016038 <rt_StartDataLoggingWithStartTime+0x34c>
- 8015f68:	0802425c 	.word	0x0802425c
+ 8015f68:	08024270 	.word	0x08024270
             }
         } else {                                          /* Structure Format */
             if (rtliGetLogX(li)[0] != '\0') {
@@ -51027,8 +51027,8 @@ const char_T *rt_StartDataLoggingWithStartTime(RTWLogInfo   *li,
  8016098:	bd80      	pop	{r7, pc}
  801609a:	bf00      	nop
  801609c:	240008fc 	.word	0x240008fc
- 80160a0:	08023a18 	.word	0x08023a18
- 80160a4:	0802425c 	.word	0x0802425c
+ 80160a0:	08023a2c 	.word	0x08023a2c
+ 80160a4:	08024270 	.word	0x08024270
 
 080160a8 <rt_UpdateLogVar>:
 /* Function: rt_UpdateLogVar ===================================================
@@ -58882,8 +58882,8 @@ FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not create */
  80196ae:	46bd      	mov	sp, r7
  80196b0:	bd80      	pop	{r7, pc}
  80196b2:	bf00      	nop
- 80196b4:	08024948 	.word	0x08024948
- 80196b8:	08024050 	.word	0x08024050
+ 80196b4:	0802495c 	.word	0x0802495c
+ 80196b8:	08024064 	.word	0x08024064
 
 080196bc <follow_path>:
 static
@@ -67657,7 +67657,7 @@ BaseType_t xReturn;
  801c74a:	3718      	adds	r7, #24
  801c74c:	46bd      	mov	sp, r7
  801c74e:	bd80      	pop	{r7, pc}
- 801c750:	08024094 	.word	0x08024094
+ 801c750:	080240a8 	.word	0x080240a8
  801c754:	0801cda1 	.word	0x0801cda1
  801c758:	24002b54 	.word	0x24002b54
  801c75c:	2400265c 	.word	0x2400265c
@@ -69972,7 +69972,7 @@ BaseType_t xReturn = pdFAIL;
  801d39c:	bd80      	pop	{r7, pc}
  801d39e:	bf00      	nop
  801d3a0:	24002b8c 	.word	0x24002b8c
- 801d3a4:	0802409c 	.word	0x0802409c
+ 801d3a4:	080240b0 	.word	0x080240b0
  801d3a8:	0801d4e9 	.word	0x0801d4e9
  801d3ac:	24002b90 	.word	0x24002b90
 
@@ -71081,7 +71081,7 @@ static void prvCheckForValidListAndQueue( void )
  801d9c0:	24002b88 	.word	0x24002b88
  801d9c4:	24002c38 	.word	0x24002c38
  801d9c8:	24002b98 	.word	0x24002b98
- 801d9cc:	080240a4 	.word	0x080240a4
+ 801d9cc:	080240b8 	.word	0x080240b8
 
 0801d9d0 <pxPortInitialiseStack>:
 
@@ -73252,11 +73252,11 @@ uint8_t *puc;
  801e856:	bf00      	nop
  801e858:	ffffffff 	.word	0xffffffff
  801e85c:	7fefffff 	.word	0x7fefffff
- 801e860:	080249cc 	.word	0x080249cc
- 801e864:	080249c8 	.word	0x080249c8
- 801e868:	080249d4 	.word	0x080249d4
- 801e86c:	080249d0 	.word	0x080249d0
- 801e870:	08024b0e 	.word	0x08024b0e
+ 801e860:	080249e0 	.word	0x080249e0
+ 801e864:	080249dc 	.word	0x080249dc
+ 801e868:	080249e8 	.word	0x080249e8
+ 801e86c:	080249e4 	.word	0x080249e4
+ 801e870:	08024b22 	.word	0x08024b22
  801e874:	6da3      	ldr	r3, [r4, #88]	@ 0x58
  801e876:	f8dd a028 	ldr.w	sl, [sp, #40]	@ 0x28
  801e87a:	4553      	cmp	r3, sl
@@ -73739,8 +73739,8 @@ uint8_t *puc;
  801ecf4:	2500      	movs	r5, #0
  801ecf6:	f104 0619 	add.w	r6, r4, #25
  801ecfa:	e7f5      	b.n	801ece8 <_printf_i+0x220>
- 801ecfc:	080249d8 	.word	0x080249d8
- 801ed00:	080249e9 	.word	0x080249e9
+ 801ecfc:	080249ec 	.word	0x080249ec
+ 801ed00:	080249fd 	.word	0x080249fd
 
 0801ed04 <_scanf_float>:
  801ed04:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -74127,8 +74127,8 @@ uint8_t *puc;
  801f102:	e7f9      	b.n	801f0f8 <_scanf_float+0x3f4>
  801f104:	2700      	movs	r7, #0
  801f106:	e635      	b.n	801ed74 <_scanf_float+0x70>
- 801f108:	080249fa 	.word	0x080249fa
- 801f10c:	08024b56 	.word	0x08024b56
+ 801f108:	08024a0e 	.word	0x08024a0e
+ 801f10c:	08024b6a 	.word	0x08024b6a
 
 0801f110 <__sflush_r>:
  801f110:	f9b1 200c 	ldrsh.w	r2, [r1, #12]
@@ -75133,10 +75133,10 @@ uint8_t *puc;
  801f9b6:	4798      	blx	r3
  801f9b8:	3601      	adds	r6, #1
  801f9ba:	e7f2      	b.n	801f9a2 <__libc_init_array+0x1e>
- 801f9bc:	08024e14 	.word	0x08024e14
- 801f9c0:	08024e14 	.word	0x08024e14
- 801f9c4:	08024e14 	.word	0x08024e14
- 801f9c8:	08024e18 	.word	0x08024e18
+ 801f9bc:	08024e24 	.word	0x08024e24
+ 801f9c0:	08024e24 	.word	0x08024e24
+ 801f9c4:	08024e24 	.word	0x08024e24
+ 801f9c8:	08024e28 	.word	0x08024e28
 
 0801f9cc <__retarget_lock_init_recursive>:
  801f9cc:	4770      	bx	lr
@@ -75641,14 +75641,14 @@ uint8_t *puc;
  801ff0c:	3fc68a28 	.word	0x3fc68a28
  801ff10:	509f79fb 	.word	0x509f79fb
  801ff14:	3fd34413 	.word	0x3fd34413
- 801ff18:	08024a0c 	.word	0x08024a0c
- 801ff1c:	08024a23 	.word	0x08024a23
+ 801ff18:	08024a20 	.word	0x08024a20
+ 801ff1c:	08024a37 	.word	0x08024a37
  801ff20:	7ff00000 	.word	0x7ff00000
- 801ff24:	08024a08 	.word	0x08024a08
- 801ff28:	08024b0f 	.word	0x08024b0f
- 801ff2c:	08024b0e 	.word	0x08024b0e
- 801ff30:	08024bf0 	.word	0x08024bf0
- 801ff34:	08024a7b 	.word	0x08024a7b
+ 801ff24:	08024a1c 	.word	0x08024a1c
+ 801ff28:	08024b23 	.word	0x08024b23
+ 801ff2c:	08024b22 	.word	0x08024b22
+ 801ff30:	08024c00 	.word	0x08024c00
+ 801ff34:	08024a8f 	.word	0x08024a8f
  801ff38:	f8d9 201c 	ldr.w	r2, [r9, #28]
  801ff3c:	f1ba 0f0e 	cmp.w	sl, #14
  801ff40:	6010      	str	r0, [r2, #0]
@@ -75919,8 +75919,8 @@ uint8_t *puc;
  802026c:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
  8020270:	d1b5      	bne.n	80201de <_dtoa_r+0x576>
  8020272:	e7d4      	b.n	802021e <_dtoa_r+0x5b6>
- 8020274:	08024bf0 	.word	0x08024bf0
- 8020278:	08024bc8 	.word	0x08024bc8
+ 8020274:	08024c00 	.word	0x08024c00
+ 8020278:	08024bd8 	.word	0x08024bd8
  802027c:	9908      	ldr	r1, [sp, #32]
  802027e:	2900      	cmp	r1, #0
  8020280:	f000 80e9 	beq.w	8020456 <_dtoa_r+0x7ee>
@@ -76409,8 +76409,8 @@ uint8_t *puc;
  8020714:	f000 f8b2 	bl	802087c <__multadd>
  8020718:	9001      	str	r0, [sp, #4]
  802071a:	e7ec      	b.n	80206f6 <_dtoa_r+0xa8e>
- 802071c:	08024a7b 	.word	0x08024a7b
- 8020720:	080249ff 	.word	0x080249ff
+ 802071c:	08024a8f 	.word	0x08024a8f
+ 8020720:	08024a13 	.word	0x08024a13
 
 08020724 <_free_r>:
  8020724:	b538      	push	{r3, r4, r5, lr}
@@ -76534,8 +76534,8 @@ uint8_t *puc;
  8020828:	e9c0 3303 	strd	r3, r3, [r0, #12]
  802082c:	e7f7      	b.n	802081e <_Balloc+0x66>
  802082e:	bf00      	nop
- 8020830:	08024a0c 	.word	0x08024a0c
- 8020834:	08024a8c 	.word	0x08024a8c
+ 8020830:	08024a20 	.word	0x08024a20
+ 8020834:	08024aa0 	.word	0x08024aa0
 
 08020838 <_Bfree>:
  8020838:	b570      	push	{r4, r5, r6, lr}
@@ -76563,8 +76563,8 @@ uint8_t *puc;
  802086c:	6021      	str	r1, [r4, #0]
  802086e:	f843 4022 	str.w	r4, [r3, r2, lsl #2]
  8020872:	bd70      	pop	{r4, r5, r6, pc}
- 8020874:	08024a0c 	.word	0x08024a0c
- 8020878:	08024a8c 	.word	0x08024a8c
+ 8020874:	08024a20 	.word	0x08024a20
+ 8020878:	08024aa0 	.word	0x08024aa0
 
 0802087c <__multadd>:
  802087c:	e92d 41f0 	stmdb	sp!, {r4, r5, r6, r7, r8, lr}
@@ -76618,8 +76618,8 @@ uint8_t *puc;
  80208f8:	6125      	str	r5, [r4, #16]
  80208fa:	4620      	mov	r0, r4
  80208fc:	e8bd 81f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, pc}
- 8020900:	08024a7b 	.word	0x08024a7b
- 8020904:	08024a8c 	.word	0x08024a8c
+ 8020900:	08024a8f 	.word	0x08024a8f
+ 8020904:	08024aa0 	.word	0x08024aa0
 
 08020908 <__s2b>:
  8020908:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -76680,8 +76680,8 @@ uint8_t *puc;
  802098c:	f7ff ff76 	bl	802087c <__multadd>
  8020990:	e7ee      	b.n	8020970 <__s2b+0x68>
  8020992:	bf00      	nop
- 8020994:	08024a7b 	.word	0x08024a7b
- 8020998:	08024a8c 	.word	0x08024a8c
+ 8020994:	08024a8f 	.word	0x08024a8f
+ 8020998:	08024aa0 	.word	0x08024aa0
 
 0802099c <__hi0bits>:
  802099c:	f5b0 3f80 	cmp.w	r0, #65536	@ 0x10000
@@ -76771,8 +76771,8 @@ uint8_t *puc;
  8020a52:	6103      	str	r3, [r0, #16]
  8020a54:	bd10      	pop	{r4, pc}
  8020a56:	bf00      	nop
- 8020a58:	08024a7b 	.word	0x08024a7b
- 8020a5c:	08024a8c 	.word	0x08024a8c
+ 8020a58:	08024a8f 	.word	0x08024a8f
+ 8020a5c:	08024aa0 	.word	0x08024aa0
 
 08020a60 <__multiply>:
  8020a60:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -76891,8 +76891,8 @@ uint8_t *puc;
  8020b96:	e79f      	b.n	8020ad8 <__multiply+0x78>
  8020b98:	3e01      	subs	r6, #1
  8020b9a:	e7a1      	b.n	8020ae0 <__multiply+0x80>
- 8020b9c:	08024a7b 	.word	0x08024a7b
- 8020ba0:	08024a8c 	.word	0x08024a8c
+ 8020b9c:	08024a8f 	.word	0x08024a8f
+ 8020ba0:	08024aa0 	.word	0x08024aa0
 
 08020ba4 <__pow5mult>:
  8020ba4:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -76960,9 +76960,9 @@ uint8_t *puc;
  8020c44:	4630      	mov	r0, r6
  8020c46:	e8bd 83f8 	ldmia.w	sp!, {r3, r4, r5, r6, r7, r8, r9, pc}
  8020c4a:	bf00      	nop
- 8020c4c:	08024bb8 	.word	0x08024bb8
- 8020c50:	08024a0c 	.word	0x08024a0c
- 8020c54:	08024a8c 	.word	0x08024a8c
+ 8020c4c:	08024bcc 	.word	0x08024bcc
+ 8020c50:	08024a20 	.word	0x08024a20
+ 8020c54:	08024aa0 	.word	0x08024aa0
 
 08020c58 <__lshift>:
  8020c58:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -77041,8 +77041,8 @@ uint8_t *puc;
  8020d22:	d8f9      	bhi.n	8020d18 <__lshift+0xc0>
  8020d24:	e7ea      	b.n	8020cfc <__lshift+0xa4>
  8020d26:	bf00      	nop
- 8020d28:	08024a7b 	.word	0x08024a7b
- 8020d2c:	08024a8c 	.word	0x08024a8c
+ 8020d28:	08024a8f 	.word	0x08024a8f
+ 8020d2c:	08024aa0 	.word	0x08024aa0
 
 08020d30 <__mcmp>:
  8020d30:	690a      	ldr	r2, [r1, #16]
@@ -77178,8 +77178,8 @@ uint8_t *puc;
  8020e82:	3f01      	subs	r7, #1
  8020e84:	e7e7      	b.n	8020e56 <__mdiff+0xee>
  8020e86:	bf00      	nop
- 8020e88:	08024a7b 	.word	0x08024a7b
- 8020e8c:	08024a8c 	.word	0x08024a8c
+ 8020e88:	08024a8f 	.word	0x08024a8f
+ 8020e8c:	08024aa0 	.word	0x08024aa0
 
 08020e90 <__ulp>:
  8020e90:	b082      	sub	sp, #8
@@ -77329,8 +77329,8 @@ uint8_t *puc;
  802100e:	f7ff fcc5 	bl	802099c <__hi0bits>
  8021012:	ebc0 1042 	rsb	r0, r0, r2, lsl #5
  8021016:	e7e5      	b.n	8020fe4 <__d2b+0x74>
- 8021018:	08024a7b 	.word	0x08024a7b
- 802101c:	08024a8c 	.word	0x08024a8c
+ 8021018:	08024a8f 	.word	0x08024a8f
+ 802101c:	08024aa0 	.word	0x08024aa0
 
 08021020 <__ratio>:
  8021020:	e92d 4ff7 	stmdb	sp!, {r0, r1, r2, r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -77729,8 +77729,8 @@ uint8_t *puc;
  80213e0:	f04f 0e01 	mov.w	lr, #1
  80213e4:	e7f6      	b.n	80213d4 <_strtod_l+0x284>
  80213e6:	bf00      	nop
- 80213e8:	08024ccc 	.word	0x08024ccc
- 80213ec:	08024ae5 	.word	0x08024ae5
+ 80213e8:	08024cdc 	.word	0x08024cdc
+ 80213ec:	08024af9 	.word	0x08024af9
  80213f0:	7ff00000 	.word	0x7ff00000
  80213f4:	9a11      	ldr	r2, [sp, #68]	@ 0x44
  80213f6:	1c54      	adds	r4, r2, #1
@@ -77995,13 +77995,13 @@ uint8_t *puc;
  80216b4:	f04f 0b00 	mov.w	fp, #0
  80216b8:	6013      	str	r3, [r2, #0]
  80216ba:	e76a      	b.n	8021592 <_strtod_l+0x442>
- 80216bc:	080249d5 	.word	0x080249d5
- 80216c0:	08024cb8 	.word	0x08024cb8
- 80216c4:	080249cd 	.word	0x080249cd
- 80216c8:	08024a02 	.word	0x08024a02
- 80216cc:	08024b56 	.word	0x08024b56
- 80216d0:	08024bf0 	.word	0x08024bf0
- 80216d4:	08024bc8 	.word	0x08024bc8
+ 80216bc:	080249e9 	.word	0x080249e9
+ 80216c0:	08024cc8 	.word	0x08024cc8
+ 80216c4:	080249e1 	.word	0x080249e1
+ 80216c8:	08024a16 	.word	0x08024a16
+ 80216cc:	08024b6a 	.word	0x08024b6a
+ 80216d0:	08024c00 	.word	0x08024c00
+ 80216d4:	08024bd8 	.word	0x08024bd8
  80216d8:	7ca00000 	.word	0x7ca00000
  80216dc:	7ff00000 	.word	0x7ff00000
  80216e0:	7fefffff 	.word	0x7fefffff
@@ -78281,7 +78281,7 @@ uint8_t *puc;
  80219a4:	41dfffff 	.word	0x41dfffff
  80219a8:	00000000 	.word	0x00000000
  80219ac:	39500000 	.word	0x39500000
- 80219b0:	08024ce0 	.word	0x08024ce0
+ 80219b0:	08024cf0 	.word	0x08024cf0
  80219b4:	fffffc02 	.word	0xfffffc02
  80219b8:	7ff00000 	.word	0x7ff00000
  80219bc:	46d9      	mov	r9, fp
@@ -78622,7 +78622,7 @@ uint8_t *puc;
  8021d78:	d1f6      	bne.n	8021d68 <_strtol_l.isra.0+0xd8>
  8021d7a:	f8c8 1000 	str.w	r1, [r8]
  8021d7e:	e794      	b.n	8021caa <_strtol_l.isra.0+0x1a>
- 8021d80:	08024d09 	.word	0x08024d09
+ 8021d80:	08024d19 	.word	0x08024d19
 
 08021d84 <_strtol_r>:
  8021d84:	f7ff bf84 	b.w	8021c90 <_strtol_l.isra.0>
@@ -78902,11 +78902,11 @@ uint8_t *puc;
  802201c:	4638      	mov	r0, r7
  802201e:	f7fc fd53 	bl	801eac8 <_printf_i>
  8022022:	e7ed      	b.n	8022000 <_svfiprintf_r+0x1c0>
- 8022024:	08024ae7 	.word	0x08024ae7
- 8022028:	08024af1 	.word	0x08024af1
+ 8022024:	08024afb 	.word	0x08024afb
+ 8022028:	08024b05 	.word	0x08024b05
  802202c:	0801e5b9 	.word	0x0801e5b9
  8022030:	08021d89 	.word	0x08021d89
- 8022034:	08024aed 	.word	0x08024aed
+ 8022034:	08024b01 	.word	0x08024b01
 
 08022038 <_sungetc_r>:
  8022038:	b538      	push	{r3, r4, r5, lr}
@@ -79268,8 +79268,8 @@ uint8_t *puc;
  8022396:	bf00      	nop
  8022398:	08022039 	.word	0x08022039
  802239c:	080220b3 	.word	0x080220b3
- 80223a0:	08024d09 	.word	0x08024d09
- 80223a4:	08024aed 	.word	0x08024aed
+ 80223a0:	08024d19 	.word	0x08024d19
+ 80223a4:	08024b01 	.word	0x08024b01
  80223a8:	4b0a      	ldr	r3, [pc, #40]	@ (80223d4 <__ssvfiscanf_r+0x2e8>)
  80223aa:	2b00      	cmp	r3, #0
  80223ac:	f43f aec6 	beq.w	802213c <__ssvfiscanf_r+0x50>
@@ -79553,11 +79553,11 @@ uint8_t *puc;
  8022640:	4630      	mov	r0, r6
  8022642:	f7fc fa41 	bl	801eac8 <_printf_i>
  8022646:	e7e4      	b.n	8022612 <_vfiprintf_r+0x1e6>
- 8022648:	08024ae7 	.word	0x08024ae7
- 802264c:	08024af1 	.word	0x08024af1
+ 8022648:	08024afb 	.word	0x08024afb
+ 802264c:	08024b05 	.word	0x08024b05
  8022650:	0801e5b9 	.word	0x0801e5b9
  8022654:	08022407 	.word	0x08022407
- 8022658:	08024aed 	.word	0x08024aed
+ 8022658:	08024b01 	.word	0x08024b01
 
 0802265c <_scanf_chars>:
  802265c:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
@@ -79640,7 +79640,7 @@ uint8_t *puc;
  8022704:	2000      	movs	r0, #0
  8022706:	e8bd 83f8 	ldmia.w	sp!, {r3, r4, r5, r6, r7, r8, r9, pc}
  802270a:	bf00      	nop
- 802270c:	08024d09 	.word	0x08024d09
+ 802270c:	08024d19 	.word	0x08024d19
 
 08022710 <_scanf_i>:
  8022710:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -79834,10 +79834,10 @@ uint8_t *puc;
  80228e2:	2001      	movs	r0, #1
  80228e4:	e7f2      	b.n	80228cc <_scanf_i+0x1bc>
  80228e6:	bf00      	nop
- 80228e8:	080240ac 	.word	0x080240ac
+ 80228e8:	080240c0 	.word	0x080240c0
  80228ec:	08021d85 	.word	0x08021d85
  80228f0:	080232a9 	.word	0x080232a9
- 80228f4:	08024b08 	.word	0x08024b08
+ 80228f4:	08024b1c 	.word	0x08024b1c
 
 080228f8 <__swhatbuf_r>:
  80228f8:	b570      	push	{r4, r5, r6, lr}
@@ -80080,9 +80080,9 @@ uint8_t *puc;
  8022b20:	e7f3      	b.n	8022b0a <__assert_func+0x12>
  8022b22:	bf00      	nop
  8022b24:	240008fc 	.word	0x240008fc
- 8022b28:	08024b1b 	.word	0x08024b1b
- 8022b2c:	08024b28 	.word	0x08024b28
- 8022b30:	08024b56 	.word	0x08024b56
+ 8022b28:	08024b2f 	.word	0x08024b2f
+ 8022b2c:	08024b3c 	.word	0x08024b3c
+ 8022b30:	08024b6a 	.word	0x08024b6a
 
 08022b34 <rshift>:
  8022b34:	6903      	ldr	r3, [r0, #16]
@@ -80451,9 +80451,9 @@ uint8_t *puc;
  8022eae:	2b00      	cmp	r3, #0
  8022eb0:	d1dd      	bne.n	8022e6e <__gethex+0x26a>
  8022eb2:	e7ee      	b.n	8022e92 <__gethex+0x28e>
- 8022eb4:	08024ae5 	.word	0x08024ae5
- 8022eb8:	08024a7b 	.word	0x08024a7b
- 8022ebc:	08024b57 	.word	0x08024b57
+ 8022eb4:	08024af9 	.word	0x08024af9
+ 8022eb8:	08024a8f 	.word	0x08024a8f
+ 8022ebc:	08024b6b 	.word	0x08024b6b
  8022ec0:	1e6f      	subs	r7, r5, #1
  8022ec2:	f1b9 0f00 	cmp.w	r9, #0
  8022ec6:	d130      	bne.n	8022f2a <__gethex+0x326>
@@ -80588,7 +80588,7 @@ uint8_t *puc;
  802301a:	42b0      	cmp	r0, r6
  802301c:	dbe7      	blt.n	8022fee <__gethex+0x3ea>
  802301e:	e7f0      	b.n	8023002 <__gethex+0x3fe>
- 8023020:	08024a7b 	.word	0x08024a7b
+ 8023020:	08024a8f 	.word	0x08024a8f
 
 08023024 <L_shift>:
  8023024:	f1c2 0208 	rsb	r2, r2, #8
@@ -80864,7 +80864,7 @@ uint8_t *puc;
  802329e:	1e69      	subs	r1, r5, #1
  80232a0:	6011      	str	r1, [r2, #0]
  80232a2:	e7f5      	b.n	8023290 <_strtoul_l.isra.0+0xc4>
- 80232a4:	08024d09 	.word	0x08024d09
+ 80232a4:	08024d19 	.word	0x08024d19
 
 080232a8 <_strtoul_r>:
  80232a8:	f7ff bf90 	b.w	80231cc <_strtoul_l.isra.0>

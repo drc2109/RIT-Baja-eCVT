@@ -508,20 +508,20 @@ void TRANSMIT_LOG(){
 		while (f_gets(line, sizeof(line), &fil)) {
 			// Parse text file into our binary struct
 			if(sscanf(line, "%lu %hu %hu", &entry.time, &entry.engine_rpm, &entry.box_rpm) >= 3) {
-
+				BSP_LED_Toggle(LED_RED);
 				// Send binary struct
-				while(1){
-					status = nrf24_transmit_wait((uint8_t*)&entry, sizeof(entry));
-					DEBUG_RF();
-					if (status == 0) {
-						break;
-					}
-				}
-
-				if (status != 0) {
-					error_i++;
-					nrf24_flush_tx(); // Clear the failed packet from buffer
-				}
+//				while(1){
+//					status = nrf24_transmit_wait((uint8_t*)&entry, sizeof(entry));
+//					DEBUG_RF();
+//					if (status == 0) {
+//						break;
+//					}
+//				}
+//
+//				if (status != 0) {
+//					error_i++;
+//					nrf24_flush_tx(); // Clear the failed packet from buffer
+//				}
 			}
 		}
 

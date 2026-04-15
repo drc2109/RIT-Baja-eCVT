@@ -5,9 +5,9 @@
 ../Core/Src/main.c:390:6:CHANGE_PID	96	static
 ../Core/Src/main.c:447:6:PRINT_PID	40	static
 ../Core/Src/main.c:463:6:TRANSMIT_LOG	144	static
-../Core/Src/main.c:564:6:DEBUG_RF	16	static
-../Core/Src/main.c:588:6:CLEAR_LOG_FILE	8	static
-../Core/Src/main.c:610:6:LOG_DATA_POINT	96	static
-../Core/Src/main.c:641:5:FIND_LOG_LINES	16	static
-../Core/Src/main.c:673:6:nrf24_scan_channels	168	static
-../Core/Src/main.c:712:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:563:6:DEBUG_RF	16	static
+../Core/Src/main.c:587:6:CLEAR_LOG_FILE	8	static
+../Core/Src/main.c:609:6:LOG_DATA_POINT	96	static
+../Core/Src/main.c:640:5:FIND_LOG_LINES	16	static
+../Core/Src/main.c:672:6:nrf24_scan_channels	168	static
+../Core/Src/main.c:711:6:Error_Handler	4	static,ignoring_inline_asm
