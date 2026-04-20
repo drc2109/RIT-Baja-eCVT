@@ -82,9 +82,12 @@ extern DMA_HandleTypeDef hdma_tim2_ch2;
 
 // RF Variables
 extern uint8_t nrf_irq_flag;
-extern double log_rate;
+extern int log_rate;
 uint8_t data_Rx[PLD_SIZE*5];
 
+// LOG Variables
+extern uint8_t record_log_flag;
+extern bool isLogging;
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -128,6 +131,13 @@ const osThreadAttr_t processRF_attributes = {
   .name = "processRF",
   .stack_size = 1028 * 4,
   .priority = (osPriority_t) osPriorityBelowNormal,
+};
+/* Definitions for loggingTask */
+osThreadId_t loggingTaskHandle;
+const osThreadAttr_t loggingTask_attributes = {
+  .name = "loggingTask",
+  .stack_size = 1028 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for helix_angle_queue */
 osMessageQueueId_t helix_angle_queueHandle;
@@ -191,6 +201,7 @@ void Start_Motor_Control(void *argument);
 void Start_Debug_Disp(void *argument);
 void receiveRFCommand(void *argument);
 void processRFCommand(void *argument);
+void logData(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -269,6 +280,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of processRF */
   processRFHandle = osThreadNew(processRFCommand, NULL, &processRF_attributes);
+
+  /* creation of loggingTask */
+  loggingTaskHandle = osThreadNew(logData, NULL, &loggingTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -609,12 +623,13 @@ void processRFCommand(void *argument)
 		  } else if(strcmp((char*)command, "DOWNLOAD_LOG") == 0){ // Download log file from SD card
 			  BSP_LED_On(LED_GREEN);
 			  HAL_Delay(100);
-			  //TRANSMIT_LOG();
+			  TRANSMIT_LOG();
 			  BSP_LED_Off(LED_GREEN);
 		  } else if(strncmp((char*)command, "CHANGE_RATE", 11) == 0){ // Change the logging rate
 			  BSP_LED_Toggle(LED_GREEN);
-			  sscanf((char*)data_Rx, "%*s %lf", &log_rate);
+			  sscanf((char*)data_Rx, "%*s %d", &log_rate);
 			  CHANGE_PID("LOG",0);
+			  TIM6_SetPeriod_us((uint32_t)log_rate);
 		  } else if(strncmp((char*)command, "TEST_RF",7) == 0){ // Send a message back if in range
 			  // Do nothing since auto_ack is enabled the result variable will determine if a transmission is successful or not
 			  BSP_LED_Toggle(LED_GREEN);
@@ -623,6 +638,27 @@ void processRFCommand(void *argument)
     osDelay(1);
   }
   /* USER CODE END processRFCommand */
+}
+
+/* USER CODE BEGIN Header_logData */
+/**
+* @brief Function implementing the loggingTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_logData */
+void logData(void *argument)
+{
+  /* USER CODE BEGIN logData */
+  /* Infinite loop */
+  for(;;)
+  {
+	if(record_log_flag == 1 && isLogging){
+		LOG_DATA_POINT(0,0,0); //TODO: Connect to actual parameters
+	}
+    osDelay(1);
+  }
+  /* USER CODE END logData */
 }
 
 /* Private application code --------------------------------------------------*/

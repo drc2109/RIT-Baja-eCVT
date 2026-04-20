@@ -74,6 +74,10 @@ int  START_LOG			   (void);
 void STOP_LOG			   (void);
 int  LOG_DATA_POINT		   (int time, int engine_rpm, int box_rpm);
 int  FIND_LOG_LINES		   (void);
+// RF Function
+int  TRANSMIT_LOG		   (void);
+// Timer Functions
+void TIM6_SetPeriod_us     (uint32_t us);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -84,7 +88,7 @@ FIL fil;
 FRESULT fres;
 BYTE SDreadBuf[64];
 char msg[128];
-double log_rate = 100; // Default logging rate in ms
+volatile int log_rate = 100; // Default logging rate in us
 // RF Variables
 volatile uint8_t nrf_irq_flag = 0;
 uint8_t addr_ecvt[5] = {0x20,0x21,0x32,0x43,0x54};
@@ -95,6 +99,10 @@ typedef struct __attribute__((packed)) {
     uint16_t engine_rpm;
     uint16_t box_rpm;
 } CompactLogEntry;
+// LOG variables
+volatile bool isLogging = 0;
+volatile uint8_t record_log_flag = 0;
+char line_buffer[64];
 /* USER CODE END 0 */
 
 /**
@@ -141,6 +149,7 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_FATFS_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   printf("\x1B[?25l\x1B[2J\x1B[H");
   if(!INIT_PID()){ // Attempts to open SD card PID.txt to init PID files
@@ -305,6 +314,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         nrf_irq_flag = 1;
     }
+
+    if(0){
+    	if(isLogging){
+    		isLogging = false;
+    		HAL_TIM_Base_Start(&htim6);
+    	} else{
+    		isLogging = true;
+    		HAL_TIM_Base_Start(&htim6);
+    	}
+    }
 }
 
 // Reads the PID.txt saved PID values and assigns them to the PID data structure (Controller_P7_P)
@@ -326,7 +345,7 @@ int INIT_PID(){
 	// 1. Read Log Rate (Line 1)
 	if (f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil)) {
 		// "Log Rate %lf" skips the text and reads the double
-		sscanf((TCHAR*)SDreadBuf, "Log Rate %lf", &log_rate);
+		sscanf((TCHAR*)SDreadBuf, "Log Rate %d", &log_rate);
 	} else {
 		return 0;
 	}
@@ -465,7 +484,7 @@ int CHANGE_PID(char* code, uint16_t value){
 	char line_buffer[64];
 
 	// Write logging rate
-	sprintf(line_buffer, "Log Rate %0.2f\n", (double)log_rate);
+	sprintf(line_buffer, "Log Rate %d\r\n", (int)log_rate);
 	f_puts(line_buffer, &fil);
 	// P1
 	sprintf(line_buffer, "P1 %0.3f\r\n", (double)Controller_P7_P.Prop_RPM_Low);
@@ -477,7 +496,7 @@ int CHANGE_PID(char* code, uint16_t value){
 	sprintf(line_buffer, "D1 %0.3f\r\n", (double)Controller_P7_P.Der_RPM_Low);
 	f_puts(line_buffer, &fil);
 	// SP1
-	sprintf(line_buffer, "SP1 %0.3f\r\n", (double)Controller_P7_P.Omega_Low);
+	sprintf(line_buffer, "SP1 %d\r\n", (int)Controller_P7_P.Omega_Low);
 	f_puts(line_buffer, &fil);
 	// P2
 	sprintf(line_buffer, "P2 %0.3f\r\n", (double)Controller_P7_P.Prop_GR_Low);
@@ -501,7 +520,7 @@ int CHANGE_PID(char* code, uint16_t value){
 	sprintf(line_buffer, "D3 %0.3f\r\n", (double)Controller_P7_P.Der_RPM_High);
 	f_puts(line_buffer, &fil);
 	// SP3
-	sprintf(line_buffer, "SP3 %0.3f\r\n", (double)Controller_P7_P.Omega_High);
+	sprintf(line_buffer, "SP3 %d\r\n", (int)Controller_P7_P.Omega_High);
 	f_puts(line_buffer, &fil);
 	// P4
 	sprintf(line_buffer, "P4 %0.3f\r\n", (double)Controller_P7_P.Prop_GR_High);
@@ -587,7 +606,6 @@ int LOG_DATA_POINT(int time, int engine_rpm, int box_rpm){
 
 	f_lseek(&fil, f_size(&fil));
 
-	char line_buffer[64];
 	// Write logging rate
 	sprintf(line_buffer, "%d %d %d\n", time, engine_rpm, box_rpm);
 	if (f_puts(line_buffer, &fil) < 0) {
@@ -691,6 +709,42 @@ int TRANSMIT_LOG(){
 		return 0;
 	}
 
+}
+
+/**
+ * @brief  Sets TIM6 interrupt period in microseconds
+ * @param  us: Target period in microseconds (e.g., 1000 for 1ms)
+ * @retval None
+ */
+void TIM6_SetPeriod_us(uint32_t us) {
+    // 1. Get the PCLK1 frequency
+    uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
+
+    // 2. Determine the actual Timer Clock (H7 doubles it if APB1 divider != 1)
+    uint32_t tim_clk;
+    if ((RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) == 0) {
+        tim_clk = pclk1;
+    } else {
+        tim_clk = pclk1 * 2;
+    }
+
+    // 3. Get the current Prescaler from the register
+    uint32_t current_psc = TIM6->PSC + 1;
+
+    // 4. Calculate ARR for microseconds
+    // Logic: ARR = (Clock * Seconds) / PSC
+    // Since 'us' is microseconds, we divide the denominator by 1,000,000
+    uint64_t arr_value = ((uint64_t)tim_clk * us) / (1000000ULL * current_psc);
+
+    // 5. Apply limits for 16-bit Timer
+    if (arr_value > 65536) {
+        arr_value = 65536;
+    } else if (arr_value < 1) {
+        arr_value = 1;
+    }
+
+    // 6. Update the register
+    __HAL_TIM_SET_AUTORELOAD(&htim6, (uint32_t)(arr_value - 1));
 }
 /* USER CODE END 4 */
 

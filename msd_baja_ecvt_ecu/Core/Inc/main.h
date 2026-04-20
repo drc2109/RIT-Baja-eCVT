@@ -56,7 +56,14 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+int  INIT_PID              (void);
+int  CHANGE_PID            (char* code, uint16_t value);
+int  START_LOG			   (void);
+void STOP_LOG			   (void);
+int  LOG_DATA_POINT		   (int time, int engine_rpm, int box_rpm);
+int  FIND_LOG_LINES		   (void);
+int  TRANSMIT_LOG		   (void);
+void TIM6_SetPeriod_us     (uint32_t us);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
