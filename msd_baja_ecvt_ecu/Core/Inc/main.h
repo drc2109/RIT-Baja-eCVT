@@ -64,12 +64,13 @@ void Error_Handler(void);
 #define SPI2_CS_GPIO_Port GPIOC
 #define pri_speed_Pin GPIO_PIN_0
 #define pri_speed_GPIO_Port GPIOA
-#define CSN_Pin GPIO_PIN_4
-#define CSN_GPIO_Port GPIOC
-#define CE_RF_Pin GPIO_PIN_5
-#define CE_RF_GPIO_Port GPIOC
+#define RF_CSN_Pin GPIO_PIN_4
+#define RF_CSN_GPIO_Port GPIOC
+#define RF_CE_Pin GPIO_PIN_5
+#define RF_CE_GPIO_Port GPIOC
 #define IRQ_RF_Pin GPIO_PIN_6
 #define IRQ_RF_GPIO_Port GPIOB
+#define IRQ_RF_EXTI_IRQn EXTI9_5_IRQn
 
 /* USER CODE BEGIN Private defines */
 #define SD_SPI_HANDLE hspi2

@@ -33,6 +33,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Controller_P7.h"
+#include "NRF24.h"
+#include "NRF24_reg_addresses.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

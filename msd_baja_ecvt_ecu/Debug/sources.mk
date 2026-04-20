@@ -27,6 +27,7 @@ Core/Startup \
 Drivers/BSP/STM32H7xx_Nucleo \
 Drivers/STM32H7xx_HAL_Driver/Src \
 Drivers/adrian_controller \
+Drivers/nrf24 \
 FATFS/App \
 FATFS/Target \
 Middlewares/Third_Party/FatFs/src \

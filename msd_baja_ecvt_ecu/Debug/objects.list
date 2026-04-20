@@ -50,6 +50,7 @@
 "./Drivers/adrian_controller/rt_logging.o"
 "./Drivers/adrian_controller/rt_nonfinite.o"
 "./Drivers/adrian_controller/testmain.o"
+"./Drivers/nrf24/NRF24.o"
 "./FATFS/App/fatfs.o"
 "./FATFS/Target/user_diskio.o"
 "./FATFS/Target/user_diskio_spi.o"

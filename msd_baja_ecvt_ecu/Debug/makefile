@@ -17,6 +17,7 @@ RM := rm -rf
 -include Middlewares/Third_Party/FatFs/src/subdir.mk
 -include FATFS/Target/subdir.mk
 -include FATFS/App/subdir.mk
+-include Drivers/nrf24/subdir.mk
 -include Drivers/adrian_controller/subdir.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Drivers/BSP/STM32H7xx_Nucleo/subdir.mk
