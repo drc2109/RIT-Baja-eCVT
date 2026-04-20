@@ -44,6 +44,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define PLD_SIZE 16
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -84,6 +85,16 @@ FRESULT fres;
 BYTE SDreadBuf[64];
 char msg[128];
 double log_rate = 100; // Default logging rate in ms
+// RF Variables
+volatile uint8_t nrf_irq_flag = 0;
+uint8_t addr_ecvt[5] = {0x20,0x21,0x32,0x43,0x54};
+uint8_t addr_gui[5]  = {0x10,0x21,0x32,0x43,0x54};
+char complete_msg[10] = "COMPLETE";
+typedef struct __attribute__((packed)) {
+    uint32_t time;
+    uint16_t engine_rpm;
+    uint16_t box_rpm;
+} CompactLogEntry;
 /* USER CODE END 0 */
 
 /**
@@ -135,6 +146,18 @@ int main(void)
   if(!INIT_PID()){ // Attempts to open SD card PID.txt to init PID files
 	  //TODO: Set safe PID Values instead
   }
+  // NRF24 init
+  csn_high();
+  nrf24_init();
+  nrf24_tx_pwr(_0dbm);
+  nrf24_data_rate(_2mbps);
+  nrf24_set_channel(7);
+  nrf24_set_crc(en_crc, _1byte);
+  nrf24_pipe_pld_size(0, PLD_SIZE);
+  nrf24_auto_ack_all(enable);     // Enable ACKs for all pipes
+  nrf24_auto_retr_delay(5);       // Set delay (5 = 1500us). Critical for reliable ACKs.
+  nrf24_auto_retr_limit(15);      // Try up to 15 times before giving up
+  nrf24_mode_rx(addr_ecvt);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -204,8 +227,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 24;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 30;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   RCC_OscInitStruct.PLL.PLLR = 2;
@@ -222,15 +245,15 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
                               |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV1;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -253,8 +276,8 @@ void PeriphCommonClock_Config(void)
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
   PeriphClkInitStruct.PLL2.PLL2R = 2;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
-  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
-  PeriphClkInitStruct.PLL2.PLL2FRACN = 3072;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
@@ -274,6 +297,14 @@ int __io_getchar(void)
     uint8_t ch;
     HAL_UART_Receive(&hcom_uart[COM1], &ch, 1, HAL_MAX_DELAY);
     return ch;
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+    if(GPIO_Pin == IRQ_RF_Pin)
+    {
+        nrf_irq_flag = 1;
+    }
 }
 
 // Reads the PID.txt saved PID values and assigns them to the PID data structure (Controller_P7_P)
@@ -413,8 +444,10 @@ int CHANGE_PID(char* code, uint16_t value){
 	    Controller_P7_P.Der_GR_High = (real_T) value;
 	} else if (strncmp(code, "SP4", 3) == 0) {
 	    Controller_P7_P.Phi_min = (real_T) value;
+	} else if (strncmp(code, "LOG", 3) == 0){
+		// Do nothing
 	} else {
-	    return 0;
+		 return 0;
 	}
 
 	// Mount drive
@@ -562,6 +595,102 @@ int LOG_DATA_POINT(int time, int engine_rpm, int box_rpm){
 	}
 
 	return 1;
+}
+
+int TRANSMIT_LOG(){
+	CompactLogEntry entry;
+
+	// Switch to transmit
+	nrf24_mode_tx(addr_gui);
+
+	// Get the number of lines in the log file
+	int log_lines = FIND_LOG_LINES();
+	char log_lines_str[32] = "";
+	snprintf(log_lines_str, sizeof(log_lines_str), "%d", log_lines);
+
+	HAL_Delay(100);
+	fres = f_mount(&FatFs, "", 1);
+	if (fres != FR_OK) {
+	  return 0;
+	  }
+	HAL_Delay(100);
+	// Open file
+	fres = f_open(&fil, "LOG.txt", FA_READ);
+	if (fres != FR_OK) {
+	  return 0;
+	}
+
+	// Transmit complete message (Ensure that the NRF24 has switched modes)
+	nrf_irq_flag = 0;
+	uint8_t result;
+	for(int i = 0; i< 50; i++){
+	   result = nrf24_transmit_wait((uint8_t*)log_lines_str, strlen(log_lines_str));
+	   HAL_Delay(10);
+	   BSP_LED_On(LED_RED);
+	   if(result == 0){
+		   BSP_LED_Off(LED_RED);
+		   break;
+	   }
+	}
+	nrf_irq_flag = 0;
+	char line[64];
+	uint8_t status;
+	// Begin log file transmission
+	if (result == 0) {
+		while (f_gets(line, sizeof(line), &fil)) {
+			// Parse text file into our binary struct
+			if(sscanf(line, "%lu %hu %hu", &entry.time, &entry.engine_rpm, &entry.box_rpm) >= 3) {
+				BSP_LED_Toggle(LED_RED);
+				// Send binary struct
+//				while(1){
+//					status = nrf24_transmit_wait((uint8_t*)&entry, sizeof(entry));
+//					DEBUG_RF();
+//					if (status == 0) {
+//						break;
+//					}
+//				}
+//
+//				if (status != 0) {
+//					nrf24_flush_tx(); // Clear the failed packet from buffer
+//				}
+			}
+		}
+
+	} else {
+		nrf24_flush_rx();
+		// Switch back to receive
+		nrf24_mode_rx(addr_ecvt);
+		// Close file
+		f_close(&fil);
+		// De-mount drive
+		f_mount(NULL, "", 0);
+		return 0; // Error in intial transmission (Timeout)
+
+	}
+
+	for(int i = 0; i< 50; i++){
+		result = nrf24_transmit_wait((uint8_t*)complete_msg, strlen(complete_msg));
+		if(result == 0){
+			break;
+		}
+	}
+
+	nrf24_flush_rx();
+	// Switch back to receive
+	nrf24_mode_rx(addr_ecvt);
+
+	// Close file
+	f_close(&fil);
+
+	// De-mount drive
+	f_mount(NULL, "", 0);
+
+	if(result == 0){
+		return 1;
+	} else {
+		return 0;
+	}
+
 }
 /* USER CODE END 4 */
 

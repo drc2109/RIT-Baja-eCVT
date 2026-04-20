@@ -376,6 +376,5 @@ void nrf24_mode_rx(uint8_t *local_addr);
  */
 uint8_t nrf24_transmit_wait(uint8_t *data, uint8_t size);
 
-
 #endif
 

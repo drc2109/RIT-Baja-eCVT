@@ -33,6 +33,9 @@
 #include "sensor_filter.h"
 #include "Controller_P7.h"
 #include "sensor_conversion.h"
+#include "main.h"
+#include "NRF24.h"
+#include "NRF24_reg_addresses.h"
 
 /* USER CODE END Includes */
 
@@ -54,6 +57,8 @@
 #define PWM_RANGE 8000
 
 #define MOTOR_CONTROL 2
+
+#define PLD_SIZE 16
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -74,6 +79,12 @@ uint32_t sec_rpm_buf[SEC_RPM_BUF_LEN];
 //  uint16_t helix_angle = 0;
 extern DMA_HandleTypeDef hdma_tim2_ch1;
 extern DMA_HandleTypeDef hdma_tim2_ch2;
+
+// RF Variables
+extern uint8_t nrf_irq_flag;
+extern double log_rate;
+uint8_t data_Rx[PLD_SIZE*5];
+
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -103,6 +114,20 @@ const osThreadAttr_t Debug_Disp_attributes = {
   .name = "Debug_Disp",
   .stack_size = 1028 * 4,
   .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for ReceiveRF */
+osThreadId_t ReceiveRFHandle;
+const osThreadAttr_t ReceiveRF_attributes = {
+  .name = "ReceiveRF",
+  .stack_size = 1028 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for processRF */
+osThreadId_t processRFHandle;
+const osThreadAttr_t processRF_attributes = {
+  .name = "processRF",
+  .stack_size = 1028 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal,
 };
 /* Definitions for helix_angle_queue */
 osMessageQueueId_t helix_angle_queueHandle;
@@ -149,6 +174,11 @@ osMessageQueueId_t pidconfig_queueHandle;
 const osMessageQueueAttr_t pidconfig_queue_attributes = {
   .name = "pidconfig_queue"
 };
+/* Definitions for RFCommandQueue */
+osMessageQueueId_t RFCommandQueueHandle;
+const osMessageQueueAttr_t RFCommandQueue_attributes = {
+  .name = "RFCommandQueue"
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -159,6 +189,8 @@ void StartDefaultTask(void *argument);
 void Start_Sensor_Reading(void *argument);
 void Start_Motor_Control(void *argument);
 void Start_Debug_Disp(void *argument);
+void receiveRFCommand(void *argument);
+void processRFCommand(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -212,6 +244,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of pidconfig_queue */
   pidconfig_queueHandle = osMessageQueueNew (4, sizeof(PIDConfig), &pidconfig_queue_attributes);
 
+  /* creation of RFCommandQueue */
+  RFCommandQueueHandle = osMessageQueueNew (16, 16, &RFCommandQueue_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -228,6 +263,12 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of Debug_Disp */
   Debug_DispHandle = osThreadNew(Start_Debug_Disp, NULL, &Debug_Disp_attributes);
+
+  /* creation of ReceiveRF */
+  ReceiveRFHandle = osThreadNew(receiveRFCommand, NULL, &ReceiveRF_attributes);
+
+  /* creation of processRF */
+  processRFHandle = osThreadNew(processRFCommand, NULL, &processRF_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -508,6 +549,80 @@ void Start_Debug_Disp(void *argument)
 
   }
   /* USER CODE END Start_Debug_Disp */
+}
+
+/* USER CODE BEGIN Header_receiveRFCommand */
+/**
+* @brief Function implementing the ReceiveRF thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_receiveRFCommand */
+void receiveRFCommand(void *argument)
+{
+  /* USER CODE BEGIN receiveRFCommand */
+  /* Infinite loop */
+  const uint32_t QUEUE_TIMEOUT= 10;
+  for(;;)
+  {
+	if(nrf_irq_flag){
+		if (nrf24_data_available()){
+			// Receive in command
+			nrf24_receive(data_Rx, PLD_SIZE);
+			osMessageQueuePut(RFCommandQueueHandle, data_Rx, 0, QUEUE_TIMEOUT);
+			nrf24_flush_rx();
+		}
+	}
+    osDelay(1);
+  }
+  /* USER CODE END receiveRFCommand */
+}
+
+/* USER CODE BEGIN Header_processRFCommand */
+/**
+* @brief Function implementing the processRF thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_processRFCommand */
+void processRFCommand(void *argument)
+{
+  /* USER CODE BEGIN processRFCommand */
+  /* Infinite loop */
+  static char command[16];
+  for(;;)
+  {
+	if(osMessageQueueGet(RFCommandQueueHandle, command, NULL, osWaitForever) == osOK){
+		if (strncmp((char*)command, "PID", 3) == 0){ // Change PID Values
+			BSP_LED_Toggle(LED_GREEN);
+			// Read in value to be changed (P1,I2,D4, Etc.)
+			char rx_command[20];
+			char code[3];
+			float value = 0;
+			int parsed = sscanf((char*)command, "%s %2s %f", rx_command, code, &value);
+
+			if(parsed == 3){ // Successful parsing of command
+			  // Change the value in memory
+			  CHANGE_PID(code,value);
+			}
+
+		  } else if(strcmp((char*)command, "DOWNLOAD_LOG") == 0){ // Download log file from SD card
+			  BSP_LED_On(LED_GREEN);
+			  HAL_Delay(100);
+			  //TRANSMIT_LOG();
+			  BSP_LED_Off(LED_GREEN);
+		  } else if(strncmp((char*)command, "CHANGE_RATE", 11) == 0){ // Change the logging rate
+			  BSP_LED_Toggle(LED_GREEN);
+			  sscanf((char*)data_Rx, "%*s %lf", &log_rate);
+			  CHANGE_PID("LOG",0);
+		  } else if(strncmp((char*)command, "TEST_RF",7) == 0){ // Send a message back if in range
+			  // Do nothing since auto_ack is enabled the result variable will determine if a transmission is successful or not
+			  BSP_LED_Toggle(LED_GREEN);
+		  }
+	}
+    osDelay(1);
+  }
+  /* USER CODE END processRFCommand */
 }
 
 /* Private application code --------------------------------------------------*/
