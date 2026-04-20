@@ -64,6 +64,7 @@ int  LOG_DATA_POINT		   (int time, int engine_rpm, int box_rpm);
 int  FIND_LOG_LINES		   (void);
 int  TRANSMIT_LOG		   (void);
 void TIM6_SetPeriod_us     (uint32_t us);
+void PRINT_PID   		   (void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -78,6 +79,8 @@ void TIM6_SetPeriod_us     (uint32_t us);
 #define IRQ_RF_Pin GPIO_PIN_6
 #define IRQ_RF_GPIO_Port GPIOB
 #define IRQ_RF_EXTI_IRQn EXTI9_5_IRQn
+#define LOG_SW_Pin GPIO_PIN_1
+#define LOG_SW_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */
 #define SD_SPI_HANDLE hspi2

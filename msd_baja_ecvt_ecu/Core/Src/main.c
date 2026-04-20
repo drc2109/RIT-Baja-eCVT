@@ -67,9 +67,11 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 int _read(int file, char *ptr, int len);
 int __io_getchar(void);
-// SD Card Functions
+// PID Functions
 int  INIT_PID              (void);
 int  CHANGE_PID            (char* code, uint16_t value);
+void PRINT_PID   		   (void);
+// SD Card Functions
 int  START_LOG			   (void);
 void STOP_LOG			   (void);
 int  LOG_DATA_POINT		   (int time, int engine_rpm, int box_rpm);
@@ -78,13 +80,14 @@ int  FIND_LOG_LINES		   (void);
 int  TRANSMIT_LOG		   (void);
 // Timer Functions
 void TIM6_SetPeriod_us     (uint32_t us);
+//E1
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 // some variables for FatFs
 FATFS FatFs;
-FIL fil;
+FIL fil_PID, fil_LOG; // TODO: Create two log files, one for log and one for PID so they don't interfere
 FRESULT fres;
 BYTE SDreadBuf[64];
 char msg[128];
@@ -315,12 +318,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         nrf_irq_flag = 1;
     }
 
-    if(0){
-    	if(isLogging){
+    if(GPIO_Pin == LOG_SW_Pin){
+    	if(HAL_GPIO_ReadPin(LOG_SW_GPIO_Port,LOG_SW_Pin) == GPIO_PIN_RESET){
+    		BSP_LED_Off(LED_GREEN);
     		isLogging = false;
-    		HAL_TIM_Base_Start(&htim6);
+    		//STOP_LOG(); // Close log file
+    		HAL_TIM_Base_Stop(&htim6);
     	} else{
+    		BSP_LED_On(LED_GREEN);
     		isLogging = true;
+    		//START_LOG(); // Open log file
     		HAL_TIM_Base_Start(&htim6);
     	}
     }
@@ -337,13 +344,13 @@ int INIT_PID(){
 	  }
 
 	// Open file
-	fres = f_open(&fil, "PID.txt", FA_READ);
+	fres = f_open(&fil_PID, "PID.txt", FA_READ);
     if (fres != FR_OK) {
     	return 0;
     }
 
 	// 1. Read Log Rate (Line 1)
-	if (f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil)) {
+	if (f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil_PID)) {
 		// "Log Rate %lf" skips the text and reads the double
 		sscanf((TCHAR*)SDreadBuf, "Log Rate %d", &log_rate);
 	} else {
@@ -353,7 +360,7 @@ int INIT_PID(){
 	// 2. Read the 4 PID sets (4 lines each)
 	for (int i = 0; i < 16; i++) {
 	    // Read P line
-	    if (f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil)) {
+	    if (f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil_PID)) {
 	        if(i == 3 || i == 11){ // All values except RPM Low and High set points are floats
 	        	sscanf((TCHAR*)SDreadBuf, " %*s %d", &temp_int);
 	        } else{
@@ -417,7 +424,7 @@ int INIT_PID(){
 	}
 
     // Close file
-    f_close(&fil);
+    f_close(&fil_PID);
 
     // De-mount drive
     f_mount(NULL, "", 0);
@@ -476,7 +483,7 @@ int CHANGE_PID(char* code, uint16_t value){
 	}
 
 	// Open file
-	fres = f_open(&fil, "PID.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
+	fres = f_open(&fil_PID, "PID.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
 	if (fres != FR_OK) {
 	    return 0;
 	}
@@ -485,58 +492,58 @@ int CHANGE_PID(char* code, uint16_t value){
 
 	// Write logging rate
 	sprintf(line_buffer, "Log Rate %d\r\n", (int)log_rate);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// P1
 	sprintf(line_buffer, "P1 %0.3f\r\n", (double)Controller_P7_P.Prop_RPM_Low);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// I1
 	sprintf(line_buffer, "I1 %0.3f\r\n", (double)Controller_P7_P.Int_RPM_Low);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// D1
 	sprintf(line_buffer, "D1 %0.3f\r\n", (double)Controller_P7_P.Der_RPM_Low);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// SP1
 	sprintf(line_buffer, "SP1 %d\r\n", (int)Controller_P7_P.Omega_Low);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// P2
 	sprintf(line_buffer, "P2 %0.3f\r\n", (double)Controller_P7_P.Prop_GR_Low);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// I2
 	sprintf(line_buffer, "I2 %0.3f\r\n", (double)Controller_P7_P.Int_GR_Low);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// D2
 	sprintf(line_buffer, "D2 %0.3f\r\n", (double)Controller_P7_P.Der_GR_Low);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// SP2
 	sprintf(line_buffer, "SP2 %0.3f\r\n", (double)Controller_P7_P.Phi_max);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// P3
 	sprintf(line_buffer, "P3 %0.3f\r\n", (double)Controller_P7_P.Prop_RPM_High);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// I3
 	sprintf(line_buffer, "I3 %0.3f\r\n", (double)Controller_P7_P.Int_RPM_High);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// D3
 	sprintf(line_buffer, "D3 %0.3f\r\n", (double)Controller_P7_P.Der_RPM_High);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// SP3
 	sprintf(line_buffer, "SP3 %d\r\n", (int)Controller_P7_P.Omega_High);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// P4
 	sprintf(line_buffer, "P4 %0.3f\r\n", (double)Controller_P7_P.Prop_GR_High);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// I4
 	sprintf(line_buffer, "I4 %0.3f\r\n", (double)Controller_P7_P.Int_GR_High);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// D4
 	sprintf(line_buffer, "D4 %0.3f\r\n", (double)Controller_P7_P.Der_GR_High);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 	// SP4
 	sprintf(line_buffer, "SP4 %0.3f\r\n", (double)Controller_P7_P.Phi_min);
-	f_puts(line_buffer, &fil);
+	f_puts(line_buffer, &fil_PID);
 
 	// Close file
-	f_close(&fil);
+	f_close(&fil_PID);
 	// De-mount drive
 	f_mount(NULL, "", 0);
 	return 1;
@@ -552,7 +559,7 @@ int START_LOG(){
 		return 0;
 	}
 	// Clear file
-	fres = f_open(&fil, "LOG.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
+	fres = f_open(&fil_LOG, "LOG.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
 	if (fres != FR_OK) {
 		return 0;
 	}
@@ -563,7 +570,7 @@ int START_LOG(){
 // Closes the global log file (LOG.txt)
 void STOP_LOG(){
 	// Close file
-	f_close(&fil);
+	f_close(&fil_LOG);
 	// De-mount drive
 	f_mount(NULL, "", 0);
 }
@@ -579,20 +586,20 @@ int FIND_LOG_LINES(){
 		return -1;
 	}
 	// Open file
-	fres = f_open(&fil, "LOG.txt", FA_READ);
+	fres = f_open(&fil_LOG, "LOG.txt", FA_READ);
 	if (fres != FR_OK) {
 		return -1;
 	}
 
 
-	while(f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil)){
+	while(f_gets((TCHAR*)SDreadBuf, sizeof(SDreadBuf), &fil_LOG)){
 		lines_count++;
 	}
 	if (lines_count > 0) {
 	    lines_count++; // account for last line without newline
 	}
 	// Close file
-	f_close(&fil);
+	f_close(&fil_LOG);
 	// De-mount drive
 	f_mount(NULL, "", 0);
 
@@ -604,11 +611,11 @@ int FIND_LOG_LINES(){
 // Returns 1 if the data point was siccessfully logged and 0 if the f_puts fails
 int LOG_DATA_POINT(int time, int engine_rpm, int box_rpm){
 
-	f_lseek(&fil, f_size(&fil));
+	f_lseek(&fil_LOG, f_size(&fil_LOG));
 
 	// Write logging rate
 	sprintf(line_buffer, "%d %d %d\n", time, engine_rpm, box_rpm);
-	if (f_puts(line_buffer, &fil) < 0) {
+	if (f_puts(line_buffer, &fil_LOG) < 0) {
 		return 0;
 	}
 
@@ -617,7 +624,9 @@ int LOG_DATA_POINT(int time, int engine_rpm, int box_rpm){
 
 int TRANSMIT_LOG(){
 	CompactLogEntry entry;
-
+	if(isLogging){ // Only send when not currently logging
+		return 0;
+	}
 	// Switch to transmit
 	nrf24_mode_tx(addr_gui);
 
@@ -633,7 +642,7 @@ int TRANSMIT_LOG(){
 	  }
 	HAL_Delay(100);
 	// Open file
-	fres = f_open(&fil, "LOG.txt", FA_READ);
+	fres = f_open(&fil_LOG, "LOG.txt", FA_READ);
 	if (fres != FR_OK) {
 	  return 0;
 	}
@@ -655,7 +664,7 @@ int TRANSMIT_LOG(){
 	uint8_t status;
 	// Begin log file transmission
 	if (result == 0) {
-		while (f_gets(line, sizeof(line), &fil)) {
+		while (f_gets(line, sizeof(line), &fil_LOG)) {
 			// Parse text file into our binary struct
 			if(sscanf(line, "%lu %hu %hu", &entry.time, &entry.engine_rpm, &entry.box_rpm) >= 3) {
 				BSP_LED_Toggle(LED_RED);
@@ -679,7 +688,7 @@ int TRANSMIT_LOG(){
 		// Switch back to receive
 		nrf24_mode_rx(addr_ecvt);
 		// Close file
-		f_close(&fil);
+		f_close(&fil_LOG);
 		// De-mount drive
 		f_mount(NULL, "", 0);
 		return 0; // Error in intial transmission (Timeout)
@@ -698,7 +707,7 @@ int TRANSMIT_LOG(){
 	nrf24_mode_rx(addr_ecvt);
 
 	// Close file
-	f_close(&fil);
+	f_close(&fil_LOG);
 
 	// De-mount drive
 	f_mount(NULL, "", 0);
@@ -746,6 +755,26 @@ void TIM6_SetPeriod_us(uint32_t us) {
     // 6. Update the register
     __HAL_TIM_SET_AUTORELOAD(&htim6, (uint32_t)(arr_value - 1));
 }
+
+void PRINT_PID(){
+	// 1. Verify Log Rate
+	sprintf(msg, "Log Rate Parsed: %d\r\n", log_rate);
+	printf(msg);
+
+	// 2. Verify PID Array Values
+	sprintf(msg, "P1:%.2f I1:%.2f D1:%.2f SP1:%d\r\n",
+			(double)Controller_P7_P.Prop_RPM_Low, (double)Controller_P7_P.Int_RPM_Low, (double)Controller_P7_P.Der_RPM_Low, (int)Controller_P7_P.Omega_Low);
+	printf(msg);
+	sprintf(msg, "P2:%.2f I2:%.2f D2:%.2f SP2:%.2f\r\n",
+			(double)Controller_P7_P.Prop_GR_Low, (double)Controller_P7_P.Int_GR_Low, (double)Controller_P7_P.Der_GR_Low, (double)Controller_P7_P.Phi_max);
+	printf(msg);
+	sprintf(msg, "P3:%.2f I3:%.2f D3:%.2f SP3:%d\r\n",
+			(double)Controller_P7_P.Prop_RPM_High, (double)Controller_P7_P.Int_RPM_High, (double)Controller_P7_P.Der_RPM_High, (int)Controller_P7_P.Omega_High);
+	printf(msg);
+	sprintf(msg, "P4:%.2f I4:%.2f D4:%.2f SP4:%.2f\r\n",
+			(double)Controller_P7_P.Prop_GR_High, (double)Controller_P7_P.Int_GR_High, (double)Controller_P7_P.Der_GR_High, (double)Controller_P7_P.Phi_min);
+	printf(msg);
+}
 /* USER CODE END 4 */
 
 /**
@@ -766,7 +795,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-
+  if (htim->Instance == TIM6)
+  {
+	  if (isLogging)
+	  {
+		record_log_flag = 1;
+	  }
+  }
   /* USER CODE END Callback 1 */
 }
 

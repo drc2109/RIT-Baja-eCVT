@@ -654,7 +654,9 @@ void logData(void *argument)
   for(;;)
   {
 	if(record_log_flag == 1 && isLogging){
-		LOG_DATA_POINT(0,0,0); //TODO: Connect to actual parameters
+		record_log_flag = 0;
+		BSP_LED_Toggle(LED_RED);
+		//LOG_DATA_POINT(0,0,0); //TODO: Connect to actual parameters
 	}
     osDelay(1);
   }
