@@ -69,7 +69,7 @@ int _read(int file, char *ptr, int len);
 int __io_getchar(void);
 // PID Functions
 int  INIT_PID              (void);
-int  CHANGE_PID            (char* code, uint16_t value);
+int CHANGE_PID             (char* code, float value);
 void PRINT_PID   		   (void);
 // SD Card Functions
 int  START_LOG			   (void);
@@ -135,6 +135,7 @@ int main(void)
   PeriphCommonClock_Config();
 
   /* USER CODE BEGIN SysInit */
+  HAL_SYSCFG_AnalogSwitchConfig(SYSCFG_SWITCH_PC2, SYSCFG_SWITCH_PC2_CLOSE);
 
   /* USER CODE END SysInit */
 
@@ -155,9 +156,7 @@ int main(void)
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   printf("\x1B[?25l\x1B[2J\x1B[H");
-  if(!INIT_PID()){ // Attempts to open SD card PID.txt to init PID files
-	  //TODO: Set safe PID Values instead
-  }
+
   // NRF24 init
   csn_high();
   nrf24_init();
@@ -240,9 +239,9 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 30;
+  RCC_OscInitStruct.PLL.PLLN = 12;
   RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLQ = 3;
   RCC_OscInitStruct.PLL.PLLR = 2;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_3;
   RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
@@ -259,13 +258,13 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV1;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -339,9 +338,9 @@ int INIT_PID(){
 	int temp_int;
 	float temp_float;
 	fres = f_mount(&FatFs, "", 1);
-	  if (fres != FR_OK) {
-	      return 0;
-	  }
+    if (fres != FR_OK) {
+	  return 0;
+    }
 
 	// Open file
 	fres = f_open(&fil_PID, "PID.txt", FA_READ);
@@ -436,7 +435,7 @@ int INIT_PID(){
 // Changes the PID values in the PID structure and overwrites the value in PID.txt
 // Takes in the code in string (Ex. P1, I4, SP2) and the value to change it to
 // Returns 0 if the file writing was unsuccessful and 1 if it was successfully written to PID.txt
-int CHANGE_PID(char* code, uint16_t value){
+int CHANGE_PID(char* code, float value){
 
 	if (strncmp(code, "P1", 2) == 0) {
 	    Controller_P7_P.Prop_RPM_Low = (real_T) value;

@@ -12,5 +12,5 @@ float pickup_dt_to_rad_per_sec(const uint32_t pickup_dt){
 }
 
 float adc12b_to_rad(const uint16_t adc_angle){
-	return (float)adc_angle*ADC_CONV_SCALE_FACTOR;
+	return ((float)(adc_angle - MIN_ADC_READING))*ADC_CONV_SCALE_FACTOR;
 }

@@ -34,7 +34,10 @@ Drivers/nrf24/NRF24.o: ../Drivers/nrf24/NRF24.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
  ../Drivers/nrf24/NRF24_conf.h ../Drivers/nrf24/NRF24_reg_addresses.h \
- ../Drivers/nrf24/NRF24.h
+ ../Drivers/nrf24/NRF24.h ../Core/Inc/main.h \
+ ../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo.h \
+ ../Core/Inc/stm32h7xx_nucleo_conf.h \
+ ../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo_errno.h
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h:
@@ -72,3 +75,7 @@ Drivers/nrf24/NRF24.o: ../Drivers/nrf24/NRF24.c \
 ../Drivers/nrf24/NRF24_conf.h:
 ../Drivers/nrf24/NRF24_reg_addresses.h:
 ../Drivers/nrf24/NRF24.h:
+../Core/Inc/main.h:
+../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo.h:
+../Core/Inc/stm32h7xx_nucleo_conf.h:
+../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo_errno.h:

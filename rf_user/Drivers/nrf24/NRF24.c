@@ -8,6 +8,7 @@
 #include "NRF24_conf.h"
 #include "NRF24_reg_addresses.h"
 #include "NRF24.h"
+#include "main.h"
 
 extern SPI_HandleTypeDef hspiX;
 extern TIM_HandleTypeDef htimX;

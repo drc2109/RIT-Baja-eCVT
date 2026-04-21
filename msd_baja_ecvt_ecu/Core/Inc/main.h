@@ -57,7 +57,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 int  INIT_PID              (void);
-int  CHANGE_PID            (char* code, uint16_t value);
+int  CHANGE_PID            (char* code, float value);
 int  START_LOG			   (void);
 void STOP_LOG			   (void);
 int  LOG_DATA_POINT		   (int time, int engine_rpm, int box_rpm);

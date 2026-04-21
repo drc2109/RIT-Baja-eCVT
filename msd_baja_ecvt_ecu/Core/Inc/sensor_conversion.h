@@ -16,9 +16,10 @@
 #define TIMCLKSPD 1000000.0f
 #define MEGA_RADS_PER_PICKUP (TIMCLKSPD * RADS_PER_PICKUP)
 
-#define MAX_ADC_READING 4095.0f
-#define MAX_ANGLE (float)M_PI
-#define ADC_CONV_SCALE_FACTOR MAX_ANGLE/MAX_ADC_READING
+#define MAX_ADC_READING 3000.0f
+#define MIN_ADC_READING 300.0f
+#define MAX_ANGLE (float)(M_PI * 2.0f)
+#define ADC_CONV_SCALE_FACTOR (MAX_ANGLE / (MAX_ADC_READING-MIN_ADC_READING))
 
 float pickup_dt_to_rad_per_sec(const uint32_t pickup_dt);
 

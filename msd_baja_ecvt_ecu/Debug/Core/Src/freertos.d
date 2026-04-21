@@ -67,8 +67,8 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../Drivers/adrian_controller/rt_nonfinite.h \
  ../Drivers/adrian_controller/Controller_P7_types.h \
  ../Core/Inc/sensor_conversion.h \
- C:/Users/donov/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24.h \
- C:/Users/donov/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24_reg_addresses.h
+ C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24.h \
+ C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24_reg_addresses.h
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 ../Core/Inc/FreeRTOSConfig.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
@@ -142,5 +142,5 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Drivers/adrian_controller/rt_nonfinite.h:
 ../Drivers/adrian_controller/Controller_P7_types.h:
 ../Core/Inc/sensor_conversion.h:
-C:/Users/donov/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24.h:
-C:/Users/donov/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24_reg_addresses.h:
+C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24.h:
+C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24_reg_addresses.h:

@@ -323,9 +323,9 @@ void Start_Sensor_Reading(void *argument)
 {
   /* USER CODE BEGIN Start_Sensor_Reading */
   /* Infinite loop */
-	uint16_t helix_angle = 0;
+	float helix_angle = 0;
 	uint8_t helix_angle_prio = 0;
-	uint16_t throttle_angle = 0;
+	float throttle_angle = 0;
 	uint8_t throttle_angle_prio = 0;
 	uint32_t prim_rpm_uint32 = 0;
 //	uint32_t curr_prim_rpm_tic = 0;
@@ -343,6 +343,14 @@ void Start_Sensor_Reading(void *argument)
 	float prim_rpm = 0.0f;
 	float sec_rpm = 0.0f;
 
+//	HAL_Delay(1000);
+//	INIT_PID();
+//	PRINT_PID();
+//	CHANGE_PID("P3", 0.99);
+//	PRINT_PID();
+//	CHANGE_PID("SP1", 999);
+//	PRINT_PID();
+//	while(1){}
 	dma_speed_fifo_init(&prim_speed_fifo);
 	dma_speed_fifo_init(&sec_speed_fifo);
 
@@ -437,8 +445,8 @@ void Start_Motor_Control(void *argument)
   Controller_P7_initialize();
 #endif
 
-  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, NEUTRAL_SPEED);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, NEUTRAL_SPEED);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 
   for(;;)
   {
@@ -507,7 +515,9 @@ void Start_Motor_Control(void *argument)
 
         motor_pwm_setpoint = scale_command(Controller_P7_Y.Command);
 
-        __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, motor_pwm_setpoint);
+        //TODO: Add hard stop for  helix angle
+
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor_pwm_setpoint);
 
 
 #else
@@ -528,13 +538,13 @@ void Start_Debug_Disp(void *argument)
 {
   /* USER CODE BEGIN Start_Debug_Disp */
   /* Infinite loop */
-	uint32_t prim_rpm = 0;
+	float prim_rpm = 0;
 	uint8_t prim_rpm_prio = 0;
-	uint32_t sec_rpm = 0;
+	float sec_rpm = 0;
 	uint8_t sec_rpm_prio = 0;
-	uint16_t throttle_angle = 0;
+	float throttle_angle = 0;
 	uint8_t throttle_angle_prio = 0;
-	uint16_t helix_angle = 0;
+	float helix_angle = 0;
 	uint8_t helix_angle_prio = 0;
 	const uint32_t QUEUE_TIMEOUT= 10;
 
