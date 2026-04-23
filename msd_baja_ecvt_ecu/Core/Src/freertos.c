@@ -357,7 +357,7 @@ void Start_Sensor_Reading(void *argument)
   for(;;)
   {
     osDelay(MC_OS_DELAY);
-    BSP_LED_Toggle(LED_GREEN);
+    //BSP_LED_Toggle(LED_GREEN);
 
     //Read and convert angles
     helix_angle = adc12b_to_rad(helix_angle_buf[0]);
@@ -559,7 +559,7 @@ void Start_Debug_Disp(void *argument)
     	osMessageQueueGet(sec_rpm_queueHandle, &sec_rpm, &sec_rpm_prio, QUEUE_TIMEOUT);
     }
 
-    print_debug_sensor_vals(prim_rpm, sec_rpm, throttle_angle, helix_angle);\
+    print_debug_sensor_vals(prim_rpm, sec_rpm, throttle_angle, helix_angle);
 
   }
   /* USER CODE END Start_Debug_Disp */
@@ -583,7 +583,9 @@ void receiveRFCommand(void *argument)
 		if (nrf24_data_available()){
 			// Receive in command
 			nrf24_receive(data_Rx, PLD_SIZE);
+			printf((char*)data_Rx);
 			osMessageQueuePut(RFCommandQueueHandle, data_Rx, 0, QUEUE_TIMEOUT);
+			nrf_irq_flag = 0;
 			nrf24_flush_rx();
 		}
 	}

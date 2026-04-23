@@ -342,7 +342,6 @@ void INIT_PID(){
 	  if (fres != FR_OK) {
 	      sprintf(msg, "Init PID f_mount error (%i)\r\n", fres);
 	      HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
-	      while(1);
 	  }
 
 	// Open file

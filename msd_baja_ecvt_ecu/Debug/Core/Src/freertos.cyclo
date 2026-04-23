@@ -4,5 +4,5 @@
 ../Core/Src/freertos.c:406:6:Start_Motor_Control	6
 ../Core/Src/freertos.c:527:6:Start_Debug_Disp	5
 ../Core/Src/freertos.c:575:6:receiveRFCommand	3
-../Core/Src/freertos.c:602:6:processRFCommand	7
-../Core/Src/freertos.c:650:6:logData	3
+../Core/Src/freertos.c:604:6:processRFCommand	7
+../Core/Src/freertos.c:652:6:logData	3
