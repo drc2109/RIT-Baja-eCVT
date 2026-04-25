@@ -8,7 +8,8 @@
 ../Core/Src/sensor_filter.c:58:10:dma_ang_fifo_available	2
 ../Core/Src/sensor_filter.c:66:9:dma_ang_fifo_read_single	1
 ../Core/Src/sensor_filter.c:72:6:dma_ang_fifo_read	3
-../Core/Src/sensor_filter.c:79:10:moving_average_filter_helix	1
-../Core/Src/sensor_filter.c:95:10:moving_average_filter_throttle	1
-../Core/Src/sensor_filter.c:111:10:moving_average_filter_prim_speed	1
-../Core/Src/sensor_filter.c:127:10:moving_average_filter_sec_speed	1
+../Core/Src/sensor_filter.c:79:7:moving_average_filter_curr	1
+../Core/Src/sensor_filter.c:94:10:moving_average_filter_helix	1
+../Core/Src/sensor_filter.c:110:10:moving_average_filter_throttle	1
+../Core/Src/sensor_filter.c:126:10:moving_average_filter_prim_speed	1
+../Core/Src/sensor_filter.c:142:10:moving_average_filter_sec_speed	1

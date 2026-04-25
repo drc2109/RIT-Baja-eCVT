@@ -9,7 +9,7 @@
 #define INC_MOTOR_CONTROL_H_
 
 #include <stdint.h>
-
+#include <math.h>
 //#define NEUTRAL_SPEED 19199  11999
 //modify to work with PW -> y=neutral +4000*(x/12)
 #define NEUTRAL_SPEED 11999
@@ -29,6 +29,9 @@
 
 #define MAX_COMMAND_VOLTAGE 12.0f
 #define MOTOR_VOLTAGE_SCALE_FACTOR ((float)POS_NEG_RANGE_DELTA / MAX_COMMAND_VOLTAGE)
+
+#define MAX_H_ANGLE 5.8
+#define MIN_H_ANGLE 0.95
 
 typedef struct {
     float gr_high_setpoint;

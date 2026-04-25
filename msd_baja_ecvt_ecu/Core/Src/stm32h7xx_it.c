@@ -57,6 +57,7 @@
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
 extern DMA_HandleTypeDef hdma_adc2;
+extern DMA_HandleTypeDef hdma_adc3;
 extern SPI_HandleTypeDef hspi1;
 extern DMA_HandleTypeDef hdma_tim2_ch2;
 extern DMA_HandleTypeDef hdma_tim2_ch1;
@@ -164,6 +165,34 @@ void DebugMon_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32h7xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles EXTI line0 interrupt.
+  */
+void EXTI0_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
+
+  /* USER CODE END EXTI0_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(test_Pin);
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
+
+  /* USER CODE END EXTI0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(LOG_SW_Pin);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+
+  /* USER CODE END EXTI1_IRQn 1 */
+}
 
 /**
   * @brief This function handles DMA1 stream0 global interrupt.
@@ -289,6 +318,20 @@ void TIM17_IRQHandler(void)
   /* USER CODE BEGIN TIM17_IRQn 1 */
 
   /* USER CODE END TIM17_IRQn 1 */
+}
+
+/**
+  * @brief This function handles BDMA channel0 global interrupt.
+  */
+void BDMA_Channel0_IRQHandler(void)
+{
+  /* USER CODE BEGIN BDMA_Channel0_IRQn 0 */
+
+  /* USER CODE END BDMA_Channel0_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_adc3);
+  /* USER CODE BEGIN BDMA_Channel0_IRQn 1 */
+
+  /* USER CODE END BDMA_Channel0_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

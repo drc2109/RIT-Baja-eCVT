@@ -76,6 +76,21 @@ bool dma_ang_fifo_read(ANG_FIFO *fifo, DMA_HandleTypeDef *hdma, uint16_t *out, u
     return true;
 }
 
+float moving_average_filter_curr(float new_sample) {
+    static float buffer[MA_FILT_SIZE] = {0};
+    static size_t index = 0;
+    static float sum = 0;
+
+    // Subtract the oldest sample, add the new one
+    sum -= buffer[index];
+    buffer[index] = new_sample;
+    sum += new_sample;
+
+    // Advance circular index
+    index = (index + 1) % MA_FILT_SIZE;
+
+    return sum / MA_FILT_SIZE;
+}
 uint16_t moving_average_filter_helix(uint16_t new_sample) {
     static uint16_t buffer[MA_FILT_SIZE] = {0};
     static size_t index = 0;

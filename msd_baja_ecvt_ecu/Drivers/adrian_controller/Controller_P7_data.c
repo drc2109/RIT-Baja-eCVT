@@ -7,9 +7,9 @@
  *
  * Code generation for model "Controller_P7".
  *
- * Model version              : 5.18
+ * Model version              : 5.19
  * Simulink Coder version : 25.2 (R2025b) 28-Jul-2025
- * C source code generated on : Wed Apr  8 18:52:52 2026
+ * C source code generated on : Fri Apr 24 22:16:54 2026
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -23,42 +23,42 @@
 /* Block parameters (default storage) */
 P_Controller_P7_T Controller_P7_P = {
   /* Variable: Der_GR_High
-   * Referenced by: '<S35>/Derivative Gain'
+   * Referenced by: '<S36>/Derivative Gain'
    */
   0.0,
 
   /* Variable: Der_GR_Low
-   * Referenced by: '<S88>/Derivative Gain'
+   * Referenced by: '<S89>/Derivative Gain'
    */
   0.0,
 
   /* Variable: Int_GR_High
-   * Referenced by: '<S39>/Integral Gain'
+   * Referenced by: '<S40>/Integral Gain'
    */
   0.0,
 
   /* Variable: Int_GR_Low
-   * Referenced by: '<S92>/Integral Gain'
+   * Referenced by: '<S93>/Integral Gain'
    */
   0.0,
 
   /* Variable: Int_RPM_High
-   * Referenced by: '<S145>/Integral Gain'
+   * Referenced by: '<S146>/Integral Gain'
    */
   0.0,
 
   /* Variable: Int_RPM_Low
-   * Referenced by: '<S198>/Integral Gain'
+   * Referenced by: '<S199>/Integral Gain'
    */
   0.0,
 
   /* Variable: Omega_High
-   * Referenced by: '<S5>/RPM_Hi'
+   * Referenced by: '<S6>/RPM_Hi'
    */
   314.15926535897933,
 
   /* Variable: Omega_Low
-   * Referenced by: '<S6>/Constant'
+   * Referenced by: '<S7>/Constant'
    */
   188.49555921538757,
 
@@ -73,24 +73,24 @@ P_Controller_P7_T Controller_P7_P = {
   0.8,
 
   /* Variable: Prop_GR_High
-   * Referenced by: '<S47>/Proportional Gain'
+   * Referenced by: '<S48>/Proportional Gain'
    */
   20.0,
 
   /* Variable: Prop_GR_Low
-   * Referenced by: '<S100>/Proportional Gain'
+   * Referenced by: '<S101>/Proportional Gain'
    */
   0.5,
 
   /* Variable: Prop_RPM_High
-   * Referenced by: '<S153>/Proportional Gain'
+   * Referenced by: '<S154>/Proportional Gain'
    */
   0.55,
 
   /* Variable: Prop_RPM_Low
-   * Referenced by: '<S206>/Proportional Gain'
+   * Referenced by: '<S207>/Proportional Gain'
    */
-  0.25,
+  0.05,
 
   /* Variable: V_lower
    * Referenced by: '<S1>/Saturation1'
@@ -103,228 +103,258 @@ P_Controller_P7_T Controller_P7_P = {
   12.0,
 
   /* Variable: Der_RPM_High
-   * Referenced by: '<S141>/Derivative Gain'
+   * Referenced by: '<S142>/Derivative Gain'
    */
   -0.005F,
 
   /* Variable: Der_RPM_Low
-   * Referenced by: '<S194>/Derivative Gain'
+   * Referenced by: '<S195>/Derivative Gain'
    */
   0.001F,
 
   /* Mask Parameter: PIDController_InitialConditionF
-   * Referenced by: '<S37>/Filter'
+   * Referenced by: '<S38>/Filter'
    */
   0.0,
 
   /* Mask Parameter: PIDController_InitialConditio_k
-   * Referenced by: '<S143>/Filter'
+   * Referenced by: '<S144>/Filter'
    */
   0.0,
 
   /* Mask Parameter: PIDController_InitialConditio_n
-   * Referenced by: '<S90>/Filter'
+   * Referenced by: '<S91>/Filter'
    */
   0.0,
 
   /* Mask Parameter: PIDController_InitialConditio_h
-   * Referenced by: '<S196>/Filter'
+   * Referenced by: '<S197>/Filter'
    */
   0.0,
 
   /* Mask Parameter: PIDController_InitialConditio_e
-   * Referenced by: '<S42>/Integrator'
+   * Referenced by: '<S43>/Integrator'
    */
   0.0,
 
   /* Mask Parameter: PIDController_InitialConditio_i
-   * Referenced by: '<S148>/Integrator'
+   * Referenced by: '<S149>/Integrator'
    */
   0.0,
 
   /* Mask Parameter: PIDController_InitialConditio_g
-   * Referenced by: '<S95>/Integrator'
+   * Referenced by: '<S96>/Integrator'
    */
   0.0,
 
   /* Mask Parameter: PIDController_InitialConditio_m
-   * Referenced by: '<S201>/Integrator'
+   * Referenced by: '<S202>/Integrator'
    */
   0.0,
 
   /* Mask Parameter: PIDController_N
-   * Referenced by: '<S45>/Filter Coefficient'
+   * Referenced by: '<S46>/Filter Coefficient'
    */
   100.0,
 
   /* Mask Parameter: PIDController_N_k
-   * Referenced by: '<S151>/Filter Coefficient'
+   * Referenced by: '<S152>/Filter Coefficient'
    */
   100.0,
 
   /* Mask Parameter: PIDController_N_j
-   * Referenced by: '<S98>/Filter Coefficient'
+   * Referenced by: '<S99>/Filter Coefficient'
    */
   100.0,
 
   /* Mask Parameter: PIDController_N_f
-   * Referenced by: '<S204>/Filter Coefficient'
+   * Referenced by: '<S205>/Filter Coefficient'
    */
   100.0,
 
   /* Computed Parameter: Filter_gainval
-   * Referenced by: '<S37>/Filter'
+   * Referenced by: '<S38>/Filter'
    */
   0.001,
 
   /* Computed Parameter: Integrator_gainval
-   * Referenced by: '<S42>/Integrator'
+   * Referenced by: '<S43>/Integrator'
    */
   0.001,
 
   /* Computed Parameter: Filter_gainval_i
-   * Referenced by: '<S143>/Filter'
+   * Referenced by: '<S144>/Filter'
    */
   0.001,
 
   /* Computed Parameter: Integrator_gainval_i
-   * Referenced by: '<S148>/Integrator'
+   * Referenced by: '<S149>/Integrator'
    */
   0.001,
 
   /* Computed Parameter: Filter_gainval_h
-   * Referenced by: '<S90>/Filter'
+   * Referenced by: '<S91>/Filter'
    */
   0.001,
 
   /* Computed Parameter: Integrator_gainval_d
-   * Referenced by: '<S95>/Integrator'
+   * Referenced by: '<S96>/Integrator'
    */
   0.001,
 
   /* Computed Parameter: Filter_gainval_n
-   * Referenced by: '<S196>/Filter'
+   * Referenced by: '<S197>/Filter'
    */
   0.001,
 
   /* Computed Parameter: Integrator_gainval_a
-   * Referenced by: '<S201>/Integrator'
+   * Referenced by: '<S202>/Integrator'
    */
   0.001,
 
+  /* Expression: 0
+   * Referenced by: '<S5>/Constant2'
+   */
+  0.0,
+
+  /* Expression: 0
+   * Referenced by: '<S5>/Constant'
+   */
+  0.0,
+
+  /* Expression: 1/2.8
+   * Referenced by: '<S2>/Multiply'
+   */
+  0.35714285714285715,
+
+  /* Expression: 0
+   * Referenced by: '<S5>/Constant1'
+   */
+  0.0,
+
+  /* Expression: 0
+   * Referenced by: '<S5>/Constant3'
+   */
+  0.0,
+
+  /* Expression: 4.85
+   * Referenced by: '<S5>/Constant4'
+   */
+  4.85,
+
   /* Computed Parameter: Iterator_IterationLimit
-   * Referenced by: '<S222>/Iterator'
+   * Referenced by: '<S223>/Iterator'
    */
   1,
 
   /* Computed Parameter: Iterator_IterationLimit_n
-   * Referenced by: '<S233>/Iterator'
+   * Referenced by: '<S234>/Iterator'
    */
   1,
 
   /* Computed Parameter: X_est_Y0
-   * Referenced by: '<S222>/X_est'
+   * Referenced by: '<S223>/X_est'
    */
   0.0F,
 
   /* Computed Parameter: X_prd_Y0
-   * Referenced by: '<S222>/X_prd'
+   * Referenced by: '<S223>/X_prd'
    */
   0.0F,
 
   /* Computed Parameter: P_prd_Y0
-   * Referenced by: '<S222>/P_prd'
+   * Referenced by: '<S223>/P_prd'
    */
   0.0F,
 
-  /* Computed Parameter: Constant3_Value
-   * Referenced by: '<S224>/Constant3'
+  /* Computed Parameter: Constant3_Value_h
+   * Referenced by: '<S225>/Constant3'
    */
-  { 1.0F, 0.0F, 0.0F, 0.0F, 0.0001F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F,
-    0.0F, 0.0F, 0.0001F, 1.0F },
+  { 1.0F, 0.0F, 0.0F, 0.0F, 0.001F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F,
+    0.0F, 0.0F, 0.001F, 1.0F },
 
   /* Computed Parameter: Hcst_Value
-   * Referenced by: '<S224>/Hcst'
+   * Referenced by: '<S225>/Hcst'
    */
   { 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F },
 
   /* Computed Parameter: Hcst_t_Value
-   * Referenced by: '<S224>/Hcst_t'
+   * Referenced by: '<S225>/Hcst_t'
    */
   { 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F },
 
-  /* Computed Parameter: Constant2_Value
-   * Referenced by: '<S224>/Constant2'
+  /* Computed Parameter: Constant2_Value_e
+   * Referenced by: '<S225>/Constant2'
    */
   { 16.0F, 0.0F, 0.0F, 16.0F },
 
-  /* Computed Parameter: Constant4_Value
-   * Referenced by: '<S224>/Constant4'
+  /* Computed Parameter: Constant4_Value_l
+   * Referenced by: '<S225>/Constant4'
    */
-  { 1.0F, 0.0001F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0001F,
+  { 1.0F, 0.001F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.001F,
     0.0F, 0.0F, 0.0F, 1.0F },
 
   /* Computed Parameter: Constant5_Value
-   * Referenced by: '<S224>/Constant5'
+   * Referenced by: '<S225>/Constant5'
    */
   { 0.1F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.1F, 0.0F, 0.0F,
     0.0F, 0.0F, 1.0F },
 
   /* Computed Parameter: X_est_Y0_f
-   * Referenced by: '<S233>/X_est'
+   * Referenced by: '<S234>/X_est'
    */
   0.0F,
 
   /* Computed Parameter: X_prd_Y0_l
-   * Referenced by: '<S233>/X_prd'
+   * Referenced by: '<S234>/X_prd'
    */
   0.0F,
 
   /* Computed Parameter: P_prd_Y0_e
-   * Referenced by: '<S233>/P_prd'
+   * Referenced by: '<S234>/P_prd'
    */
   0.0F,
 
   /* Computed Parameter: Constant3_Value_m
-   * Referenced by: '<S235>/Constant3'
+   * Referenced by: '<S236>/Constant3'
    */
-  { 1.0F, 0.0F, 0.0001F, 1.0F },
+  { 1.0F, 0.0F, 0.001F, 1.0F },
 
   /* Computed Parameter: Hcst_Value_e
-   * Referenced by: '<S235>/Hcst'
+   * Referenced by: '<S236>/Hcst'
    */
   { 1.0F, 1.0F, 0.0F, 0.0F },
 
   /* Computed Parameter: Hcst_t_Value_c
-   * Referenced by: '<S235>/Hcst_t'
+   * Referenced by: '<S236>/Hcst_t'
    */
   { 1.0F, 0.0F, 1.0F, 0.0F },
 
   /* Computed Parameter: Constant2_Value_l
-   * Referenced by: '<S235>/Constant2'
+   * Referenced by: '<S236>/Constant2'
    */
   { 16.0F, 0.0F, 0.0F, 16.0F },
 
-  /* Computed Parameter: Constant4_Value_l
-   * Referenced by: '<S235>/Constant4'
+  /* Computed Parameter: Constant4_Value_lj
+   * Referenced by: '<S236>/Constant4'
    */
-  { 1.0F, 0.0001F, 0.0F, 1.0F },
+  { 1.0F, 0.001F, 0.0F, 1.0F },
 
   /* Computed Parameter: Constant5_Value_k
-   * Referenced by: '<S235>/Constant5'
+   * Referenced by: '<S236>/Constant5'
    */
   { 0.1F, 0.0F, 0.0F, 1.0F },
 
   /* Computed Parameter: UnitDelay2_InitialCondition
-   * Referenced by: '<S219>/Unit Delay2'
+   * Referenced by: '<S220>/Unit Delay2'
    */
   { 0.0F, 0.0F, 0.0F, 0.0F },
 
   /* Computed Parameter: UnitDelay3_InitialCondition
-   * Referenced by: '<S219>/Unit Delay3'
+   * Referenced by: '<S220>/Unit Delay3'
    */
-  { 10.1F, 0.001F, 0.0F, 0.0F, 0.001F, 11.0F, 0.0F, 0.0F, 0.0F, 0.0F, 10.1F,
-    0.001F, 0.0F, 0.0F, 0.001F, 11.0F },
+  { 10.1000099F, 0.01F, 0.0F, 0.0F, 0.01F, 11.0F, 0.0F, 0.0F, 0.0F, 0.0F,
+    10.1000099F, 0.01F, 0.0F, 0.0F, 0.01F, 11.0F },
 
   /* Computed Parameter: uDLookupTable1_tableData
    * Referenced by: '<S2>/1-D Lookup Table1'
@@ -409,12 +439,12 @@ P_Controller_P7_T Controller_P7_P = {
     0.786096394F, 0.793451667F, 0.800836742F, 0.808251798F, 0.815697134F },
 
   /* Computed Parameter: UnitDelay2_InitialCondition_j
-   * Referenced by: '<S220>/Unit Delay2'
+   * Referenced by: '<S221>/Unit Delay2'
    */
   { 0.0F, 0.0F },
 
   /* Computed Parameter: UnitDelay3_InitialCondition_m
-   * Referenced by: '<S220>/Unit Delay3'
+   * Referenced by: '<S221>/Unit Delay3'
    */
-  { 10.1F, 0.001F, 0.001F, 11.0F }
+  { 10.1000099F, 0.01F, 0.01F, 11.0F }
 };

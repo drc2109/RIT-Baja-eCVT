@@ -76,11 +76,17 @@ void PRINT_PID   		   (void);
 #define RF_CSN_GPIO_Port GPIOC
 #define RF_CE_Pin GPIO_PIN_5
 #define RF_CE_GPIO_Port GPIOC
+#define test_Pin GPIO_PIN_0
+#define test_GPIO_Port GPIOG
+#define test_EXTI_IRQn EXTI0_IRQn
+#define sec_speed_Pin GPIO_PIN_3
+#define sec_speed_GPIO_Port GPIOB
 #define IRQ_RF_Pin GPIO_PIN_6
 #define IRQ_RF_GPIO_Port GPIOB
 #define IRQ_RF_EXTI_IRQn EXTI9_5_IRQn
 #define LOG_SW_Pin GPIO_PIN_1
 #define LOG_SW_GPIO_Port GPIOE
+#define LOG_SW_EXTI_IRQn EXTI1_IRQn
 
 /* USER CODE BEGIN Private defines */
 #define SD_SPI_HANDLE hspi2

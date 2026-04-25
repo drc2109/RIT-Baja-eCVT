@@ -8,22 +8,19 @@ C_SRCS += \
 ../Drivers/adrian_controller/Controller_P7.c \
 ../Drivers/adrian_controller/Controller_P7_data.c \
 ../Drivers/adrian_controller/rt_logging.c \
-../Drivers/adrian_controller/rt_nonfinite.c \
-../Drivers/adrian_controller/testmain.c 
+../Drivers/adrian_controller/rt_nonfinite.c 
 
 OBJS += \
 ./Drivers/adrian_controller/Controller_P7.o \
 ./Drivers/adrian_controller/Controller_P7_data.o \
 ./Drivers/adrian_controller/rt_logging.o \
-./Drivers/adrian_controller/rt_nonfinite.o \
-./Drivers/adrian_controller/testmain.o 
+./Drivers/adrian_controller/rt_nonfinite.o 
 
 C_DEPS += \
 ./Drivers/adrian_controller/Controller_P7.d \
 ./Drivers/adrian_controller/Controller_P7_data.d \
 ./Drivers/adrian_controller/rt_logging.d \
-./Drivers/adrian_controller/rt_nonfinite.d \
-./Drivers/adrian_controller/testmain.d 
+./Drivers/adrian_controller/rt_nonfinite.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -33,7 +30,7 @@ Drivers/adrian_controller/%.o Drivers/adrian_controller/%.su Drivers/adrian_cont
 clean: clean-Drivers-2f-adrian_controller
 
 clean-Drivers-2f-adrian_controller:
-	-$(RM) ./Drivers/adrian_controller/Controller_P7.cyclo ./Drivers/adrian_controller/Controller_P7.d ./Drivers/adrian_controller/Controller_P7.o ./Drivers/adrian_controller/Controller_P7.su ./Drivers/adrian_controller/Controller_P7_data.cyclo ./Drivers/adrian_controller/Controller_P7_data.d ./Drivers/adrian_controller/Controller_P7_data.o ./Drivers/adrian_controller/Controller_P7_data.su ./Drivers/adrian_controller/rt_logging.cyclo ./Drivers/adrian_controller/rt_logging.d ./Drivers/adrian_controller/rt_logging.o ./Drivers/adrian_controller/rt_logging.su ./Drivers/adrian_controller/rt_nonfinite.cyclo ./Drivers/adrian_controller/rt_nonfinite.d ./Drivers/adrian_controller/rt_nonfinite.o ./Drivers/adrian_controller/rt_nonfinite.su ./Drivers/adrian_controller/testmain.cyclo ./Drivers/adrian_controller/testmain.d ./Drivers/adrian_controller/testmain.o ./Drivers/adrian_controller/testmain.su
+	-$(RM) ./Drivers/adrian_controller/Controller_P7.cyclo ./Drivers/adrian_controller/Controller_P7.d ./Drivers/adrian_controller/Controller_P7.o ./Drivers/adrian_controller/Controller_P7.su ./Drivers/adrian_controller/Controller_P7_data.cyclo ./Drivers/adrian_controller/Controller_P7_data.d ./Drivers/adrian_controller/Controller_P7_data.o ./Drivers/adrian_controller/Controller_P7_data.su ./Drivers/adrian_controller/rt_logging.cyclo ./Drivers/adrian_controller/rt_logging.d ./Drivers/adrian_controller/rt_logging.o ./Drivers/adrian_controller/rt_logging.su ./Drivers/adrian_controller/rt_nonfinite.cyclo ./Drivers/adrian_controller/rt_nonfinite.d ./Drivers/adrian_controller/rt_nonfinite.o ./Drivers/adrian_controller/rt_nonfinite.su
 
 .PHONY: clean-Drivers-2f-adrian_controller
 

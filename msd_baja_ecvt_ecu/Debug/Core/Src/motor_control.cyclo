@@ -1,5 +1,5 @@
-../Core/Src/motor_control.c:18:10:update_setpoint	5
-../Core/Src/motor_control.c:38:10:pid_loop	7
-../Core/Src/motor_control.c:68:10:scale_command	1
-../Core/Src/motor_control.c:73:6:init_pidconfig	1
-../Core/Src/motor_control.c:93:6:update_pidconfig	1
+../Core/Src/motor_control.c:20:10:update_setpoint	5
+../Core/Src/motor_control.c:40:10:pid_loop	7
+../Core/Src/motor_control.c:70:10:scale_command	2
+../Core/Src/motor_control.c:80:6:init_pidconfig	1
+../Core/Src/motor_control.c:102:6:update_pidconfig	1

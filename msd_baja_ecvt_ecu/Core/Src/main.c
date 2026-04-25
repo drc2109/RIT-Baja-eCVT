@@ -20,9 +20,9 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "adc.h"
+#include "bdma.h"
 #include "dma.h"
 #include "fatfs.h"
-#include "fdcan.h"
 #include "spi.h"
 #include "tim.h"
 #include "gpio.h"
@@ -104,6 +104,7 @@ typedef struct __attribute__((packed)) {
 } CompactLogEntry;
 // LOG variables
 volatile bool isLogging = 0;
+volatile uint8_t logSwitchflg = 0;
 volatile uint8_t record_log_flag = 0;
 char line_buffer[64];
 /* USER CODE END 0 */
@@ -142,18 +143,19 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
+  MX_BDMA_Init();
   MX_ADC1_Init();
   MX_TIM6_Init();
   MX_ADC2_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM1_Init();
-  MX_FDCAN1_Init();
-  MX_FDCAN2_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
-  MX_FATFS_Init();
   MX_TIM4_Init();
+  MX_FATFS_Init();
+  MX_ADC3_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
   printf("\x1B[?25l\x1B[2J\x1B[H");
 
@@ -282,12 +284,12 @@ void PeriphCommonClock_Config(void)
   */
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
   PeriphClkInitStruct.PLL2.PLL2M = 4;
-  PeriphClkInitStruct.PLL2.PLL2N = 9;
+  PeriphClkInitStruct.PLL2.PLL2N = 10;
   PeriphClkInitStruct.PLL2.PLL2P = 2;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
   PeriphClkInitStruct.PLL2.PLL2R = 2;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
-  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
   PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
@@ -318,17 +320,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
 
     if(GPIO_Pin == LOG_SW_Pin){
-    	if(HAL_GPIO_ReadPin(LOG_SW_GPIO_Port,LOG_SW_Pin) == GPIO_PIN_RESET){
-    		BSP_LED_Off(LED_GREEN);
-    		isLogging = false;
-    		//STOP_LOG(); // Close log file
-    		HAL_TIM_Base_Stop(&htim6);
-    	} else{
-    		BSP_LED_On(LED_GREEN);
-    		isLogging = true;
-    		//START_LOG(); // Open log file
-    		HAL_TIM_Base_Start(&htim6);
-    	}
+    	logSwitchflg = 1;
     }
 }
 
@@ -426,7 +418,7 @@ int INIT_PID(){
     f_close(&fil_PID);
 
     // De-mount drive
-    f_mount(NULL, "", 0);
+//    f_mount(NULL, "", 0);
 
     return 1;
 
@@ -544,7 +536,7 @@ int CHANGE_PID(char* code, float value){
 	// Close file
 	f_close(&fil_PID);
 	// De-mount drive
-	f_mount(NULL, "", 0);
+//	f_mount(NULL, "", 0);
 	return 1;
 }
 
@@ -553,10 +545,10 @@ int CHANGE_PID(char* code, float value){
 // Returns 1 if successful and 0 if unsuccessful
 int START_LOG(){
 	// Mount drive
-	fres = f_mount(&FatFs, "", 1);
-	if (fres != FR_OK) {
-		return 0;
-	}
+//	fres = f_mount(&FatFs, "", 1);
+//	if (fres != FR_OK) {
+//		return 0;
+//	}
 	// Clear file
 	fres = f_open(&fil_LOG, "LOG.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
 	if (fres != FR_OK) {
@@ -571,7 +563,7 @@ void STOP_LOG(){
 	// Close file
 	f_close(&fil_LOG);
 	// De-mount drive
-	f_mount(NULL, "", 0);
+//	f_mount(NULL, "", 0);
 }
 
 // Finds the amount of logged data points in LOG.txt (# of lines)
@@ -609,8 +601,8 @@ int FIND_LOG_LINES(){
 // Takes in the data to be logged (time, engine_rpm, and box_rpm)
 // Returns 1 if the data point was siccessfully logged and 0 if the f_puts fails
 int LOG_DATA_POINT(int time, int engine_rpm, int box_rpm){
-
-	f_lseek(&fil_LOG, f_size(&fil_LOG));
+	int f_lseekreturn = 0;
+	f_lseekreturn = f_lseek(&fil_LOG, f_size(&fil_LOG));
 
 	// Write logging rate
 	sprintf(line_buffer, "%d %d %d\n", time, engine_rpm, box_rpm);
@@ -652,9 +644,9 @@ int TRANSMIT_LOG(){
 	for(int i = 0; i< 50; i++){
 	   result = nrf24_transmit_wait((uint8_t*)log_lines_str, strlen(log_lines_str));
 	   HAL_Delay(10);
-	   BSP_LED_On(LED_RED);
+//	   BSP_LED_On(LED_RED);
 	   if(result == 0){
-		   BSP_LED_Off(LED_RED);
+//		   BSP_LED_Off(LED_RED);
 		   break;
 	   }
 	}
@@ -666,7 +658,7 @@ int TRANSMIT_LOG(){
 		while (f_gets(line, sizeof(line), &fil_LOG)) {
 			// Parse text file into our binary struct
 			if(sscanf(line, "%lu %hu %hu", &entry.time, &entry.engine_rpm, &entry.box_rpm) >= 3) {
-				BSP_LED_Toggle(LED_RED);
+//				BSP_LED_Toggle(LED_RED);
 				// Send binary struct
 //				while(1){
 //					status = nrf24_transmit_wait((uint8_t*)&entry, sizeof(entry));
@@ -761,16 +753,16 @@ void PRINT_PID(){
 	printf(msg);
 
 	// 2. Verify PID Array Values
-	sprintf(msg, "P1:%.2f I1:%.2f D1:%.2f SP1:%d\r\n",
+	sprintf(msg, "P1:%.3f I1:%.3f D1:%.3f SP1:%d\r\n",
 			(double)Controller_P7_P.Prop_RPM_Low, (double)Controller_P7_P.Int_RPM_Low, (double)Controller_P7_P.Der_RPM_Low, (int)Controller_P7_P.Omega_Low);
 	printf(msg);
-	sprintf(msg, "P2:%.2f I2:%.2f D2:%.2f SP2:%.2f\r\n",
+	sprintf(msg, "P2:%.3f I2:%.3f D2:%.3f SP2:%.3f\r\n",
 			(double)Controller_P7_P.Prop_GR_Low, (double)Controller_P7_P.Int_GR_Low, (double)Controller_P7_P.Der_GR_Low, (double)Controller_P7_P.Phi_max);
 	printf(msg);
-	sprintf(msg, "P3:%.2f I3:%.2f D3:%.2f SP3:%d\r\n",
+	sprintf(msg, "P3:%.3f I3:%.3f D3:%.3f SP3:%d\r\n",
 			(double)Controller_P7_P.Prop_RPM_High, (double)Controller_P7_P.Int_RPM_High, (double)Controller_P7_P.Der_RPM_High, (int)Controller_P7_P.Omega_High);
 	printf(msg);
-	sprintf(msg, "P4:%.2f I4:%.2f D4:%.2f SP4:%.2f\r\n",
+	sprintf(msg, "P4:%.3f I4:%.3f D4:%.3f SP4:%.3f\r\n",
 			(double)Controller_P7_P.Prop_GR_High, (double)Controller_P7_P.Int_GR_High, (double)Controller_P7_P.Der_GR_High, (double)Controller_P7_P.Phi_min);
 	printf(msg);
 }

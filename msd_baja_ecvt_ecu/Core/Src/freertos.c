@@ -48,6 +48,7 @@
 /* USER CODE BEGIN PD */
 #define HELIX_ANGLE_BUF_LEN 1
 #define THROTTLE_ANGLE_BUF_LEN 1
+#define MOTOR_CURR_BUF_LEN 1
 #define PRIM_RPM_BUF_LEN 2
 #define SEC_RPM_BUF_LEN 2
 
@@ -59,6 +60,9 @@
 #define MOTOR_CONTROL 2
 
 #define PLD_SIZE 16
+
+#define DEBUG 1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -70,6 +74,8 @@
 /* USER CODE BEGIN Variables */
 uint16_t helix_angle_buf[HELIX_ANGLE_BUF_LEN];
 uint16_t throttle_angle_buf[THROTTLE_ANGLE_BUF_LEN];
+
+uint16_t motor_curr_buf[MOTOR_CURR_BUF_LEN] __attribute__((section(".sram4_section")));
 uint32_t prim_rpm_buf[PRIM_RPM_BUF_LEN];
 uint32_t sec_rpm_buf[SEC_RPM_BUF_LEN];
 
@@ -88,6 +94,8 @@ uint8_t data_Rx[PLD_SIZE*5];
 // LOG Variables
 extern uint8_t record_log_flag;
 extern bool isLogging;
+extern uint8_t logSwitchflg;
+
 
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
@@ -102,42 +110,42 @@ osThreadId_t Sensor_ReadingHandle;
 const osThreadAttr_t Sensor_Reading_attributes = {
   .name = "Sensor_Reading",
   .stack_size = 1028 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal,
+  .priority = (osPriority_t) osPriorityAboveNormal6,
 };
 /* Definitions for Motor_Control */
 osThreadId_t Motor_ControlHandle;
 const osThreadAttr_t Motor_Control_attributes = {
   .name = "Motor_Control",
   .stack_size = 1028 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityAboveNormal7,
 };
 /* Definitions for Debug_Disp */
 osThreadId_t Debug_DispHandle;
 const osThreadAttr_t Debug_Disp_attributes = {
   .name = "Debug_Disp",
-  .stack_size = 1028 * 4,
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for ReceiveRF */
 osThreadId_t ReceiveRFHandle;
 const osThreadAttr_t ReceiveRF_attributes = {
   .name = "ReceiveRF",
-  .stack_size = 1028 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityNormal5,
 };
 /* Definitions for processRF */
 osThreadId_t processRFHandle;
 const osThreadAttr_t processRF_attributes = {
   .name = "processRF",
   .stack_size = 1028 * 4,
-  .priority = (osPriority_t) osPriorityBelowNormal,
+  .priority = (osPriority_t) osPriorityBelowNormal4,
 };
 /* Definitions for loggingTask */
 osThreadId_t loggingTaskHandle;
 const osThreadAttr_t loggingTask_attributes = {
   .name = "loggingTask",
-  .stack_size = 1028 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityNormal3,
 };
 /* Definitions for helix_angle_queue */
 osMessageQueueId_t helix_angle_queueHandle;
@@ -159,26 +167,6 @@ osMessageQueueId_t sec_rpm_queueHandle;
 const osMessageQueueAttr_t sec_rpm_queue_attributes = {
   .name = "sec_rpm_queue"
 };
-/* Definitions for helix_pos_mc_queue */
-osMessageQueueId_t helix_pos_mc_queueHandle;
-const osMessageQueueAttr_t helix_pos_mc_queue_attributes = {
-  .name = "helix_pos_mc_queue"
-};
-/* Definitions for throttle_pos_mc_queue */
-osMessageQueueId_t throttle_pos_mc_queueHandle;
-const osMessageQueueAttr_t throttle_pos_mc_queue_attributes = {
-  .name = "throttle_pos_mc_queue"
-};
-/* Definitions for prim_rpm_mc_queue */
-osMessageQueueId_t prim_rpm_mc_queueHandle;
-const osMessageQueueAttr_t prim_rpm_mc_queue_attributes = {
-  .name = "prim_rpm_mc_queue"
-};
-/* Definitions for sec_rpm_mc_queue */
-osMessageQueueId_t sec_rpm_mc_queueHandle;
-const osMessageQueueAttr_t sec_rpm_mc_queue_attributes = {
-  .name = "sec_rpm_mc_queue"
-};
 /* Definitions for pidconfig_queue */
 osMessageQueueId_t pidconfig_queueHandle;
 const osMessageQueueAttr_t pidconfig_queue_attributes = {
@@ -188,6 +176,21 @@ const osMessageQueueAttr_t pidconfig_queue_attributes = {
 osMessageQueueId_t RFCommandQueueHandle;
 const osMessageQueueAttr_t RFCommandQueue_attributes = {
   .name = "RFCommandQueue"
+};
+/* Definitions for sensor_data_mc_q */
+osMessageQueueId_t sensor_data_mc_qHandle;
+const osMessageQueueAttr_t sensor_data_mc_q_attributes = {
+  .name = "sensor_data_mc_q"
+};
+/* Definitions for sensor_data_debug_q */
+osMessageQueueId_t sensor_data_debug_qHandle;
+const osMessageQueueAttr_t sensor_data_debug_q_attributes = {
+  .name = "sensor_data_debug_q"
+};
+/* Definitions for sensor_data_log_q */
+osMessageQueueId_t sensor_data_log_qHandle;
+const osMessageQueueAttr_t sensor_data_log_q_attributes = {
+  .name = "sensor_data_log_q"
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -240,23 +243,20 @@ void MX_FREERTOS_Init(void) {
   /* creation of sec_rpm_queue */
   sec_rpm_queueHandle = osMessageQueueNew (16, sizeof(float), &sec_rpm_queue_attributes);
 
-  /* creation of helix_pos_mc_queue */
-  helix_pos_mc_queueHandle = osMessageQueueNew (16, sizeof(float), &helix_pos_mc_queue_attributes);
-
-  /* creation of throttle_pos_mc_queue */
-  throttle_pos_mc_queueHandle = osMessageQueueNew (16, sizeof(float), &throttle_pos_mc_queue_attributes);
-
-  /* creation of prim_rpm_mc_queue */
-  prim_rpm_mc_queueHandle = osMessageQueueNew (16, sizeof(float), &prim_rpm_mc_queue_attributes);
-
-  /* creation of sec_rpm_mc_queue */
-  sec_rpm_mc_queueHandle = osMessageQueueNew (16, sizeof(float), &sec_rpm_mc_queue_attributes);
-
   /* creation of pidconfig_queue */
   pidconfig_queueHandle = osMessageQueueNew (4, sizeof(PIDConfig), &pidconfig_queue_attributes);
 
   /* creation of RFCommandQueue */
   RFCommandQueueHandle = osMessageQueueNew (16, 16, &RFCommandQueue_attributes);
+
+  /* creation of sensor_data_mc_q */
+  sensor_data_mc_qHandle = osMessageQueueNew (4, sizeof(sensor_data_t), &sensor_data_mc_q_attributes);
+
+  /* creation of sensor_data_debug_q */
+  sensor_data_debug_qHandle = osMessageQueueNew (4, sizeof(sensor_data_t), &sensor_data_debug_q_attributes);
+
+  /* creation of sensor_data_log_q */
+  sensor_data_log_qHandle = osMessageQueueNew (60, sizeof(sensor_data_t), &sensor_data_log_q_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -307,7 +307,7 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END StartDefaultTask */
 }
@@ -342,69 +342,113 @@ void Start_Sensor_Reading(void *argument)
 	uint32_t prev_sec_rpm_tic = 0;
 	float prim_rpm = 0.0f;
 	float sec_rpm = 0.0f;
+	float motor_curr = 0.0f;
+	float motor_curr_avg = 0.0f;
+	uint8_t prim_rpm_sense_overflow = 0;
+	uint8_t sec_rpm_sense_overflow = 0;
 
-//	HAL_Delay(1000);
-//	INIT_PID();
-//	PRINT_PID();
-//	CHANGE_PID("P3", 0.99);
-//	PRINT_PID();
-//	CHANGE_PID("SP1", 999);
-//	PRINT_PID();
-//	while(1){}
+	sensor_data_t sensor_data = {0};
+	int i = 0;
+
 	dma_speed_fifo_init(&prim_speed_fifo);
 	dma_speed_fifo_init(&sec_speed_fifo);
 
+	//Start ADCs and DMAs
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)helix_angle_buf, HELIX_ANGLE_BUF_LEN);
 	HAL_ADC_Start_DMA(&hadc2, (uint32_t*)throttle_angle_buf, THROTTLE_ANGLE_BUF_LEN);
+	HAL_ADC_Start_DMA(&hadc3, (uint32_t*)motor_curr_buf, MOTOR_CURR_BUF_LEN);
+
+	// Start prim and secondary timestep monitors
 	HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, prim_speed_fifo.buf, DMA_FIFO_BUF_SIZE);
 	HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_2, sec_speed_fifo.buf, DMA_FIFO_BUF_SIZE);
 
+	// Start sample trigger for ADCs
     HAL_TIM_OC_Start(&htim6, TIM_CHANNEL_1);
 
 
   for(;;)
   {
     osDelay(MC_OS_DELAY);
-    BSP_LED_Toggle(LED_GREEN);
 
     //Read and convert angles
     helix_angle = adc12b_to_rad(helix_angle_buf[0]);
 
     throttle_angle = adc12b_to_rad(throttle_angle_buf[0]);
 
+    sensor_data.helix_angle = helix_angle;
+    sensor_data.throttle_angle = throttle_angle;
+    // Inside the for(;;) loop of Start_Sensor_Reading
+    // Invalidate the 2 bytes (uint16_t) at the buffer address
+    SCB_InvalidateDCache_by_Addr((uint32_t*)motor_curr_buf, 2);
+    motor_curr = adc12b_to_motor_curr(motor_curr_buf[0]);
+    motor_curr_avg = moving_average_filter_curr(motor_curr);
+
     //Read and empty prim rpm fifo so always most recent
-    while (dma_speed_fifo_available(&prim_speed_fifo, &hdma_tim2_ch1)){
-    	curr_prim_rpm_tic = dma_speed_fifo_read_single(&prim_speed_fifo);
-    	prim_rpm_uint32 = curr_prim_rpm_tic - prev_prim_rpm_tic;
-    	prev_prim_rpm_tic = curr_prim_rpm_tic;
+    while(dma_speed_fifo_available(&prim_speed_fifo, &hdma_tim2_ch1)
+    		||dma_speed_fifo_available(&sec_speed_fifo, &hdma_tim2_ch2)){
+		if (dma_speed_fifo_available(&prim_speed_fifo, &hdma_tim2_ch1)){
+			curr_prim_rpm_tic = dma_speed_fifo_read_single(&prim_speed_fifo);
+			prim_rpm_sense_overflow = curr_prim_rpm_tic > prev_prim_rpm_tic ? 0 : 1;
+			if (prim_rpm_sense_overflow){
+				prev_prim_rpm_tic = curr_prim_rpm_tic;
+				continue;
+			}
+			prim_rpm_uint32 = curr_prim_rpm_tic - prev_prim_rpm_tic;
+			prev_prim_rpm_tic = curr_prim_rpm_tic;
+			if (!prim_rpm_sense_overflow){
+				prim_rpm = pickup_dt_to_rad_per_sec(prim_rpm_uint32);
+			}
+		}
+
+
+		//Read and empty sec rpm fifo so always most recent
+		if (dma_speed_fifo_available(&sec_speed_fifo, &hdma_tim2_ch2)){
+			curr_sec_rpm_tic = dma_speed_fifo_read_single(&sec_speed_fifo);
+			sec_rpm_sense_overflow = curr_sec_rpm_tic > prev_sec_rpm_tic ? 0 : 1;
+			if (sec_rpm_sense_overflow){
+				prev_sec_rpm_tic = curr_sec_rpm_tic;
+				continue;
+			}
+			sec_rpm_uint32 = curr_sec_rpm_tic - prev_sec_rpm_tic;
+			prev_sec_rpm_tic = curr_sec_rpm_tic;
+			if (!prim_rpm_sense_overflow){
+				sec_rpm = pickup_dt_to_rad_per_sec_gb(sec_rpm_uint32);
+			}
+		}
+
+	    sensor_data.prim_rpm = prim_rpm;
+	    sensor_data.sec_rpm = sec_rpm;
+
     }
 
-    prim_rpm = pickup_dt_to_rad_per_sec(prim_rpm_uint32);
 
-    //Read and empty sec rpm fifo so always most recent
-    while (dma_speed_fifo_available(&sec_speed_fifo, &hdma_tim2_ch2)){
-    	curr_sec_rpm_tic = dma_speed_fifo_read_single(&sec_speed_fifo);
-    	sec_rpm_uint32 = curr_sec_rpm_tic - prev_sec_rpm_tic;
-    	prev_sec_rpm_tic = curr_sec_rpm_tic;
-    }
-
-    sec_rpm = pickup_dt_to_rad_per_sec(sec_rpm_uint32);
+    sensor_data.motor_curr = motor_curr_avg;
 
 
-    osMessageQueuePut(helix_angle_queueHandle, &helix_angle, helix_angle_prio, TIMEOUT);
-    osMessageQueuePut(helix_pos_mc_queueHandle, &helix_angle, helix_angle_prio, TIMEOUT);
-    osMessageQueuePut(throttle_angle_queueHandle, &throttle_angle, throttle_angle_prio, TIMEOUT);
-    osMessageQueuePut(throttle_pos_mc_queueHandle, &throttle_angle, throttle_angle_prio, TIMEOUT);
-    osMessageQueuePut(pri_rpm_queueHandle, &prim_rpm, prim_rpm_prio, TIMEOUT);
-    osMessageQueuePut(prim_rpm_mc_queueHandle, &prim_rpm, prim_rpm_prio, TIMEOUT);
-    osMessageQueuePut(sec_rpm_queueHandle, &sec_rpm, sec_rpm_prio, TIMEOUT);
-    osMessageQueuePut(sec_rpm_mc_queueHandle, &sec_rpm, sec_rpm_prio, TIMEOUT);
+    osMessageQueuePut(sensor_data_mc_qHandle, &sensor_data, 0, TIMEOUT);
+    osMessageQueuePut(sensor_data_log_qHandle, &sensor_data, 0, TIMEOUT);
+
+#if DEBUG == 1
+
+//    osMessageQueuePut(sensor_data_debug_qHandle, &sensor_data, 0, TIMEOUT);
+
+#endif
+
 
   }
   /* USER CODE END Start_Sensor_Reading */
 }
 
 /* USER CODE BEGIN Header_Start_Motor_Control */
+uint16_t ccr = NEUTRAL;
+sensor_data_t sensor_data_mc = {0};
+uint16_t motor_pwm_setpoint = NEUTRAL_SPEED;
+float helix_angle_offset_removed = 0.0f;
+uint8_t flag_min_pos_safety = 0;
+uint8_t flag_max_pos_safety = 0;
+uint8_t flag_no_safety = 0;
+
+real_T controller_mode = 0;
 /**
 * @brief Function implementing the Motor_Control thread.
 * @param argument: Not used
@@ -422,7 +466,6 @@ void Start_Motor_Control(void *argument)
   uint8_t helix_angle_prio = 0;
   const uint32_t QUEUE_TIMEOUT= 10;
   uint8_t speed_percent = 0xff;
-  uint16_t ccr = NEUTRAL;
   uint8_t current_percent = 50;
   char lr_dir = '\0';
 
@@ -433,12 +476,18 @@ void Start_Motor_Control(void *argument)
   float throttle_pos = 0;
   uint8_t throttle_pos_prio = 0;
   float helix_pos = 0;
+  float helix_offset = 2.2;
 
-  uint16_t motor_pwm_setpoint = NEUTRAL_SPEED;
+//  sensor_data_t sensor_data_mc = {0};
+
 
   PIDConfig mode_pid_sp = {0};
   uint8_t mode_pid_sp_prio = 0;
-  init_pidconfig(&mode_pid_sp);
+	INIT_PID();
+//	PRINT_PID();
+	init_pidconfig(&mode_pid_sp);
+
+//	helix_offset = init_helix_offset();
 
 #if MOTOR_CONTROL == 2
   // Initialize controller variables
@@ -452,7 +501,7 @@ void Start_Motor_Control(void *argument)
   {
     osDelay(MC_OS_DELAY);
 
-    BSP_LED_Toggle(LED_BLUE);
+//    BSP_LED_Toggle(LED_BLUE);
 #if MOTOR_CONTROL == 0
 
     while(osMessageQueueGetCount(helix_pos_mc_queueHandle)){
@@ -462,7 +511,7 @@ void Start_Motor_Control(void *argument)
     speed = pid_loop(pos_setpoint, helix_pos);
     __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, speed);
 #elif MOTOR_CONTROL == 1
-	  current_percent = (__HAL_TIM_GET_COMPARE(&htim3, TIM_CHANNEL_1) - MAX_REVERSE)*100/PWM_RANGE;
+//	  current_percent = (__HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1) - MAX_REVERSE)*100/PWM_RANGE;
 //	  printf("\r\nCurrent Percent: %lu", current_percent);
 /*	  scanf("%lu", &speed_percent);
 	  //HAL_Delay(10000);
@@ -470,15 +519,18 @@ void Start_Motor_Control(void *argument)
 		  ccr = PWM_RANGE * speed_percent / 100 + MAX_REVERSE;
 		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, ccr);
 	  }*/
+	  while(osMessageQueueGetCount(sensor_data_mc_qHandle)){
+	    	osMessageQueueGet(sensor_data_mc_qHandle, &sensor_data_mc, &helix_angle_prio, QUEUE_TIMEOUT);
+	  }
 	  scanf("%c", &lr_dir);
 	  	  //HAL_Delay(10000);
 	  	  if (lr_dir == ','){
-	  		  ccr = PWM_RANGE * (current_percent - 1)/ 100 + MAX_REVERSE;
-	  		  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, ccr);
+	  		  ccr-=20;
+	  		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, ccr);
 	  	  }
 	  	  else if (lr_dir == '.'){
-	  		  ccr = PWM_RANGE * (current_percent + 1)/ 100 + MAX_REVERSE;
-	  		  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, ccr);
+	  		  ccr+= 20;
+	  		  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, ccr);
 
 	  	  }
 	  lr_dir = '\0';
@@ -487,35 +539,47 @@ void Start_Motor_Control(void *argument)
 
 	    while(osMessageQueueGetCount(pidconfig_queueHandle)){
 	    	osMessageQueueGet(pidconfig_queueHandle, &mode_pid_sp, &mode_pid_sp_prio, QUEUE_TIMEOUT);
+		    update_pidconfig(&mode_pid_sp);
 	    }
 
-	    update_pidconfig(&mode_pid_sp);
 
+	    while(osMessageQueueGetCount(sensor_data_mc_qHandle)){
+	    	osMessageQueueGet(sensor_data_mc_qHandle, &sensor_data_mc, &helix_angle_prio, QUEUE_TIMEOUT);
+	    }
 	    //Get all current sensor values
-	    while(osMessageQueueGetCount(helix_pos_mc_queueHandle)){
-	    	osMessageQueueGet(helix_pos_mc_queueHandle, &helix_pos, &helix_angle_prio, QUEUE_TIMEOUT);
-	    }
-	    while(osMessageQueueGetCount(throttle_pos_mc_queueHandle)){
-	    	osMessageQueueGet(throttle_pos_mc_queueHandle, &throttle_pos, &throttle_pos_prio, QUEUE_TIMEOUT);
-	    }
-	    while(osMessageQueueGetCount(prim_rpm_mc_queueHandle)){
-	    	osMessageQueueGet(prim_rpm_mc_queueHandle, &prim_rpm, &prim_rpm_prio, QUEUE_TIMEOUT);
-	    }
-	    while(osMessageQueueGetCount(sec_rpm_mc_queueHandle)){
-	    	osMessageQueueGet(sec_rpm_mc_queueHandle, &sec_rpm, &sec_rpm_prio, QUEUE_TIMEOUT);
-	    }
 
 	    //Update sensor inputs
-        Controller_P7_U.Omega_Primary = prim_rpm; // ReadEngineSpeedSensor(); // e.g., 1500.0f
-        Controller_P7_U.Omega_Secondary = sec_rpm; // ReadSecondarySpeedSensor(); // e.g., 1500.0f
-        Controller_P7_U.Theta_Helix = helix_pos; //ReadGearRatioSensor(); // e.g., 1.5f
+        Controller_P7_U.Omega_Primary = sensor_data_mc.prim_rpm; // ReadEngineSpeedSensor(); // e.g., 1500.0f
+
+        Controller_P7_U.Omega_Secondary = sensor_data_mc.sec_rpm; // ReadSecondarySpeedSensor(); // e.g., 1500.0f
+
+        helix_angle_offset_removed = sensor_data_mc.helix_angle - MIN_H_ANGLE;
+        Controller_P7_U.Theta_Helix = helix_angle_offset_removed > 0 ? helix_angle_offset_removed : 0; //ReadGearRatioSensor(); // e.g., 1.5f
+
 
         // calculate speed command
         Controller_P7_step();
 
         motor_pwm_setpoint = scale_command(Controller_P7_Y.Command);
 
-        //TODO: Add hard stop for  helix angle
+        if (sensor_data_mc.helix_angle >= MAX_H_ANGLE && motor_pwm_setpoint > NEUTRAL_SPEED){
+        	motor_pwm_setpoint = NEUTRAL_SPEED;
+        	flag_min_pos_safety = 0;
+        	flag_max_pos_safety = 1;
+        	flag_no_safety = 0;
+
+        }
+        else if (sensor_data_mc.helix_angle <= MIN_H_ANGLE && motor_pwm_setpoint < NEUTRAL_SPEED){
+        	motor_pwm_setpoint = NEUTRAL_SPEED;
+        	flag_min_pos_safety = 1;
+        	flag_max_pos_safety = 0;
+        	flag_no_safety = 0;
+        }
+        else{
+        	flag_min_pos_safety = 0;
+        	flag_max_pos_safety = 0;
+        	flag_no_safety = 1;
+        }
 
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor_pwm_setpoint);
 
@@ -538,6 +602,8 @@ void Start_Debug_Disp(void *argument)
 {
   /* USER CODE BEGIN Start_Debug_Disp */
   /* Infinite loop */
+#if DEBUG == 1
+
 	float prim_rpm = 0;
 	uint8_t prim_rpm_prio = 0;
 	float sec_rpm = 0;
@@ -547,30 +613,44 @@ void Start_Debug_Disp(void *argument)
 	float helix_angle = 0;
 	uint8_t helix_angle_prio = 0;
 	const uint32_t QUEUE_TIMEOUT= 10;
+	sensor_data_t sensor_data_debug = {0};
+#endif
 
   for(;;)
   {
-    osDelay(1);
-    BSP_LED_Toggle(LED_RED);
 
-    while(osMessageQueueGetCount(helix_angle_queueHandle)){
-    	osMessageQueueGet(helix_angle_queueHandle, &helix_angle, &helix_angle_prio, QUEUE_TIMEOUT);
-    }
+#if DEBUG == 0
+    osDelay(1000);
 
-    while(osMessageQueueGetCount(throttle_angle_queueHandle)){
-    	osMessageQueueGet(throttle_angle_queueHandle, &throttle_angle, &throttle_angle_prio, QUEUE_TIMEOUT);
-    }
+#else DEBUG == 1
+    osDelay(10);
 
-    while(osMessageQueueGetCount(pri_rpm_queueHandle)){
-    	osMessageQueueGet(pri_rpm_queueHandle, &prim_rpm, &prim_rpm_prio, QUEUE_TIMEOUT);
-    }
+//    BSP_LED_Toggle(LED_RED);
 
-    while(osMessageQueueGetCount(sec_rpm_queueHandle)){
-    	osMessageQueueGet(sec_rpm_queueHandle, &sec_rpm, &sec_rpm_prio, QUEUE_TIMEOUT);
-    }
+//    while(osMessageQueueGetCount(helix_angle_queueHandle)){
+//    	osMessageQueueGet(helix_angle_queueHandle, &helix_angle, &helix_angle_prio, QUEUE_TIMEOUT);
+//    }
+//
+//    while(osMessageQueueGetCount(throttle_angle_queueHandle)){
+//    	osMessageQueueGet(throttle_angle_queueHandle, &throttle_angle, &throttle_angle_prio, QUEUE_TIMEOUT);
+//    }
+//
+//    while(osMessageQueueGetCount(pri_rpm_queueHandle)){
+//    	osMessageQueueGet(pri_rpm_queueHandle, &prim_rpm, &prim_rpm_prio, QUEUE_TIMEOUT);
+//    }
+//
+//    while(osMessageQueueGetCount(sec_rpm_queueHandle)){
+//    	osMessageQueueGet(sec_rpm_queueHandle, &sec_rpm, &sec_rpm_prio, QUEUE_TIMEOUT);
+//    }
+//    while(osMessageQueueGetCount(sensor_data_debug_qHandle)){
+ //   	osMessageQueueGet(sensor_data_debug_qHandle, &sensor_data_debug, &helix_angle_prio, QUEUE_TIMEOUT);
+//    }
+#if MOTOR_CONTROL != 1
 
-    print_debug_sensor_vals(prim_rpm, sec_rpm, throttle_angle, helix_angle);\
+//    print_debug_sensor_vals(sensor_data_debug.prim_rpm, sensor_data_debug.sec_rpm, sensor_data_debug.throttle_angle, sensor_data_debug.helix_angle);\
 
+    #endif
+#endif
   }
   /* USER CODE END Start_Debug_Disp */
 }
@@ -597,7 +677,7 @@ void receiveRFCommand(void *argument)
 			nrf24_flush_rx();
 		}
 	}
-    osDelay(1);
+    osDelay(10);
   }
   /* USER CODE END receiveRFCommand */
 }
@@ -616,36 +696,46 @@ void processRFCommand(void *argument)
   static char command[16];
   for(;;)
   {
-	if(osMessageQueueGet(RFCommandQueueHandle, command, NULL, osWaitForever) == osOK){
+	if(osMessageQueueGet(RFCommandQueueHandle, command, NULL, 10) == osOK){
 		if (strncmp((char*)command, "PID", 3) == 0){ // Change PID Values
 			BSP_LED_Toggle(LED_GREEN);
 			// Read in value to be changed (P1,I2,D4, Etc.)
 			char rx_command[20];
 			char code[3];
 			float value = 0;
-			int parsed = sscanf((char*)command, "%s %2s %f", rx_command, code, &value);
+			int parsed, value_int;
+			if((strncmp((char*)command, "PID SP1", 7) || strncmp((char*)command, "PID SP3", 7) == 0) == 0){
+				parsed = sscanf((char*)command, "%s %3s %d", rx_command, code, &value_int);
+				if(parsed == 3){ // Successful parsing of command
+				  // Change the value in memory
+				  CHANGE_PID(code,value_int);
+				}
+			} else{
+				parsed = sscanf((char*)command, "%s %3s %f", rx_command, code, &value);
+				if(parsed == 3){ // Successful parsing of command
+				  // Change the value in memory
+				  CHANGE_PID(code,value);
+				}
 
-			if(parsed == 3){ // Successful parsing of command
-			  // Change the value in memory
-			  CHANGE_PID(code,value);
 			}
+//		    PRINT_PID();
 
 		  } else if(strcmp((char*)command, "DOWNLOAD_LOG") == 0){ // Download log file from SD card
 			  BSP_LED_On(LED_GREEN);
 			  HAL_Delay(100);
-			  TRANSMIT_LOG();
+//			  TRANSMIT_LOG();
 			  BSP_LED_Off(LED_GREEN);
 		  } else if(strncmp((char*)command, "CHANGE_RATE", 11) == 0){ // Change the logging rate
 			  BSP_LED_Toggle(LED_GREEN);
 			  sscanf((char*)data_Rx, "%*s %d", &log_rate);
 			  CHANGE_PID("LOG",0);
-			  TIM6_SetPeriod_us((uint32_t)log_rate);
+			  PRINT_PID();
 		  } else if(strncmp((char*)command, "TEST_RF",7) == 0){ // Send a message back if in range
 			  // Do nothing since auto_ack is enabled the result variable will determine if a transmission is successful or not
 			  BSP_LED_Toggle(LED_GREEN);
 		  }
 	}
-    osDelay(1);
+    osDelay(10);
   }
   /* USER CODE END processRFCommand */
 }
@@ -660,21 +750,51 @@ void processRFCommand(void *argument)
 void logData(void *argument)
 {
   /* USER CODE BEGIN logData */
+	sensor_data_t sensor_data_log = {0};
+	uint8_t prio = 0;
+	const uint32_t QUEUE_TIMEOUT = 10;
+	uint32_t log_number = 0; //incoming data is most recent value at 1ms timesteps
+	uint16_t log_rate = 1; //log timestep in ms
   /* Infinite loop */
   for(;;)
   {
-	if(record_log_flag == 1 && isLogging){
-		record_log_flag = 0;
-		BSP_LED_Toggle(LED_RED);
-		//LOG_DATA_POINT(0,0,0); //TODO: Connect to actual parameters
+	BSP_LED_Toggle(LED_RED);
+	if (logSwitchflg){
+		logSwitchflg = 0;
+		if(HAL_GPIO_ReadPin(LOG_SW_GPIO_Port,LOG_SW_Pin) == GPIO_PIN_SET){
+			isLogging = false;
+			STOP_LOG(); // Close log file
+		} else{
+			isLogging = true;
+			START_LOG(); // Open log file
+		}
 	}
-    osDelay(1);
+	if(isLogging){
+
+		while(osMessageQueueGetCount(sensor_data_log_qHandle)){
+			osMessageQueueGet(sensor_data_log_qHandle, &sensor_data_log, &prio, QUEUE_TIMEOUT);
+
+			//skips any sensor data that isn't a multiple of log rate
+			if (log_number++ % log_rate){
+				continue;
+			}
+
+			LOG_DATA_POINT(log_number, sensor_data_log.prim_rpm, sensor_data_log.sec_rpm); //TODO: Connect to actual parameters
+		}
+	}
+
+	else{
+		log_number = 0;
+	}
+    osDelay(30);
   }
   /* USER CODE END logData */
 }
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-
+//float init_helix_offset(){
+//	return 0
+//}
 /* USER CODE END Application */
 

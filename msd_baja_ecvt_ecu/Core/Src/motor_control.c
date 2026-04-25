@@ -15,6 +15,8 @@ float KD = 0;
 
 extern P_Controller_P7_T Controller_P7_P;
 
+#define MANUAL_PID_UPDATE
+
 uint16_t update_setpoint(uint16_t pos_setpoint, uint16_t curr_pos){
 	static bool inc_direction = true;
 	static uint16_t soften_factor = 301;
@@ -66,20 +68,25 @@ uint16_t pid_loop(uint16_t pos_setpoint, uint16_t curr_position){
 
 
 uint16_t scale_command(const float motor_voltage_command){
-	return NEUTRAL_SPEED + (uint16_t)(MOTOR_VOLTAGE_SCALE_FACTOR*motor_voltage_command);
+	if (motor_voltage_command > 0.0f){
+		return NEUTRAL_SPEED + (uint16_t)(MOTOR_VOLTAGE_SCALE_FACTOR*motor_voltage_command);
+	}
+	else{
+		return NEUTRAL_SPEED - (uint16_t)(MOTOR_VOLTAGE_SCALE_FACTOR*(-motor_voltage_command));
+	}
 }
 
 //TODO update this bs
 void init_pidconfig(PIDConfig* pidconfig){
-//	pidconfig->gr_high_setpoint = Controller_P7_P.;
+	pidconfig->gr_high_setpoint = Controller_P7_P.Phi_min;
 	pidconfig->gr_high_kp = Controller_P7_P.Prop_GR_High;
 	pidconfig->gr_high_ki = Controller_P7_P.Int_GR_High;
 	pidconfig->gr_high_kd = Controller_P7_P.Der_GR_High;
-//	pidconfig->gr_low_setpoint = Controller_P7_P.;
+//	pidconfig->gr_low_setpoint = Controller_P7_P.Phi_max;
 	pidconfig->gr_low_kp = Controller_P7_P.Prop_GR_Low;
 	pidconfig->gr_low_ki = Controller_P7_P.Int_GR_Low;
 	pidconfig->gr_low_kd = Controller_P7_P.Der_GR_Low;
-//	pidconfig->rpm_high_setpoint = Controller_P7_P.;
+//	pidconfig->rpm_high_setpoint = Controller_P7_P.omega_high	;
 	pidconfig->rpm_high_kp = Controller_P7_P.Prop_RPM_High;
 	pidconfig->rpm_high_ki = Controller_P7_P.Int_RPM_High;
 	pidconfig->rpm_high_kd = Controller_P7_P.Der_RPM_High;
@@ -89,22 +96,49 @@ void init_pidconfig(PIDConfig* pidconfig){
 	pidconfig->rpm_low_kd = Controller_P7_P.Der_RPM_Low;
 }
 
+
+#ifdef MANUAL_PID_UPDATE
 //TODO update this bs
 void update_pidconfig(PIDConfig* pidconfig){
-//	pidconfig->gr_high_setpoint = Controller_P7_P.;
+//	Controller_P7_P.Phi_min = 0.8;
+	Controller_P7_P.Prop_GR_High = 10.0;
+	Controller_P7_P.Int_GR_High = 0;
+	Controller_P7_P.Der_GR_High = 0.0;
+
+//	Controller_P7_P.Phi_max = 3.15;
+	Controller_P7_P.Prop_GR_Low = 0.25;
+	Controller_P7_P.Int_GR_Low = 0;
+	Controller_P7_P.Der_GR_Low = 0.0;
+
+//	Controller_P7_P.Omega_low = 188.4955592153875;
+	Controller_P7_P.Prop_RPM_High = 0.55;
+	Controller_P7_P.Int_RPM_High = 0;
+	Controller_P7_P.Der_RPM_High = -0.005F;
+
+//	Controller_P7_P.Omega_high = 314.15926535897933;
+	Controller_P7_P.Prop_RPM_Low = 0.05;
+	Controller_P7_P.Int_RPM_Low = 0;
+	Controller_P7_P.Der_RPM_Low = 0.001F;
+}
+#else
+//TODO update this bs
+void update_pidconfig(PIDConfig* pidconfig){
+	Controller_P7_P.Phi_min = ;
 	Controller_P7_P.Prop_GR_High = pidconfig->gr_high_kp;
 	Controller_P7_P.Int_GR_High = pidconfig->gr_high_ki;
 	Controller_P7_P.Der_GR_High = pidconfig->gr_high_kd;
-//	pidconfig->gr_low_setpoint = Controller_P7_P.;
+	pidconfig->gr_low_setpoint = Controller_P7_P.;
 	Controller_P7_P.Prop_GR_Low = pidconfig->gr_low_kp;
 	Controller_P7_P.Int_GR_Low = pidconfig->gr_low_ki;
 	Controller_P7_P.Der_GR_Low = pidconfig->gr_low_kd;
-//	pidconfig->rpm_high_setpoint = Controller_P7_P.;
+	pidconfig->rpm_high_setpoint = Controller_P7_P.;
 	Controller_P7_P.Prop_RPM_High = pidconfig->rpm_high_kp;
 	Controller_P7_P.Int_RPM_High = pidconfig->rpm_high_ki;
 	Controller_P7_P.Der_RPM_High = pidconfig->rpm_high_kd;
-//	pidconfig->rpm_low_setpoint = Controller_P7_P.;
+	pidconfig->rpm_low_setpoint = Controller_P7_P.;
 	Controller_P7_P.Prop_RPM_Low = pidconfig->rpm_low_kp;
 	Controller_P7_P.Int_RPM_Low = pidconfig->rpm_low_ki;
 	Controller_P7_P.Der_RPM_Low = pidconfig->rpm_low_kd;
 }
+#endif
+

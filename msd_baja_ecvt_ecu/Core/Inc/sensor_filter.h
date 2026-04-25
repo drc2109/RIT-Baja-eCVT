@@ -13,8 +13,8 @@
 #include "stm32h7xx_hal.h"
 
 
-#define DMA_FIFO_BUF_SIZE 64
-#define MA_FILT_SIZE 5
+#define DMA_FIFO_BUF_SIZE 4
+#define MA_FILT_SIZE 50
 
 
 typedef struct {
@@ -59,5 +59,7 @@ uint16_t moving_average_filter_throttle(uint16_t new_sample);
 uint32_t moving_average_filter_prim_speed(uint16_t new_sample);
 
 uint32_t moving_average_filter_sec_speed(uint16_t new_sample);
+
+float moving_average_filter_curr(float new_sample);
 
 #endif /* INC_SENSOR_FILTER_H_ */

@@ -7,9 +7,9 @@
  *
  * Code generation for model "Controller_P7".
  *
- * Model version              : 5.18
+ * Model version              : 5.19
  * Simulink Coder version : 25.2 (R2025b) 28-Jul-2025
- * C source code generated on : Wed Apr  8 18:52:52 2026
+ * C source code generated on : Fri Apr 24 22:16:54 2026
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -105,7 +105,7 @@ void LDLf_int32_Treal32_T(real32_T out[], real32_T vArray[], int32_T nRows,
   real32_T mYTmp;
   boolean_T done;
 
-  /* S-Function (sdspldl2): '<S228>/LDL Factorization' */
+  /* S-Function (sdspldl2): '<S229>/LDL Factorization' */
   done = false;
 
   /* use done to control the for loop return early  */
@@ -167,7 +167,7 @@ void LDLf_int32_Treal32_T(real32_T out[], real32_T vArray[], int32_T nRows,
     c++;
   }
 
-  /* End of S-Function (sdspldl2): '<S228>/LDL Factorization' */
+  /* End of S-Function (sdspldl2): '<S229>/LDL Factorization' */
 }
 
 /* Model step function */
@@ -180,7 +180,7 @@ void Controller_P7_step(void)
   int32_T idxS;
   int32_T idxV;
   int32_T k;
-  int32_T s222_iter;
+  int32_T s223_iter;
   real32_T tmp_0[16];
   real32_T tmp_2[16];
   real32_T v1_0[16];
@@ -205,44 +205,51 @@ void Controller_P7_step(void)
   real32_T tmp_a;
   real32_T tmp_b;
 
-  /* UnitDelay: '<S219>/Unit Delay2' */
+  /* RelationalOperator: '<S5>/GreaterThan' incorporates:
+   *  Constant: '<S5>/Constant'
+   *  Inport: '<Root>/Theta_Helix'
+   */
+  Controller_P7_B.GreaterThan = (Controller_P7_U.Theta_Helix <
+    Controller_P7_P.Constant_Value);
+
+  /* UnitDelay: '<S220>/Unit Delay2' */
   Controller_P7_B.UnitDelay2[0] = Controller_P7_DW.UnitDelay2_DSTATE[0];
   Controller_P7_B.UnitDelay2[1] = Controller_P7_DW.UnitDelay2_DSTATE[1];
   Controller_P7_B.UnitDelay2[2] = Controller_P7_DW.UnitDelay2_DSTATE[2];
   Controller_P7_B.UnitDelay2[3] = Controller_P7_DW.UnitDelay2_DSTATE[3];
 
-  /* Outputs for Iterator SubSystem: '<S219>/Control' incorporates:
-   *  ForIterator: '<S222>/Iterator'
+  /* Outputs for Iterator SubSystem: '<S220>/Control' incorporates:
+   *  ForIterator: '<S223>/Iterator'
    */
   for (i = 0; i < 16; i++) {
-    /* UnitDelay: '<S219>/Unit Delay3' */
+    /* UnitDelay: '<S220>/Unit Delay3' */
     UnitDelay3 = Controller_P7_DW.UnitDelay3_DSTATE[i];
     Controller_P7_B.UnitDelay3[i] = UnitDelay3;
 
-    /* Assignment: '<S225>/Assignment' incorporates:
-     *  UnitDelay: '<S219>/Unit Delay3'
+    /* Assignment: '<S226>/Assignment' incorporates:
+     *  UnitDelay: '<S220>/Unit Delay3'
      */
     Controller_P7_B.Assignment_d[i] = UnitDelay3;
   }
 
-  /* Assignment: '<S227>/Assignment' incorporates:
-   *  UnitDelay: '<S219>/Unit Delay2'
+  /* Assignment: '<S228>/Assignment' incorporates:
+   *  UnitDelay: '<S220>/Unit Delay2'
    */
   Controller_P7_B.Assignment_g[0] = Controller_P7_B.UnitDelay2[0];
   Controller_P7_B.Assignment_g[1] = Controller_P7_B.UnitDelay2[1];
   Controller_P7_B.Assignment_g[2] = Controller_P7_B.UnitDelay2[2];
   Controller_P7_B.Assignment_g[3] = Controller_P7_B.UnitDelay2[3];
-  s222_iter = 1;
+  s223_iter = 1;
   if (Controller_P7_P.Iterator_IterationLimit >= 1) {
-    /* Selector: '<S223>/Selector1' incorporates:
-     *  UnitDelay: '<S219>/Unit Delay2'
+    /* Selector: '<S224>/Selector1' incorporates:
+     *  UnitDelay: '<S220>/Unit Delay2'
      */
     Controller_P7_B.Selector1_b[0] = Controller_P7_B.UnitDelay2[0];
     Controller_P7_B.Selector1_b[1] = Controller_P7_B.UnitDelay2[1];
     Controller_P7_B.Selector1_b[2] = Controller_P7_B.UnitDelay2[2];
     Controller_P7_B.Selector1_b[3] = Controller_P7_B.UnitDelay2[3];
 
-    /* SignalConversion generated from: '<S223>/Selector' incorporates:
+    /* SignalConversion generated from: '<S224>/Selector' incorporates:
      *  Inport: '<Root>/Omega_Primary'
      *  Inport: '<Root>/Omega_Secondary'
      */
@@ -251,25 +258,25 @@ void Controller_P7_step(void)
     Controller_P7_B.TmpSignalConversionAtSelector_l[1] =
       Controller_P7_U.Omega_Secondary;
 
-    /* Selector: '<S223>/Selector' incorporates:
-     *  SignalConversion generated from: '<S223>/Selector'
+    /* Selector: '<S224>/Selector' incorporates:
+     *  SignalConversion generated from: '<S224>/Selector'
      */
     Controller_P7_B.Selector_f[0] =
       Controller_P7_B.TmpSignalConversionAtSelector_l[0];
     Controller_P7_B.Selector_f[1] =
       Controller_P7_B.TmpSignalConversionAtSelector_l[1];
 
-    /* Selector: '<S223>/Selector2' incorporates:
-     *  UnitDelay: '<S219>/Unit Delay3'
+    /* Selector: '<S224>/Selector2' incorporates:
+     *  UnitDelay: '<S220>/Unit Delay3'
      */
     memcpy(&Controller_P7_B.Selector2_j[0], &Controller_P7_B.UnitDelay3[0],
            sizeof(real32_T) << 4U);
     for (i = 0; i < 4; i++) {
-      /* Math: '<S224>/P_prd Trans' */
+      /* Math: '<S225>/P_prd Trans' */
       idxS = i << 2;
 
-      /* Math: '<S224>/P_prd Trans' incorporates:
-       *  Selector: '<S223>/Selector2'
+      /* Math: '<S225>/P_prd Trans' incorporates:
+       *  Selector: '<S224>/Selector2'
        */
       Controller_P7_B.P_prdTrans_f[idxS] = Controller_P7_B.Selector2_j[i];
       Controller_P7_B.P_prdTrans_f[idxS + 1] = Controller_P7_B.Selector2_j[i + 4];
@@ -278,22 +285,22 @@ void Controller_P7_step(void)
         12];
     }
 
-    /* Product: '<S224>/H*P_prdt' incorporates:
-     *  Constant: '<S224>/Hcst'
+    /* Product: '<S225>/H*P_prdt' incorporates:
+     *  Constant: '<S225>/Hcst'
      */
     for (i = 0; i < 8; i++) {
       tmp[i] = Controller_P7_P.Hcst_Value[i];
     }
   }
 
-  while (s222_iter <= Controller_P7_P.Iterator_IterationLimit) {
-    /* Outputs for Iterator SubSystem: '<S219>/Control' incorporates:
-     *  ForIterator: '<S222>/Iterator'
+  while (s223_iter <= Controller_P7_P.Iterator_IterationLimit) {
+    /* Outputs for Iterator SubSystem: '<S220>/Control' incorporates:
+     *  ForIterator: '<S223>/Iterator'
      */
-    Controller_P7_B.Iterator_i = s222_iter;
+    Controller_P7_B.Iterator_i = s223_iter;
 
-    /* Product: '<S224>/H*P_prdt' incorporates:
-     *  Math: '<S224>/P_prd Trans'
+    /* Product: '<S225>/H*P_prdt' incorporates:
+     *  Math: '<S225>/P_prd Trans'
      */
     memcpy(&tmp_0[0], &Controller_P7_B.P_prdTrans_f[0], sizeof(real32_T) << 4U);
     for (i = 0; i < 4; i++) {
@@ -311,9 +318,9 @@ void Controller_P7_step(void)
       Controller_P7_B.HP_prdt_p[idxV] = HP_prdt_p;
     }
 
-    /* Product: '<S224>/H*P_prdt*Ht' incorporates:
-     *  Constant: '<S224>/Hcst_t'
-     *  Product: '<S224>/H*P_prdt'
+    /* Product: '<S225>/H*P_prdt*Ht' incorporates:
+     *  Constant: '<S225>/Hcst_t'
+     *  Product: '<S225>/H*P_prdt'
      */
     for (i = 0; i < 8; i++) {
       tmp_1[i] = Controller_P7_B.HP_prdt_p[i];
@@ -335,70 +342,70 @@ void Controller_P7_step(void)
       Controller_P7_B.HP_prdtHt_l[idxV] = HP_prdt_p;
     }
 
-    /* End of Product: '<S224>/H*P_prdt*Ht' */
+    /* End of Product: '<S225>/H*P_prdt*Ht' */
 
-    /* Sum: '<S224>/H*P_prdt*Ht+R' incorporates:
-     *  Constant: '<S224>/Constant2'
-     *  Product: '<S224>/H*P_prdt*Ht'
+    /* Sum: '<S225>/H*P_prdt*Ht+R' incorporates:
+     *  Constant: '<S225>/Constant2'
+     *  Product: '<S225>/H*P_prdt*Ht'
      */
     UnitDelay3 = Controller_P7_B.HP_prdtHt_l[0] +
-      Controller_P7_P.Constant2_Value[0];
+      Controller_P7_P.Constant2_Value_e[0];
     Controller_P7_B.HP_prdtHtR_i[0] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S228>/LDL Factorization' incorporates:
-     *  Sum: '<S224>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S229>/LDL Factorization' incorporates:
+     *  Sum: '<S225>/H*P_prdt*Ht+R'
      */
     Controller_P7_B.LDLFactorization_g[0] = UnitDelay3;
 
-    /* Sum: '<S224>/H*P_prdt*Ht+R' incorporates:
-     *  Constant: '<S224>/Constant2'
-     *  Product: '<S224>/H*P_prdt*Ht'
+    /* Sum: '<S225>/H*P_prdt*Ht+R' incorporates:
+     *  Constant: '<S225>/Constant2'
+     *  Product: '<S225>/H*P_prdt*Ht'
      */
     UnitDelay3 = Controller_P7_B.HP_prdtHt_l[1] +
-      Controller_P7_P.Constant2_Value[1];
+      Controller_P7_P.Constant2_Value_e[1];
     Controller_P7_B.HP_prdtHtR_i[1] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S228>/LDL Factorization' incorporates:
-     *  Sum: '<S224>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S229>/LDL Factorization' incorporates:
+     *  Sum: '<S225>/H*P_prdt*Ht+R'
      */
     Controller_P7_B.LDLFactorization_g[1] = UnitDelay3;
 
-    /* Sum: '<S224>/H*P_prdt*Ht+R' incorporates:
-     *  Constant: '<S224>/Constant2'
-     *  Product: '<S224>/H*P_prdt*Ht'
+    /* Sum: '<S225>/H*P_prdt*Ht+R' incorporates:
+     *  Constant: '<S225>/Constant2'
+     *  Product: '<S225>/H*P_prdt*Ht'
      */
     UnitDelay3 = Controller_P7_B.HP_prdtHt_l[2] +
-      Controller_P7_P.Constant2_Value[2];
+      Controller_P7_P.Constant2_Value_e[2];
     Controller_P7_B.HP_prdtHtR_i[2] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S228>/LDL Factorization' incorporates:
-     *  Sum: '<S224>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S229>/LDL Factorization' incorporates:
+     *  Sum: '<S225>/H*P_prdt*Ht+R'
      */
     Controller_P7_B.LDLFactorization_g[2] = UnitDelay3;
 
-    /* Sum: '<S224>/H*P_prdt*Ht+R' incorporates:
-     *  Constant: '<S224>/Constant2'
-     *  Product: '<S224>/H*P_prdt*Ht'
+    /* Sum: '<S225>/H*P_prdt*Ht+R' incorporates:
+     *  Constant: '<S225>/Constant2'
+     *  Product: '<S225>/H*P_prdt*Ht'
      */
     UnitDelay3 = Controller_P7_B.HP_prdtHt_l[3] +
-      Controller_P7_P.Constant2_Value[3];
+      Controller_P7_P.Constant2_Value_e[3];
     Controller_P7_B.HP_prdtHtR_i[3] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S228>/LDL Factorization' incorporates:
-     *  Sum: '<S224>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S229>/LDL Factorization' incorporates:
+     *  Sum: '<S225>/H*P_prdt*Ht+R'
      */
     Controller_P7_B.LDLFactorization_g[3] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S228>/LDL Factorization' incorporates:
-     *  Sum: '<S224>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S229>/LDL Factorization' incorporates:
+     *  Sum: '<S225>/H*P_prdt*Ht+R'
      */
     LDLf_int32_Treal32_T(&Controller_P7_B.LDLFactorization_g[0U],
                          &Controller_P7_DW.LDLFactorization_VMX_a[0U], 2,
                          &Controller_P7_B.HP_prdtHtR_i[0U]);
 
-    /* S-Function (sdspfbsub2): '<S228>/Forward Substitution' incorporates:
-     *  Product: '<S224>/H*P_prdt'
-     *  S-Function (sdspldl2): '<S228>/LDL Factorization'
+    /* S-Function (sdspfbsub2): '<S229>/Forward Substitution' incorporates:
+     *  Product: '<S225>/H*P_prdt'
+     *  S-Function (sdspldl2): '<S229>/LDL Factorization'
      */
     Controller_P7_B.y_e[0] = Controller_P7_B.HP_prdt_p[0];
     UnitDelay3 = Controller_P7_B.HP_prdt_p[1];
@@ -417,48 +424,48 @@ void Controller_P7_step(void)
     UnitDelay3 -= Controller_P7_B.LDLFactorization_g[1] * Controller_P7_B.y_e[6];
     Controller_P7_B.y_e[7] = UnitDelay3;
 
-    /* S-Function (sdspdiag2): '<S228>/Extract Diagonal' incorporates:
-     *  S-Function (sdspldl2): '<S228>/LDL Factorization'
+    /* S-Function (sdspdiag2): '<S229>/Extract Diagonal' incorporates:
+     *  S-Function (sdspldl2): '<S229>/LDL Factorization'
      */
     Controller_P7_B.d_e[0] = Controller_P7_B.LDLFactorization_g[0];
 
-    /* Math: '<S228>/Math Function'
+    /* Math: '<S229>/Math Function'
      *
-     * About '<S228>/Math Function':
+     * About '<S229>/Math Function':
      *  Operator: reciprocal
      */
     UnitDelay3 = Controller_P7_B.d_e[0];
     UnitDelay3 = 1.0F / UnitDelay3;
 
-    /* Math: '<S228>/Math Function'
+    /* Math: '<S229>/Math Function'
      *
-     * About '<S228>/Math Function':
+     * About '<S229>/Math Function':
      *  Operator: reciprocal
      */
     Controller_P7_B.MathFunction_l[0] = UnitDelay3;
 
-    /* S-Function (sdspdiag2): '<S228>/Extract Diagonal' incorporates:
-     *  S-Function (sdspldl2): '<S228>/LDL Factorization'
+    /* S-Function (sdspdiag2): '<S229>/Extract Diagonal' incorporates:
+     *  S-Function (sdspldl2): '<S229>/LDL Factorization'
      */
     Controller_P7_B.d_e[1] = Controller_P7_B.LDLFactorization_g[3];
 
-    /* Math: '<S228>/Math Function'
+    /* Math: '<S229>/Math Function'
      *
-     * About '<S228>/Math Function':
+     * About '<S229>/Math Function':
      *  Operator: reciprocal
      */
     UnitDelay3 = Controller_P7_B.d_e[1];
     UnitDelay3 = 1.0F / UnitDelay3;
 
-    /* Math: '<S228>/Math Function'
+    /* Math: '<S229>/Math Function'
      *
-     * About '<S228>/Math Function':
+     * About '<S229>/Math Function':
      *  Operator: reciprocal
      */
     Controller_P7_B.MathFunction_l[1] = UnitDelay3;
 
-    /* S-Function (sdspdmult2): '<S228>/Matrix Scaling' incorporates:
-     *  S-Function (sdspfbsub2): '<S228>/Forward Substitution'
+    /* S-Function (sdspdmult2): '<S229>/Matrix Scaling' incorporates:
+     *  S-Function (sdspfbsub2): '<S229>/Forward Substitution'
      */
     idxS = 0;
     for (i = 0; i < 4; i++) {
@@ -471,11 +478,11 @@ void Controller_P7_step(void)
       }
     }
 
-    /* End of S-Function (sdspdmult2): '<S228>/Matrix Scaling' */
+    /* End of S-Function (sdspdmult2): '<S229>/Matrix Scaling' */
 
-    /* S-Function (sdspfbsub2): '<S228>/Backward Substitution' incorporates:
-     *  S-Function (sdspdmult2): '<S228>/Matrix Scaling'
-     *  S-Function (sdspldl2): '<S228>/LDL Factorization'
+    /* S-Function (sdspfbsub2): '<S229>/Backward Substitution' incorporates:
+     *  S-Function (sdspdmult2): '<S229>/Matrix Scaling'
+     *  S-Function (sdspldl2): '<S229>/LDL Factorization'
      */
     Controller_P7_B.BackwardSubstitution_d[1] = Controller_P7_B.MatrixScaling_m
       [1];
@@ -502,11 +509,11 @@ void Controller_P7_step(void)
       Controller_P7_B.BackwardSubstitution_d[7];
     Controller_P7_B.BackwardSubstitution_d[6] = UnitDelay3;
     for (i = 0; i < 2; i++) {
-      /* Math: '<S224>/K Trans' */
+      /* Math: '<S225>/K Trans' */
       idxS = i << 2;
 
-      /* Math: '<S224>/K Trans' incorporates:
-       *  S-Function (sdspfbsub2): '<S228>/Backward Substitution'
+      /* Math: '<S225>/K Trans' incorporates:
+       *  S-Function (sdspfbsub2): '<S229>/Backward Substitution'
        */
       Controller_P7_B.KTrans_c[idxS] = Controller_P7_B.BackwardSubstitution_d[i];
       Controller_P7_B.KTrans_c[idxS + 1] =
@@ -517,9 +524,9 @@ void Controller_P7_step(void)
         Controller_P7_B.BackwardSubstitution_d[i + 6];
     }
 
-    /* Product: '<S224>/K*H*P_prd' incorporates:
-     *  Math: '<S224>/K Trans'
-     *  Selector: '<S223>/Selector2'
+    /* Product: '<S225>/K*H*P_prd' incorporates:
+     *  Math: '<S225>/K Trans'
+     *  Selector: '<S224>/Selector2'
      */
     memcpy(&tmp_0[0], &Controller_P7_B.Selector2_j[0], sizeof(real32_T) << 4U);
     for (i = 0; i < 4; i++) {
@@ -562,25 +569,25 @@ void Controller_P7_step(void)
       Controller_P7_B.KHP_prd_p[idxV] = HP_prdt_p;
     }
 
-    /* End of Product: '<S224>/K*H*P_prd' */
+    /* End of Product: '<S225>/K*H*P_prd' */
     for (i = 0; i < 16; i++) {
-      /* Sum: '<S224>/P_prd-K*H*P_prd' incorporates:
-       *  Product: '<S224>/K*H*P_prd'
-       *  Selector: '<S223>/Selector2'
+      /* Sum: '<S225>/P_prd-K*H*P_prd' incorporates:
+       *  Product: '<S225>/K*H*P_prd'
+       *  Selector: '<S224>/Selector2'
        */
       UnitDelay3 = Controller_P7_B.Selector2_j[i] - Controller_P7_B.KHP_prd_p[i];
       Controller_P7_B.P_prdKHP_prd_k[i] = UnitDelay3;
 
-      /* Product: '<S224>/A*P*At' incorporates:
-       *  Constant: '<S224>/Constant4'
-       *  Sum: '<S224>/P_prd-K*H*P_prd'
+      /* Product: '<S225>/A*P*At' incorporates:
+       *  Constant: '<S225>/Constant4'
+       *  Sum: '<S225>/P_prd-K*H*P_prd'
        */
       tmp_0[i] = UnitDelay3;
-      tmp_2[i] = Controller_P7_P.Constant4_Value[i];
+      tmp_2[i] = Controller_P7_P.Constant4_Value_l[i];
     }
 
-    /* Product: '<S224>/A*P*At' incorporates:
-     *  Constant: '<S224>/Constant3'
+    /* Product: '<S225>/A*P*At' incorporates:
+     *  Constant: '<S225>/Constant3'
      */
     for (i = 0; i < 4; i++) {
       HP_prdt = 0.0F;
@@ -603,7 +610,7 @@ void Controller_P7_step(void)
       v1_0[idxV] = HP_prdt;
     }
 
-    memcpy(&tmp_0[0], &Controller_P7_P.Constant3_Value[0], sizeof(real32_T) <<
+    memcpy(&tmp_0[0], &Controller_P7_P.Constant3_Value_h[0], sizeof(real32_T) <<
            4U);
     for (i = 0; i < 4; i++) {
       HP_prdt_p = 0.0F;
@@ -627,16 +634,16 @@ void Controller_P7_step(void)
     }
 
     for (i = 0; i < 16; i++) {
-      /* Sum: '<S224>/A*P*At+Q' incorporates:
-       *  Constant: '<S224>/Constant5'
-       *  Product: '<S224>/A*P*At'
+      /* Sum: '<S225>/A*P*At+Q' incorporates:
+       *  Constant: '<S225>/Constant5'
+       *  Product: '<S225>/A*P*At'
        */
       Controller_P7_B.APAtQ_h[i] = Controller_P7_B.APAt_g[i] +
         Controller_P7_P.Constant5_Value[i];
     }
 
-    /* Product: '<S224>/H*X_prd' incorporates:
-     *  Selector: '<S223>/Selector1'
+    /* Product: '<S225>/H*X_prd' incorporates:
+     *  Selector: '<S224>/Selector1'
      */
     tmp_3[0] = Controller_P7_B.Selector1_b[0];
     tmp_3[1] = Controller_P7_B.Selector1_b[1];
@@ -654,29 +661,29 @@ void Controller_P7_step(void)
     Controller_P7_B.HX_prd_b[1] = HP_prdt_p_0;
     Controller_P7_B.HX_prd_b[0] = HP_prdt_p;
 
-    /* End of Product: '<S224>/H*X_prd' */
+    /* End of Product: '<S225>/H*X_prd' */
 
-    /* Sum: '<S224>/Z-H*X_prd' incorporates:
-     *  Product: '<S224>/H*X_prd'
-     *  Selector: '<S223>/Selector'
+    /* Sum: '<S225>/Z-H*X_prd' incorporates:
+     *  Product: '<S225>/H*X_prd'
+     *  Selector: '<S224>/Selector'
      */
     UnitDelay3 = Controller_P7_B.Selector_f[0] - Controller_P7_B.HX_prd_b[0];
     Controller_P7_B.ZHX_prd_h[0] = UnitDelay3;
 
-    /* Product: '<S224>/K*(Z-H*X_prd)' incorporates:
-     *  Sum: '<S224>/Z-H*X_prd'
+    /* Product: '<S225>/K*(Z-H*X_prd)' incorporates:
+     *  Sum: '<S225>/Z-H*X_prd'
      */
     tmp_7[0] = UnitDelay3;
 
-    /* Sum: '<S224>/Z-H*X_prd' incorporates:
-     *  Product: '<S224>/H*X_prd'
-     *  Selector: '<S223>/Selector'
+    /* Sum: '<S225>/Z-H*X_prd' incorporates:
+     *  Product: '<S225>/H*X_prd'
+     *  Selector: '<S224>/Selector'
      */
     UnitDelay3 = Controller_P7_B.Selector_f[1] - Controller_P7_B.HX_prd_b[1];
     Controller_P7_B.ZHX_prd_h[1] = UnitDelay3;
 
-    /* Product: '<S224>/K*(Z-H*X_prd)' incorporates:
-     *  Sum: '<S224>/Z-H*X_prd'
+    /* Product: '<S225>/K*(Z-H*X_prd)' incorporates:
+     *  Sum: '<S225>/Z-H*X_prd'
      */
     tmp_7[1] = UnitDelay3;
     HP_prdt_p = 0.0F;
@@ -697,51 +704,51 @@ void Controller_P7_step(void)
     Controller_P7_B.KZHX_prd_c[1] = HP_prdt_p_0;
     Controller_P7_B.KZHX_prd_c[0] = HP_prdt_p;
 
-    /* Sum: '<S224>/X_prd+K*(Z-H*X_prd)' incorporates:
-     *  Product: '<S224>/K*(Z-H*X_prd)'
-     *  Selector: '<S223>/Selector1'
+    /* Sum: '<S225>/X_prd+K*(Z-H*X_prd)' incorporates:
+     *  Product: '<S225>/K*(Z-H*X_prd)'
+     *  Selector: '<S224>/Selector1'
      */
     UnitDelay3 = Controller_P7_B.Selector1_b[0] + Controller_P7_B.KZHX_prd_c[0];
     Controller_P7_B.X_prdKZHX_prd_i[0] = UnitDelay3;
 
-    /* Product: '<S224>/A*X' incorporates:
-     *  Sum: '<S224>/X_prd+K*(Z-H*X_prd)'
+    /* Product: '<S225>/A*X' incorporates:
+     *  Sum: '<S225>/X_prd+K*(Z-H*X_prd)'
      */
     tmp_3[0] = UnitDelay3;
 
-    /* Sum: '<S224>/X_prd+K*(Z-H*X_prd)' incorporates:
-     *  Product: '<S224>/K*(Z-H*X_prd)'
-     *  Selector: '<S223>/Selector1'
+    /* Sum: '<S225>/X_prd+K*(Z-H*X_prd)' incorporates:
+     *  Product: '<S225>/K*(Z-H*X_prd)'
+     *  Selector: '<S224>/Selector1'
      */
     UnitDelay3 = Controller_P7_B.Selector1_b[1] + Controller_P7_B.KZHX_prd_c[1];
     Controller_P7_B.X_prdKZHX_prd_i[1] = UnitDelay3;
 
-    /* Product: '<S224>/A*X' incorporates:
-     *  Sum: '<S224>/X_prd+K*(Z-H*X_prd)'
+    /* Product: '<S225>/A*X' incorporates:
+     *  Sum: '<S225>/X_prd+K*(Z-H*X_prd)'
      */
     tmp_3[1] = UnitDelay3;
 
-    /* Sum: '<S224>/X_prd+K*(Z-H*X_prd)' incorporates:
-     *  Product: '<S224>/K*(Z-H*X_prd)'
-     *  Selector: '<S223>/Selector1'
+    /* Sum: '<S225>/X_prd+K*(Z-H*X_prd)' incorporates:
+     *  Product: '<S225>/K*(Z-H*X_prd)'
+     *  Selector: '<S224>/Selector1'
      */
     UnitDelay3 = Controller_P7_B.Selector1_b[2] + Controller_P7_B.KZHX_prd_c[2];
     Controller_P7_B.X_prdKZHX_prd_i[2] = UnitDelay3;
 
-    /* Product: '<S224>/A*X' incorporates:
-     *  Sum: '<S224>/X_prd+K*(Z-H*X_prd)'
+    /* Product: '<S225>/A*X' incorporates:
+     *  Sum: '<S225>/X_prd+K*(Z-H*X_prd)'
      */
     tmp_3[2] = UnitDelay3;
 
-    /* Sum: '<S224>/X_prd+K*(Z-H*X_prd)' incorporates:
-     *  Product: '<S224>/K*(Z-H*X_prd)'
-     *  Selector: '<S223>/Selector1'
+    /* Sum: '<S225>/X_prd+K*(Z-H*X_prd)' incorporates:
+     *  Product: '<S225>/K*(Z-H*X_prd)'
+     *  Selector: '<S224>/Selector1'
      */
     UnitDelay3 = Controller_P7_B.Selector1_b[3] + Controller_P7_B.KZHX_prd_c[3];
     Controller_P7_B.X_prdKZHX_prd_i[3] = UnitDelay3;
 
-    /* Product: '<S224>/A*X' incorporates:
-     *  Sum: '<S224>/X_prd+K*(Z-H*X_prd)'
+    /* Product: '<S225>/A*X' incorporates:
+     *  Sum: '<S225>/X_prd+K*(Z-H*X_prd)'
      */
     tmp_3[3] = UnitDelay3;
     HP_prdt_p = 0.0F;
@@ -762,61 +769,67 @@ void Controller_P7_step(void)
     Controller_P7_B.AX_f[1] = HP_prdt_p_0;
     Controller_P7_B.AX_f[0] = HP_prdt_p;
 
-    /* Assignment: '<S225>/Assignment' incorporates:
-     *  Sum: '<S224>/A*P*At+Q'
+    /* Assignment: '<S226>/Assignment' incorporates:
+     *  Sum: '<S225>/A*P*At+Q'
      */
     memcpy(&Controller_P7_B.Assignment_d[0], &Controller_P7_B.APAtQ_h[0], sizeof
            (real32_T) << 4U);
 
-    /* Assignment: '<S226>/Assignment' incorporates:
-     *  Sum: '<S224>/X_prd+K*(Z-H*X_prd)'
+    /* Assignment: '<S227>/Assignment' incorporates:
+     *  Sum: '<S225>/X_prd+K*(Z-H*X_prd)'
      */
     Controller_P7_B.Assignment_dh[0] = Controller_P7_B.X_prdKZHX_prd_i[0];
 
-    /* Assignment: '<S227>/Assignment' incorporates:
-     *  Product: '<S224>/A*X'
+    /* Assignment: '<S228>/Assignment' incorporates:
+     *  Product: '<S225>/A*X'
      */
     Controller_P7_B.Assignment_g[0] = Controller_P7_B.AX_f[0];
 
-    /* Assignment: '<S226>/Assignment' incorporates:
-     *  Sum: '<S224>/X_prd+K*(Z-H*X_prd)'
+    /* Assignment: '<S227>/Assignment' incorporates:
+     *  Sum: '<S225>/X_prd+K*(Z-H*X_prd)'
      */
     Controller_P7_B.Assignment_dh[1] = Controller_P7_B.X_prdKZHX_prd_i[1];
 
-    /* Assignment: '<S227>/Assignment' incorporates:
-     *  Product: '<S224>/A*X'
+    /* Assignment: '<S228>/Assignment' incorporates:
+     *  Product: '<S225>/A*X'
      */
     Controller_P7_B.Assignment_g[1] = Controller_P7_B.AX_f[1];
 
-    /* Assignment: '<S226>/Assignment' incorporates:
-     *  Sum: '<S224>/X_prd+K*(Z-H*X_prd)'
+    /* Assignment: '<S227>/Assignment' incorporates:
+     *  Sum: '<S225>/X_prd+K*(Z-H*X_prd)'
      */
     Controller_P7_B.Assignment_dh[2] = Controller_P7_B.X_prdKZHX_prd_i[2];
 
-    /* Assignment: '<S227>/Assignment' incorporates:
-     *  Product: '<S224>/A*X'
+    /* Assignment: '<S228>/Assignment' incorporates:
+     *  Product: '<S225>/A*X'
      */
     Controller_P7_B.Assignment_g[2] = Controller_P7_B.AX_f[2];
 
-    /* Assignment: '<S226>/Assignment' incorporates:
-     *  Sum: '<S224>/X_prd+K*(Z-H*X_prd)'
+    /* Assignment: '<S227>/Assignment' incorporates:
+     *  Sum: '<S225>/X_prd+K*(Z-H*X_prd)'
      */
     Controller_P7_B.Assignment_dh[3] = Controller_P7_B.X_prdKZHX_prd_i[3];
 
-    /* Assignment: '<S227>/Assignment' incorporates:
-     *  Product: '<S224>/A*X'
+    /* Assignment: '<S228>/Assignment' incorporates:
+     *  Product: '<S225>/A*X'
      */
     Controller_P7_B.Assignment_g[3] = Controller_P7_B.AX_f[3];
-    s222_iter++;
+    s223_iter++;
   }
 
-  /* End of Outputs for SubSystem: '<S219>/Control' */
+  /* End of Outputs for SubSystem: '<S220>/Control' */
 
-  /* Lookup_n-D: '<S2>/1-D Lookup Table1' incorporates:
+  /* Gain: '<S2>/Multiply' incorporates:
    *  Inport: '<Root>/Theta_Helix'
    */
+  Controller_P7_B.Multiply = (real32_T)(Controller_P7_P.Multiply_Gain *
+    Controller_P7_U.Theta_Helix);
+
+  /* Lookup_n-D: '<S2>/1-D Lookup Table1' incorporates:
+   *  Gain: '<S2>/Multiply'
+   */
   Controller_P7_B.SheaveDisplacementin = look1_iflf_binlxpw
-    (Controller_P7_U.Theta_Helix, Controller_P7_P.uDLookupTable1_bp01Data,
+    (Controller_P7_B.Multiply, Controller_P7_P.uDLookupTable1_bp01Data,
      Controller_P7_P.uDLookupTable1_tableData, 31U);
 
   /* Lookup_n-D: '<S2>/1-D Lookup Table' incorporates:
@@ -830,109 +843,109 @@ void Controller_P7_step(void)
   Controller_P7_B.Phi2 = Controller_P7_B.Assignment_dh[0] /
     Controller_P7_B.Assignment_dh[2];
 
-  /* UnitDelay: '<S220>/Unit Delay2' */
+  /* UnitDelay: '<S221>/Unit Delay2' */
   Controller_P7_B.UnitDelay2_o[0] = Controller_P7_DW.UnitDelay2_DSTATE_b[0];
   Controller_P7_B.UnitDelay2_o[1] = Controller_P7_DW.UnitDelay2_DSTATE_b[1];
 
-  /* UnitDelay: '<S220>/Unit Delay3' */
+  /* UnitDelay: '<S221>/Unit Delay3' */
   UnitDelay3 = Controller_P7_DW.UnitDelay3_DSTATE_f[0];
   Controller_P7_B.UnitDelay3_c[0] = UnitDelay3;
 
-  /* Outputs for Iterator SubSystem: '<S220>/Control' incorporates:
-   *  ForIterator: '<S233>/Iterator'
+  /* Outputs for Iterator SubSystem: '<S221>/Control' incorporates:
+   *  ForIterator: '<S234>/Iterator'
    */
-  /* Assignment: '<S236>/Assignment' incorporates:
-   *  UnitDelay: '<S220>/Unit Delay3'
+  /* Assignment: '<S237>/Assignment' incorporates:
+   *  UnitDelay: '<S221>/Unit Delay3'
    */
   Controller_P7_B.Assignment[0] = UnitDelay3;
 
-  /* End of Outputs for SubSystem: '<S220>/Control' */
+  /* End of Outputs for SubSystem: '<S221>/Control' */
 
-  /* UnitDelay: '<S220>/Unit Delay3' */
+  /* UnitDelay: '<S221>/Unit Delay3' */
   UnitDelay3 = Controller_P7_DW.UnitDelay3_DSTATE_f[1];
   Controller_P7_B.UnitDelay3_c[1] = UnitDelay3;
 
-  /* Outputs for Iterator SubSystem: '<S220>/Control' incorporates:
-   *  ForIterator: '<S233>/Iterator'
+  /* Outputs for Iterator SubSystem: '<S221>/Control' incorporates:
+   *  ForIterator: '<S234>/Iterator'
    */
-  /* Assignment: '<S236>/Assignment' incorporates:
-   *  UnitDelay: '<S220>/Unit Delay3'
+  /* Assignment: '<S237>/Assignment' incorporates:
+   *  UnitDelay: '<S221>/Unit Delay3'
    */
   Controller_P7_B.Assignment[1] = UnitDelay3;
 
-  /* End of Outputs for SubSystem: '<S220>/Control' */
+  /* End of Outputs for SubSystem: '<S221>/Control' */
 
-  /* UnitDelay: '<S220>/Unit Delay3' */
+  /* UnitDelay: '<S221>/Unit Delay3' */
   UnitDelay3 = Controller_P7_DW.UnitDelay3_DSTATE_f[2];
   Controller_P7_B.UnitDelay3_c[2] = UnitDelay3;
 
-  /* Outputs for Iterator SubSystem: '<S220>/Control' incorporates:
-   *  ForIterator: '<S233>/Iterator'
+  /* Outputs for Iterator SubSystem: '<S221>/Control' incorporates:
+   *  ForIterator: '<S234>/Iterator'
    */
-  /* Assignment: '<S236>/Assignment' incorporates:
-   *  UnitDelay: '<S220>/Unit Delay3'
+  /* Assignment: '<S237>/Assignment' incorporates:
+   *  UnitDelay: '<S221>/Unit Delay3'
    */
   Controller_P7_B.Assignment[2] = UnitDelay3;
 
-  /* End of Outputs for SubSystem: '<S220>/Control' */
+  /* End of Outputs for SubSystem: '<S221>/Control' */
 
-  /* UnitDelay: '<S220>/Unit Delay3' */
+  /* UnitDelay: '<S221>/Unit Delay3' */
   UnitDelay3 = Controller_P7_DW.UnitDelay3_DSTATE_f[3];
   Controller_P7_B.UnitDelay3_c[3] = UnitDelay3;
 
-  /* Outputs for Iterator SubSystem: '<S220>/Control' incorporates:
-   *  ForIterator: '<S233>/Iterator'
+  /* Outputs for Iterator SubSystem: '<S221>/Control' incorporates:
+   *  ForIterator: '<S234>/Iterator'
    */
-  /* Assignment: '<S236>/Assignment' incorporates:
-   *  UnitDelay: '<S220>/Unit Delay3'
+  /* Assignment: '<S237>/Assignment' incorporates:
+   *  UnitDelay: '<S221>/Unit Delay3'
    */
   Controller_P7_B.Assignment[3] = UnitDelay3;
 
-  /* Assignment: '<S238>/Assignment' incorporates:
-   *  UnitDelay: '<S220>/Unit Delay2'
+  /* Assignment: '<S239>/Assignment' incorporates:
+   *  UnitDelay: '<S221>/Unit Delay2'
    */
   Controller_P7_B.Assignment_m[0] = Controller_P7_B.UnitDelay2_o[0];
   Controller_P7_B.Assignment_m[1] = Controller_P7_B.UnitDelay2_o[1];
-  s222_iter = 1;
+  s223_iter = 1;
   if (Controller_P7_P.Iterator_IterationLimit_n >= 1) {
-    /* Selector: '<S234>/Selector2' incorporates:
-     *  UnitDelay: '<S220>/Unit Delay3'
+    /* Selector: '<S235>/Selector2' incorporates:
+     *  UnitDelay: '<S221>/Unit Delay3'
      */
     Controller_P7_B.Selector2[0] = Controller_P7_B.UnitDelay3_c[0];
     Controller_P7_B.Selector2[1] = Controller_P7_B.UnitDelay3_c[1];
     Controller_P7_B.Selector2[2] = Controller_P7_B.UnitDelay3_c[2];
     Controller_P7_B.Selector2[3] = Controller_P7_B.UnitDelay3_c[3];
 
-    /* Math: '<S235>/P_prd Trans' incorporates:
-     *  Selector: '<S234>/Selector2'
+    /* Math: '<S236>/P_prd Trans' incorporates:
+     *  Selector: '<S235>/Selector2'
      */
     Controller_P7_B.P_prdTrans[0] = Controller_P7_B.Selector2[0];
     Controller_P7_B.P_prdTrans[1] = Controller_P7_B.Selector2[2];
     Controller_P7_B.P_prdTrans[2] = Controller_P7_B.Selector2[1];
     Controller_P7_B.P_prdTrans[3] = Controller_P7_B.Selector2[3];
 
-    /* Product: '<S235>/H*P_prdt' incorporates:
-     *  Constant: '<S235>/Hcst'
+    /* Product: '<S236>/H*P_prdt' incorporates:
+     *  Constant: '<S236>/Hcst'
      */
     tmp_3[0] = Controller_P7_P.Hcst_Value_e[0];
     tmp_3[1] = Controller_P7_P.Hcst_Value_e[1];
     tmp_3[2] = Controller_P7_P.Hcst_Value_e[2];
     tmp_3[3] = Controller_P7_P.Hcst_Value_e[3];
 
-    /* Product: '<S235>/A*P*At' incorporates:
-     *  Constant: '<S235>/Constant4'
+    /* Product: '<S236>/A*P*At' incorporates:
+     *  Constant: '<S236>/Constant4'
      */
-    tmp_6[0] = Controller_P7_P.Constant4_Value_l[0];
-    tmp_6[1] = Controller_P7_P.Constant4_Value_l[1];
-    tmp_6[2] = Controller_P7_P.Constant4_Value_l[2];
-    tmp_6[3] = Controller_P7_P.Constant4_Value_l[3];
+    tmp_6[0] = Controller_P7_P.Constant4_Value_lj[0];
+    tmp_6[1] = Controller_P7_P.Constant4_Value_lj[1];
+    tmp_6[2] = Controller_P7_P.Constant4_Value_lj[2];
+    tmp_6[3] = Controller_P7_P.Constant4_Value_lj[3];
 
-    /* SignalConversion generated from: '<S234>/Selector' */
+    /* SignalConversion generated from: '<S235>/Selector' */
     Controller_P7_B.TmpSignalConversionAtSelectorIn[0] = Controller_P7_B.phi1;
     Controller_P7_B.TmpSignalConversionAtSelectorIn[1] = Controller_P7_B.Phi2;
 
-    /* Selector: '<S234>/Selector' incorporates:
-     *  SignalConversion generated from: '<S234>/Selector'
+    /* Selector: '<S235>/Selector' incorporates:
+     *  SignalConversion generated from: '<S235>/Selector'
      */
     Controller_P7_B.Selector[0] =
       Controller_P7_B.TmpSignalConversionAtSelectorIn[0];
@@ -940,14 +953,14 @@ void Controller_P7_step(void)
       Controller_P7_B.TmpSignalConversionAtSelectorIn[1];
   }
 
-  while (s222_iter <= Controller_P7_P.Iterator_IterationLimit_n) {
-    /* Outputs for Iterator SubSystem: '<S220>/Control' incorporates:
-     *  ForIterator: '<S233>/Iterator'
+  while (s223_iter <= Controller_P7_P.Iterator_IterationLimit_n) {
+    /* Outputs for Iterator SubSystem: '<S221>/Control' incorporates:
+     *  ForIterator: '<S234>/Iterator'
      */
-    Controller_P7_B.Iterator = s222_iter;
+    Controller_P7_B.Iterator = s223_iter;
 
-    /* Product: '<S235>/H*P_prdt' incorporates:
-     *  Math: '<S235>/P_prd Trans'
+    /* Product: '<S236>/H*P_prdt' incorporates:
+     *  Math: '<S236>/P_prd Trans'
      */
     tmp_4[0] = Controller_P7_B.P_prdTrans[0];
     tmp_4[1] = Controller_P7_B.P_prdTrans[1];
@@ -970,9 +983,9 @@ void Controller_P7_step(void)
       Controller_P7_B.HP_prdt[idxV] = HP_prdt_0;
     }
 
-    /* Product: '<S235>/H*P_prdt*Ht' incorporates:
-     *  Constant: '<S235>/Hcst_t'
-     *  Product: '<S235>/H*P_prdt'
+    /* Product: '<S236>/H*P_prdt*Ht' incorporates:
+     *  Constant: '<S236>/Hcst_t'
+     *  Product: '<S236>/H*P_prdt'
      */
     tmp_4[0] = Controller_P7_B.HP_prdt[0];
     tmp_5[0] = Controller_P7_P.Hcst_t_Value_c[0];
@@ -999,127 +1012,127 @@ void Controller_P7_step(void)
       Controller_P7_B.HP_prdtHt[idxV] = HP_prdt_0;
     }
 
-    /* End of Product: '<S235>/H*P_prdt*Ht' */
+    /* End of Product: '<S236>/H*P_prdt*Ht' */
 
-    /* Sum: '<S235>/H*P_prdt*Ht+R' incorporates:
-     *  Constant: '<S235>/Constant2'
-     *  Product: '<S235>/H*P_prdt*Ht'
+    /* Sum: '<S236>/H*P_prdt*Ht+R' incorporates:
+     *  Constant: '<S236>/Constant2'
+     *  Product: '<S236>/H*P_prdt*Ht'
      */
     UnitDelay3 = Controller_P7_B.HP_prdtHt[0] +
       Controller_P7_P.Constant2_Value_l[0];
     Controller_P7_B.HP_prdtHtR[0] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S239>/LDL Factorization' incorporates:
-     *  Sum: '<S235>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S240>/LDL Factorization' incorporates:
+     *  Sum: '<S236>/H*P_prdt*Ht+R'
      */
     Controller_P7_B.LDLFactorization[0] = UnitDelay3;
 
-    /* Sum: '<S235>/H*P_prdt*Ht+R' incorporates:
-     *  Constant: '<S235>/Constant2'
-     *  Product: '<S235>/H*P_prdt*Ht'
+    /* Sum: '<S236>/H*P_prdt*Ht+R' incorporates:
+     *  Constant: '<S236>/Constant2'
+     *  Product: '<S236>/H*P_prdt*Ht'
      */
     UnitDelay3 = Controller_P7_B.HP_prdtHt[1] +
       Controller_P7_P.Constant2_Value_l[1];
     Controller_P7_B.HP_prdtHtR[1] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S239>/LDL Factorization' incorporates:
-     *  Sum: '<S235>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S240>/LDL Factorization' incorporates:
+     *  Sum: '<S236>/H*P_prdt*Ht+R'
      */
     Controller_P7_B.LDLFactorization[1] = UnitDelay3;
 
-    /* Sum: '<S235>/H*P_prdt*Ht+R' incorporates:
-     *  Constant: '<S235>/Constant2'
-     *  Product: '<S235>/H*P_prdt*Ht'
+    /* Sum: '<S236>/H*P_prdt*Ht+R' incorporates:
+     *  Constant: '<S236>/Constant2'
+     *  Product: '<S236>/H*P_prdt*Ht'
      */
     UnitDelay3 = Controller_P7_B.HP_prdtHt[2] +
       Controller_P7_P.Constant2_Value_l[2];
     Controller_P7_B.HP_prdtHtR[2] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S239>/LDL Factorization' incorporates:
-     *  Sum: '<S235>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S240>/LDL Factorization' incorporates:
+     *  Sum: '<S236>/H*P_prdt*Ht+R'
      */
     Controller_P7_B.LDLFactorization[2] = UnitDelay3;
 
-    /* Sum: '<S235>/H*P_prdt*Ht+R' incorporates:
-     *  Constant: '<S235>/Constant2'
-     *  Product: '<S235>/H*P_prdt*Ht'
+    /* Sum: '<S236>/H*P_prdt*Ht+R' incorporates:
+     *  Constant: '<S236>/Constant2'
+     *  Product: '<S236>/H*P_prdt*Ht'
      */
     UnitDelay3 = Controller_P7_B.HP_prdtHt[3] +
       Controller_P7_P.Constant2_Value_l[3];
     Controller_P7_B.HP_prdtHtR[3] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S239>/LDL Factorization' incorporates:
-     *  Sum: '<S235>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S240>/LDL Factorization' incorporates:
+     *  Sum: '<S236>/H*P_prdt*Ht+R'
      */
     Controller_P7_B.LDLFactorization[3] = UnitDelay3;
 
-    /* S-Function (sdspldl2): '<S239>/LDL Factorization' incorporates:
-     *  Sum: '<S235>/H*P_prdt*Ht+R'
+    /* S-Function (sdspldl2): '<S240>/LDL Factorization' incorporates:
+     *  Sum: '<S236>/H*P_prdt*Ht+R'
      */
     LDLf_int32_Treal32_T(&Controller_P7_B.LDLFactorization[0U],
                          &Controller_P7_DW.LDLFactorization_VMX[0U], 2,
                          &Controller_P7_B.HP_prdtHtR[0U]);
 
-    /* S-Function (sdspfbsub2): '<S239>/Forward Substitution' incorporates:
-     *  Product: '<S235>/H*P_prdt'
-     *  S-Function (sdspldl2): '<S239>/LDL Factorization'
+    /* S-Function (sdspfbsub2): '<S240>/Forward Substitution' incorporates:
+     *  Product: '<S236>/H*P_prdt'
+     *  S-Function (sdspldl2): '<S240>/LDL Factorization'
      */
     Controller_P7_B.y[0] = Controller_P7_B.HP_prdt[0];
     UnitDelay3 = Controller_P7_B.HP_prdt[1];
     UnitDelay3 -= Controller_P7_B.y[0] * Controller_P7_B.LDLFactorization[1];
     Controller_P7_B.y[1] = UnitDelay3;
 
-    /* S-Function (sdspdiag2): '<S239>/Extract Diagonal' incorporates:
-     *  S-Function (sdspldl2): '<S239>/LDL Factorization'
+    /* S-Function (sdspdiag2): '<S240>/Extract Diagonal' incorporates:
+     *  S-Function (sdspldl2): '<S240>/LDL Factorization'
      */
     Controller_P7_B.d[0] = Controller_P7_B.LDLFactorization[0];
 
-    /* Math: '<S239>/Math Function'
+    /* Math: '<S240>/Math Function'
      *
-     * About '<S239>/Math Function':
+     * About '<S240>/Math Function':
      *  Operator: reciprocal
      */
     UnitDelay3 = Controller_P7_B.d[0];
     UnitDelay3 = 1.0F / UnitDelay3;
 
-    /* Math: '<S239>/Math Function'
+    /* Math: '<S240>/Math Function'
      *
-     * About '<S239>/Math Function':
+     * About '<S240>/Math Function':
      *  Operator: reciprocal
      */
     Controller_P7_B.MathFunction[0] = UnitDelay3;
 
-    /* S-Function (sdspfbsub2): '<S239>/Forward Substitution' incorporates:
-     *  Product: '<S235>/H*P_prdt'
-     *  S-Function (sdspldl2): '<S239>/LDL Factorization'
+    /* S-Function (sdspfbsub2): '<S240>/Forward Substitution' incorporates:
+     *  Product: '<S236>/H*P_prdt'
+     *  S-Function (sdspldl2): '<S240>/LDL Factorization'
      */
     Controller_P7_B.y[2] = Controller_P7_B.HP_prdt[2];
     UnitDelay3 = Controller_P7_B.HP_prdt[3];
     UnitDelay3 -= Controller_P7_B.LDLFactorization[1] * Controller_P7_B.y[2];
     Controller_P7_B.y[3] = UnitDelay3;
 
-    /* S-Function (sdspdiag2): '<S239>/Extract Diagonal' incorporates:
-     *  S-Function (sdspldl2): '<S239>/LDL Factorization'
+    /* S-Function (sdspdiag2): '<S240>/Extract Diagonal' incorporates:
+     *  S-Function (sdspldl2): '<S240>/LDL Factorization'
      */
     Controller_P7_B.d[1] = Controller_P7_B.LDLFactorization[3];
 
-    /* Math: '<S239>/Math Function'
+    /* Math: '<S240>/Math Function'
      *
-     * About '<S239>/Math Function':
+     * About '<S240>/Math Function':
      *  Operator: reciprocal
      */
     UnitDelay3 = Controller_P7_B.d[1];
     UnitDelay3 = 1.0F / UnitDelay3;
 
-    /* Math: '<S239>/Math Function'
+    /* Math: '<S240>/Math Function'
      *
-     * About '<S239>/Math Function':
+     * About '<S240>/Math Function':
      *  Operator: reciprocal
      */
     Controller_P7_B.MathFunction[1] = UnitDelay3;
 
-    /* S-Function (sdspdmult2): '<S239>/Matrix Scaling' incorporates:
-     *  S-Function (sdspfbsub2): '<S239>/Forward Substitution'
+    /* S-Function (sdspdmult2): '<S240>/Matrix Scaling' incorporates:
+     *  S-Function (sdspfbsub2): '<S240>/Forward Substitution'
      */
     idxS = 0;
     for (i = 0; i < 2; i++) {
@@ -1132,11 +1145,11 @@ void Controller_P7_step(void)
       }
     }
 
-    /* End of S-Function (sdspdmult2): '<S239>/Matrix Scaling' */
+    /* End of S-Function (sdspdmult2): '<S240>/Matrix Scaling' */
 
-    /* S-Function (sdspfbsub2): '<S239>/Backward Substitution' incorporates:
-     *  S-Function (sdspdmult2): '<S239>/Matrix Scaling'
-     *  S-Function (sdspldl2): '<S239>/LDL Factorization'
+    /* S-Function (sdspfbsub2): '<S240>/Backward Substitution' incorporates:
+     *  S-Function (sdspdmult2): '<S240>/Matrix Scaling'
+     *  S-Function (sdspldl2): '<S240>/LDL Factorization'
      */
     Controller_P7_B.BackwardSubstitution[1] = Controller_P7_B.MatrixScaling[1];
     UnitDelay3 = Controller_P7_B.MatrixScaling[0];
@@ -1149,17 +1162,17 @@ void Controller_P7_step(void)
       Controller_P7_B.BackwardSubstitution[3];
     Controller_P7_B.BackwardSubstitution[2] = UnitDelay3;
 
-    /* Math: '<S235>/K Trans' incorporates:
-     *  S-Function (sdspfbsub2): '<S239>/Backward Substitution'
+    /* Math: '<S236>/K Trans' incorporates:
+     *  S-Function (sdspfbsub2): '<S240>/Backward Substitution'
      */
     Controller_P7_B.KTrans[0] = Controller_P7_B.BackwardSubstitution[0];
     Controller_P7_B.KTrans[1] = Controller_P7_B.BackwardSubstitution[2];
     Controller_P7_B.KTrans[2] = Controller_P7_B.BackwardSubstitution[1];
     Controller_P7_B.KTrans[3] = Controller_P7_B.BackwardSubstitution[3];
 
-    /* Product: '<S235>/K*H*P_prd' incorporates:
-     *  Math: '<S235>/K Trans'
-     *  Selector: '<S234>/Selector2'
+    /* Product: '<S236>/K*H*P_prd' incorporates:
+     *  Math: '<S236>/K Trans'
+     *  Selector: '<S235>/Selector2'
      */
     tmp_4[0] = Controller_P7_B.Selector2[0];
     tmp_4[1] = Controller_P7_B.Selector2[1];
@@ -1203,54 +1216,54 @@ void Controller_P7_step(void)
       Controller_P7_B.KHP_prd[idxV] = HP_prdt_0;
     }
 
-    /* End of Product: '<S235>/K*H*P_prd' */
+    /* End of Product: '<S236>/K*H*P_prd' */
 
-    /* Sum: '<S235>/P_prd-K*H*P_prd' incorporates:
-     *  Product: '<S235>/K*H*P_prd'
-     *  Selector: '<S234>/Selector2'
+    /* Sum: '<S236>/P_prd-K*H*P_prd' incorporates:
+     *  Product: '<S236>/K*H*P_prd'
+     *  Selector: '<S235>/Selector2'
      */
     UnitDelay3 = Controller_P7_B.Selector2[0] - Controller_P7_B.KHP_prd[0];
     Controller_P7_B.P_prdKHP_prd[0] = UnitDelay3;
 
-    /* Product: '<S235>/A*P*At' incorporates:
-     *  Sum: '<S235>/P_prd-K*H*P_prd'
+    /* Product: '<S236>/A*P*At' incorporates:
+     *  Sum: '<S236>/P_prd-K*H*P_prd'
      */
     tmp_5[0] = UnitDelay3;
 
-    /* Sum: '<S235>/P_prd-K*H*P_prd' incorporates:
-     *  Product: '<S235>/K*H*P_prd'
-     *  Selector: '<S234>/Selector2'
+    /* Sum: '<S236>/P_prd-K*H*P_prd' incorporates:
+     *  Product: '<S236>/K*H*P_prd'
+     *  Selector: '<S235>/Selector2'
      */
     UnitDelay3 = Controller_P7_B.Selector2[1] - Controller_P7_B.KHP_prd[1];
     Controller_P7_B.P_prdKHP_prd[1] = UnitDelay3;
 
-    /* Product: '<S235>/A*P*At' incorporates:
-     *  Sum: '<S235>/P_prd-K*H*P_prd'
+    /* Product: '<S236>/A*P*At' incorporates:
+     *  Sum: '<S236>/P_prd-K*H*P_prd'
      */
     tmp_5[1] = UnitDelay3;
 
-    /* Sum: '<S235>/P_prd-K*H*P_prd' incorporates:
-     *  Product: '<S235>/K*H*P_prd'
-     *  Selector: '<S234>/Selector2'
+    /* Sum: '<S236>/P_prd-K*H*P_prd' incorporates:
+     *  Product: '<S236>/K*H*P_prd'
+     *  Selector: '<S235>/Selector2'
      */
     UnitDelay3 = Controller_P7_B.Selector2[2] - Controller_P7_B.KHP_prd[2];
     Controller_P7_B.P_prdKHP_prd[2] = UnitDelay3;
 
-    /* Product: '<S235>/A*P*At' incorporates:
-     *  Sum: '<S235>/P_prd-K*H*P_prd'
+    /* Product: '<S236>/A*P*At' incorporates:
+     *  Sum: '<S236>/P_prd-K*H*P_prd'
      */
     tmp_5[2] = UnitDelay3;
 
-    /* Sum: '<S235>/P_prd-K*H*P_prd' incorporates:
-     *  Product: '<S235>/K*H*P_prd'
-     *  Selector: '<S234>/Selector2'
+    /* Sum: '<S236>/P_prd-K*H*P_prd' incorporates:
+     *  Product: '<S236>/K*H*P_prd'
+     *  Selector: '<S235>/Selector2'
      */
     UnitDelay3 = Controller_P7_B.Selector2[3] - Controller_P7_B.KHP_prd[3];
     Controller_P7_B.P_prdKHP_prd[3] = UnitDelay3;
 
-    /* Product: '<S235>/A*P*At' incorporates:
-     *  Constant: '<S235>/Constant3'
-     *  Sum: '<S235>/P_prd-K*H*P_prd'
+    /* Product: '<S236>/A*P*At' incorporates:
+     *  Constant: '<S236>/Constant3'
+     *  Sum: '<S236>/P_prd-K*H*P_prd'
      */
     tmp_5[3] = UnitDelay3;
     UnitDelay3 = tmp_5[0];
@@ -1287,9 +1300,9 @@ void Controller_P7_step(void)
       Controller_P7_B.APAt[idxV] = HP_prdt_0;
     }
 
-    /* Sum: '<S235>/A*P*At+Q' incorporates:
-     *  Constant: '<S235>/Constant5'
-     *  Product: '<S235>/A*P*At'
+    /* Sum: '<S236>/A*P*At+Q' incorporates:
+     *  Constant: '<S236>/Constant5'
+     *  Product: '<S236>/A*P*At'
      */
     Controller_P7_B.APAtQ[0] = Controller_P7_B.APAt[0] +
       Controller_P7_P.Constant5_Value_k[0];
@@ -1300,25 +1313,25 @@ void Controller_P7_step(void)
     Controller_P7_B.APAtQ[3] = Controller_P7_B.APAt[3] +
       Controller_P7_P.Constant5_Value_k[3];
 
-    /* Selector: '<S234>/Selector1' incorporates:
-     *  UnitDelay: '<S220>/Unit Delay2'
+    /* Selector: '<S235>/Selector1' incorporates:
+     *  UnitDelay: '<S221>/Unit Delay2'
      */
     UnitDelay3 = Controller_P7_B.UnitDelay2_o[0];
     Controller_P7_B.Selector1[0] = UnitDelay3;
 
-    /* Product: '<S235>/H*X_prd' incorporates:
-     *  Selector: '<S234>/Selector1'
+    /* Product: '<S236>/H*X_prd' incorporates:
+     *  Selector: '<S235>/Selector1'
      */
     tmp_7[0] = UnitDelay3;
 
-    /* Selector: '<S234>/Selector1' incorporates:
-     *  UnitDelay: '<S220>/Unit Delay2'
+    /* Selector: '<S235>/Selector1' incorporates:
+     *  UnitDelay: '<S221>/Unit Delay2'
      */
     UnitDelay3 = Controller_P7_B.UnitDelay2_o[1];
     Controller_P7_B.Selector1[1] = UnitDelay3;
 
-    /* Product: '<S235>/H*X_prd' incorporates:
-     *  Selector: '<S234>/Selector1'
+    /* Product: '<S236>/H*X_prd' incorporates:
+     *  Selector: '<S235>/Selector1'
      */
     tmp_7[1] = UnitDelay3;
     UnitDelay3 = tmp_7[0];
@@ -1328,27 +1341,27 @@ void Controller_P7_step(void)
     Controller_P7_B.HX_prd[0] += tmp_3[2] * UnitDelay3;
     Controller_P7_B.HX_prd[1] += tmp_3[3] * UnitDelay3;
 
-    /* Sum: '<S235>/Z-H*X_prd' incorporates:
-     *  Product: '<S235>/H*X_prd'
-     *  Selector: '<S234>/Selector'
+    /* Sum: '<S236>/Z-H*X_prd' incorporates:
+     *  Product: '<S236>/H*X_prd'
+     *  Selector: '<S235>/Selector'
      */
     UnitDelay3 = Controller_P7_B.Selector[0] - Controller_P7_B.HX_prd[0];
     Controller_P7_B.ZHX_prd[0] = UnitDelay3;
 
-    /* Product: '<S235>/K*(Z-H*X_prd)' incorporates:
-     *  Sum: '<S235>/Z-H*X_prd'
+    /* Product: '<S236>/K*(Z-H*X_prd)' incorporates:
+     *  Sum: '<S236>/Z-H*X_prd'
      */
     tmp_7[0] = UnitDelay3;
 
-    /* Sum: '<S235>/Z-H*X_prd' incorporates:
-     *  Product: '<S235>/H*X_prd'
-     *  Selector: '<S234>/Selector'
+    /* Sum: '<S236>/Z-H*X_prd' incorporates:
+     *  Product: '<S236>/H*X_prd'
+     *  Selector: '<S235>/Selector'
      */
     UnitDelay3 = Controller_P7_B.Selector[1] - Controller_P7_B.HX_prd[1];
     Controller_P7_B.ZHX_prd[1] = UnitDelay3;
 
-    /* Product: '<S235>/K*(Z-H*X_prd)' incorporates:
-     *  Sum: '<S235>/Z-H*X_prd'
+    /* Product: '<S236>/K*(Z-H*X_prd)' incorporates:
+     *  Sum: '<S236>/Z-H*X_prd'
      */
     tmp_7[1] = UnitDelay3;
     UnitDelay3 = tmp_7[0];
@@ -1358,27 +1371,27 @@ void Controller_P7_step(void)
     Controller_P7_B.KZHX_prd[0] += tmp_4[2] * UnitDelay3;
     Controller_P7_B.KZHX_prd[1] += tmp_4[3] * UnitDelay3;
 
-    /* Sum: '<S235>/X_prd+K*(Z-H*X_prd)' incorporates:
-     *  Product: '<S235>/K*(Z-H*X_prd)'
-     *  Selector: '<S234>/Selector1'
+    /* Sum: '<S236>/X_prd+K*(Z-H*X_prd)' incorporates:
+     *  Product: '<S236>/K*(Z-H*X_prd)'
+     *  Selector: '<S235>/Selector1'
      */
     UnitDelay3 = Controller_P7_B.Selector1[0] + Controller_P7_B.KZHX_prd[0];
     Controller_P7_B.X_prdKZHX_prd[0] = UnitDelay3;
 
-    /* Product: '<S235>/A*X' incorporates:
-     *  Sum: '<S235>/X_prd+K*(Z-H*X_prd)'
+    /* Product: '<S236>/A*X' incorporates:
+     *  Sum: '<S236>/X_prd+K*(Z-H*X_prd)'
      */
     tmp_7[0] = UnitDelay3;
 
-    /* Sum: '<S235>/X_prd+K*(Z-H*X_prd)' incorporates:
-     *  Product: '<S235>/K*(Z-H*X_prd)'
-     *  Selector: '<S234>/Selector1'
+    /* Sum: '<S236>/X_prd+K*(Z-H*X_prd)' incorporates:
+     *  Product: '<S236>/K*(Z-H*X_prd)'
+     *  Selector: '<S235>/Selector1'
      */
     UnitDelay3 = Controller_P7_B.Selector1[1] + Controller_P7_B.KZHX_prd[1];
     Controller_P7_B.X_prdKZHX_prd[1] = UnitDelay3;
 
-    /* Product: '<S235>/A*X' incorporates:
-     *  Sum: '<S235>/X_prd+K*(Z-H*X_prd)'
+    /* Product: '<S236>/A*X' incorporates:
+     *  Sum: '<S236>/X_prd+K*(Z-H*X_prd)'
      */
     tmp_7[1] = UnitDelay3;
     UnitDelay3 = tmp_7[0];
@@ -1388,37 +1401,37 @@ void Controller_P7_step(void)
     Controller_P7_B.AX[0] += tmp_5[2] * UnitDelay3;
     Controller_P7_B.AX[1] += tmp_5[3] * UnitDelay3;
 
-    /* Assignment: '<S236>/Assignment' incorporates:
-     *  Sum: '<S235>/A*P*At+Q'
+    /* Assignment: '<S237>/Assignment' incorporates:
+     *  Sum: '<S236>/A*P*At+Q'
      */
     Controller_P7_B.Assignment[0] = Controller_P7_B.APAtQ[0];
     Controller_P7_B.Assignment[1] = Controller_P7_B.APAtQ[1];
     Controller_P7_B.Assignment[2] = Controller_P7_B.APAtQ[2];
     Controller_P7_B.Assignment[3] = Controller_P7_B.APAtQ[3];
 
-    /* Assignment: '<S237>/Assignment' incorporates:
-     *  Sum: '<S235>/X_prd+K*(Z-H*X_prd)'
+    /* Assignment: '<S238>/Assignment' incorporates:
+     *  Sum: '<S236>/X_prd+K*(Z-H*X_prd)'
      */
     Controller_P7_B.Assignment_j[0] = Controller_P7_B.X_prdKZHX_prd[0];
 
-    /* Assignment: '<S238>/Assignment' incorporates:
-     *  Product: '<S235>/A*X'
+    /* Assignment: '<S239>/Assignment' incorporates:
+     *  Product: '<S236>/A*X'
      */
     Controller_P7_B.Assignment_m[0] = Controller_P7_B.AX[0];
 
-    /* Assignment: '<S237>/Assignment' incorporates:
-     *  Sum: '<S235>/X_prd+K*(Z-H*X_prd)'
+    /* Assignment: '<S238>/Assignment' incorporates:
+     *  Sum: '<S236>/X_prd+K*(Z-H*X_prd)'
      */
     Controller_P7_B.Assignment_j[1] = Controller_P7_B.X_prdKZHX_prd[1];
 
-    /* Assignment: '<S238>/Assignment' incorporates:
-     *  Product: '<S235>/A*X'
+    /* Assignment: '<S239>/Assignment' incorporates:
+     *  Product: '<S236>/A*X'
      */
     Controller_P7_B.Assignment_m[1] = Controller_P7_B.AX[1];
-    s222_iter++;
+    s223_iter++;
   }
 
-  /* End of Outputs for SubSystem: '<S220>/Control' */
+  /* End of Outputs for SubSystem: '<S221>/Control' */
 
   /* If: '<S1>/If1' */
   if (Controller_P7_B.Assignment_dh[2] > 420.0F) {
@@ -1431,97 +1444,97 @@ void Controller_P7_step(void)
     Controller_P7_B.Add_j = Controller_P7_P.Phi_min -
       Controller_P7_B.Assignment_j[0];
 
-    /* Gain: '<S35>/Derivative Gain' */
+    /* Gain: '<S36>/Derivative Gain' */
     Controller_P7_B.DerivativeGain_a = Controller_P7_P.Der_GR_High *
       Controller_P7_B.Add_j;
 
-    /* DiscreteIntegrator: '<S37>/Filter' */
+    /* DiscreteIntegrator: '<S38>/Filter' */
     Controller_P7_B.Filter_i = Controller_P7_DW.Filter_DSTATE_dz;
 
-    /* Sum: '<S37>/SumD' */
+    /* Sum: '<S38>/SumD' */
     Controller_P7_B.SumD_a = Controller_P7_B.DerivativeGain_a -
       Controller_P7_B.Filter_i;
 
-    /* Gain: '<S39>/Integral Gain' */
+    /* Gain: '<S40>/Integral Gain' */
     Controller_P7_B.IntegralGain_d = Controller_P7_P.Int_GR_High *
       Controller_P7_B.Add_j;
 
-    /* DiscreteIntegrator: '<S42>/Integrator' */
+    /* DiscreteIntegrator: '<S43>/Integrator' */
     Controller_P7_B.Integrator_a = Controller_P7_DW.Integrator_DSTATE_n;
 
-    /* Gain: '<S45>/Filter Coefficient' */
+    /* Gain: '<S46>/Filter Coefficient' */
     Controller_P7_B.FilterCoefficient_b = Controller_P7_P.PIDController_N *
       Controller_P7_B.SumD_a;
 
-    /* Gain: '<S47>/Proportional Gain' */
+    /* Gain: '<S48>/Proportional Gain' */
     Controller_P7_B.ProportionalGain_h = Controller_P7_P.Prop_GR_High *
       Controller_P7_B.Add_j;
 
     /* Merge: '<S1>/Merge' incorporates:
-     *  Sum: '<S51>/Sum'
+     *  Sum: '<S52>/Sum'
      */
     Controller_P7_B.Merge = (Controller_P7_B.ProportionalGain_h +
       Controller_P7_B.Integrator_a) + Controller_P7_B.FilterCoefficient_b;
 
-    /* Update for DiscreteIntegrator: '<S37>/Filter' */
+    /* Update for DiscreteIntegrator: '<S38>/Filter' */
     Controller_P7_DW.Filter_DSTATE_dz += Controller_P7_P.Filter_gainval *
       Controller_P7_B.FilterCoefficient_b;
 
-    /* Update for DiscreteIntegrator: '<S42>/Integrator' */
+    /* Update for DiscreteIntegrator: '<S43>/Integrator' */
     Controller_P7_DW.Integrator_DSTATE_n += Controller_P7_P.Integrator_gainval *
       Controller_P7_B.IntegralGain_d;
 
     /* End of Outputs for SubSystem: '<S1>/GR HI' */
   } else if (Controller_P7_B.Assignment_dh[2] > 101.12F) {
     /* Outputs for IfAction SubSystem: '<S1>/Omega HI' incorporates:
-     *  ActionPort: '<S5>/Action Port'
+     *  ActionPort: '<S6>/Action Port'
      */
-    /* Sum: '<S5>/Add' incorporates:
-     *  Constant: '<S5>/RPM_Hi'
+    /* Sum: '<S6>/Add' incorporates:
+     *  Constant: '<S6>/RPM_Hi'
      */
     Controller_P7_B.Add_h = Controller_P7_B.Assignment_dh[0] -
       Controller_P7_P.Omega_High;
 
-    /* UnaryMinus: '<S142>/Unary Minus' */
+    /* UnaryMinus: '<S143>/Unary Minus' */
     Controller_P7_B.UnaryMinus_j = -Controller_P7_B.Assignment_dh[1];
 
-    /* Gain: '<S141>/Derivative Gain' */
+    /* Gain: '<S142>/Derivative Gain' */
     Controller_P7_B.DerivativeGain_n = Controller_P7_P.Der_RPM_High *
       Controller_P7_B.UnaryMinus_j;
 
-    /* DiscreteIntegrator: '<S143>/Filter' */
+    /* DiscreteIntegrator: '<S144>/Filter' */
     Controller_P7_B.Filter_j = Controller_P7_DW.Filter_DSTATE_i;
 
-    /* Gain: '<S151>/Filter Coefficient' */
+    /* Gain: '<S152>/Filter Coefficient' */
     Controller_P7_B.FilterCoefficient_a = Controller_P7_P.PIDController_N_k *
       Controller_P7_B.Filter_j;
 
-    /* Sum: '<S143>/SumD' */
+    /* Sum: '<S144>/SumD' */
     Controller_P7_B.SumD_o = Controller_P7_B.DerivativeGain_n -
       Controller_P7_B.FilterCoefficient_a;
 
-    /* Gain: '<S145>/Integral Gain' */
+    /* Gain: '<S146>/Integral Gain' */
     Controller_P7_B.IntegralGain_a = Controller_P7_P.Int_RPM_High *
       Controller_P7_B.Add_h;
 
-    /* DiscreteIntegrator: '<S148>/Integrator' */
+    /* DiscreteIntegrator: '<S149>/Integrator' */
     Controller_P7_B.Integrator_j = Controller_P7_DW.Integrator_DSTATE_j;
 
-    /* Gain: '<S153>/Proportional Gain' */
+    /* Gain: '<S154>/Proportional Gain' */
     Controller_P7_B.ProportionalGain_l = Controller_P7_P.Prop_RPM_High *
       Controller_P7_B.Add_h;
 
     /* Merge: '<S1>/Merge' incorporates:
-     *  Sum: '<S157>/Sum'
+     *  Sum: '<S158>/Sum'
      */
     Controller_P7_B.Merge = (Controller_P7_B.ProportionalGain_l +
       Controller_P7_B.Integrator_j) + Controller_P7_B.FilterCoefficient_a;
 
-    /* Update for DiscreteIntegrator: '<S143>/Filter' */
+    /* Update for DiscreteIntegrator: '<S144>/Filter' */
     Controller_P7_DW.Filter_DSTATE_i += Controller_P7_P.Filter_gainval_i *
       Controller_P7_B.SumD_o;
 
-    /* Update for DiscreteIntegrator: '<S148>/Integrator' */
+    /* Update for DiscreteIntegrator: '<S149>/Integrator' */
     Controller_P7_DW.Integrator_DSTATE_j += Controller_P7_P.Integrator_gainval_i
       * Controller_P7_B.IntegralGain_a;
 
@@ -1536,97 +1549,97 @@ void Controller_P7_step(void)
     Controller_P7_B.Add_m = Controller_P7_P.Phi_max -
       Controller_P7_B.Assignment_j[0];
 
-    /* Gain: '<S88>/Derivative Gain' */
+    /* Gain: '<S89>/Derivative Gain' */
     Controller_P7_B.DerivativeGain = Controller_P7_P.Der_GR_Low *
       Controller_P7_B.Add_m;
 
-    /* DiscreteIntegrator: '<S90>/Filter' */
+    /* DiscreteIntegrator: '<S91>/Filter' */
     Controller_P7_B.Filter_l = Controller_P7_DW.Filter_DSTATE_d;
 
-    /* Sum: '<S90>/SumD' */
+    /* Sum: '<S91>/SumD' */
     Controller_P7_B.SumD_d = Controller_P7_B.DerivativeGain -
       Controller_P7_B.Filter_l;
 
-    /* Gain: '<S92>/Integral Gain' */
+    /* Gain: '<S93>/Integral Gain' */
     Controller_P7_B.IntegralGain_b = Controller_P7_P.Int_GR_Low *
       Controller_P7_B.Add_m;
 
-    /* DiscreteIntegrator: '<S95>/Integrator' */
+    /* DiscreteIntegrator: '<S96>/Integrator' */
     Controller_P7_B.Integrator_o = Controller_P7_DW.Integrator_DSTATE_l;
 
-    /* Gain: '<S98>/Filter Coefficient' */
+    /* Gain: '<S99>/Filter Coefficient' */
     Controller_P7_B.FilterCoefficient_i = Controller_P7_P.PIDController_N_j *
       Controller_P7_B.SumD_d;
 
-    /* Gain: '<S100>/Proportional Gain' */
+    /* Gain: '<S101>/Proportional Gain' */
     Controller_P7_B.ProportionalGain_k = Controller_P7_P.Prop_GR_Low *
       Controller_P7_B.Add_m;
 
     /* Merge: '<S1>/Merge' incorporates:
-     *  Sum: '<S104>/Sum'
+     *  Sum: '<S105>/Sum'
      */
     Controller_P7_B.Merge = (Controller_P7_B.ProportionalGain_k +
       Controller_P7_B.Integrator_o) + Controller_P7_B.FilterCoefficient_i;
 
-    /* Update for DiscreteIntegrator: '<S90>/Filter' */
+    /* Update for DiscreteIntegrator: '<S91>/Filter' */
     Controller_P7_DW.Filter_DSTATE_d += Controller_P7_P.Filter_gainval_h *
       Controller_P7_B.FilterCoefficient_i;
 
-    /* Update for DiscreteIntegrator: '<S95>/Integrator' */
+    /* Update for DiscreteIntegrator: '<S96>/Integrator' */
     Controller_P7_DW.Integrator_DSTATE_l += Controller_P7_P.Integrator_gainval_d
       * Controller_P7_B.IntegralGain_b;
 
     /* End of Outputs for SubSystem: '<S1>/GR LO' */
   } else {
     /* Outputs for IfAction SubSystem: '<S1>/Omega LO' incorporates:
-     *  ActionPort: '<S6>/Action Port'
+     *  ActionPort: '<S7>/Action Port'
      */
-    /* Sum: '<S6>/Add' incorporates:
-     *  Constant: '<S6>/Constant'
+    /* Sum: '<S7>/Add' incorporates:
+     *  Constant: '<S7>/Constant'
      */
     Controller_P7_B.Add = Controller_P7_B.Assignment_dh[0] -
       Controller_P7_P.Omega_Low;
 
-    /* UnaryMinus: '<S195>/Unary Minus' */
+    /* UnaryMinus: '<S196>/Unary Minus' */
     Controller_P7_B.UnaryMinus = -Controller_P7_B.Assignment_dh[1];
 
-    /* Gain: '<S194>/Derivative Gain' */
+    /* Gain: '<S195>/Derivative Gain' */
     Controller_P7_B.DerivativeGain_af = Controller_P7_P.Der_RPM_Low *
       Controller_P7_B.UnaryMinus;
 
-    /* DiscreteIntegrator: '<S196>/Filter' */
+    /* DiscreteIntegrator: '<S197>/Filter' */
     Controller_P7_B.Filter = Controller_P7_DW.Filter_DSTATE;
 
-    /* Gain: '<S204>/Filter Coefficient' */
+    /* Gain: '<S205>/Filter Coefficient' */
     Controller_P7_B.FilterCoefficient = Controller_P7_P.PIDController_N_f *
       Controller_P7_B.Filter;
 
-    /* Sum: '<S196>/SumD' */
+    /* Sum: '<S197>/SumD' */
     Controller_P7_B.SumD = Controller_P7_B.DerivativeGain_af -
       Controller_P7_B.FilterCoefficient;
 
-    /* Gain: '<S198>/Integral Gain' */
+    /* Gain: '<S199>/Integral Gain' */
     Controller_P7_B.IntegralGain = Controller_P7_P.Int_RPM_Low *
       Controller_P7_B.Add;
 
-    /* DiscreteIntegrator: '<S201>/Integrator' */
+    /* DiscreteIntegrator: '<S202>/Integrator' */
     Controller_P7_B.Integrator = Controller_P7_DW.Integrator_DSTATE;
 
-    /* Gain: '<S206>/Proportional Gain' */
+    /* Gain: '<S207>/Proportional Gain' */
     Controller_P7_B.ProportionalGain = Controller_P7_P.Prop_RPM_Low *
       Controller_P7_B.Add;
 
     /* Merge: '<S1>/Merge' incorporates:
-     *  Sum: '<S210>/Sum'
+     *  Sum: '<S211>/Sum'
      */
     Controller_P7_B.Merge = (Controller_P7_B.ProportionalGain +
       Controller_P7_B.Integrator) + Controller_P7_B.FilterCoefficient;
 
-    /* Update for DiscreteIntegrator: '<S196>/Filter' */
+    /* Update for DiscreteIntegrator: '<S197>/Filter' */
     Controller_P7_DW.Filter_DSTATE += Controller_P7_P.Filter_gainval_n *
       Controller_P7_B.SumD;
 
-    /* Update for DiscreteIntegrator: '<S201>/Integrator' */
+    /* Update for DiscreteIntegrator: '<S202>/Integrator' */
     Controller_P7_DW.Integrator_DSTATE += Controller_P7_P.Integrator_gainval_a *
       Controller_P7_B.IntegralGain;
 
@@ -1640,39 +1653,81 @@ void Controller_P7_step(void)
   u1 = Controller_P7_P.V_lower;
   u2 = Controller_P7_P.V_upper;
   if (u0 > u2) {
-    /* Outport: '<Root>/Command' */
-    Controller_P7_Y.Command = u2;
+    /* Saturate: '<S1>/Saturation1' */
+    Controller_P7_B.Saturation1 = u2;
   } else if (u0 < u1) {
-    /* Outport: '<Root>/Command' */
-    Controller_P7_Y.Command = u1;
+    /* Saturate: '<S1>/Saturation1' */
+    Controller_P7_B.Saturation1 = u1;
   } else {
-    /* Outport: '<Root>/Command' */
-    Controller_P7_Y.Command = u0;
+    /* Saturate: '<S1>/Saturation1' */
+    Controller_P7_B.Saturation1 = u0;
   }
 
   /* End of Saturate: '<S1>/Saturation1' */
-  /* Update for UnitDelay: '<S219>/Unit Delay2' incorporates:
-   *  Assignment: '<S227>/Assignment'
+
+  /* RelationalOperator: '<S5>/Less Than' incorporates:
+   *  Constant: '<S5>/Constant1'
+   */
+  Controller_P7_B.LessThan = (Controller_P7_B.Saturation1 <
+    Controller_P7_P.Constant1_Value);
+
+  /* Logic: '<S5>/AND' */
+  Controller_P7_B.AND = (Controller_P7_B.GreaterThan && Controller_P7_B.LessThan);
+
+  /* RelationalOperator: '<S5>/GreaterThan1' incorporates:
+   *  Constant: '<S5>/Constant3'
+   */
+  Controller_P7_B.GreaterThan1 = (Controller_P7_B.Saturation1 >
+    Controller_P7_P.Constant3_Value);
+
+  /* RelationalOperator: '<S5>/GreaterThan2' incorporates:
+   *  Constant: '<S5>/Constant4'
+   *  Inport: '<Root>/Theta_Helix'
+   */
+  Controller_P7_B.GreaterThan2 = (Controller_P7_U.Theta_Helix >
+    Controller_P7_P.Constant4_Value);
+
+  /* Logic: '<S5>/AND1' */
+  Controller_P7_B.AND1 = (Controller_P7_B.GreaterThan1 &&
+    Controller_P7_B.GreaterThan2);
+
+  /* Logic: '<S5>/OR' */
+  Controller_P7_B.OR = (Controller_P7_B.AND || Controller_P7_B.AND1);
+
+  /* Switch: '<S5>/Switch' */
+  if (Controller_P7_B.OR) {
+    /* Outport: '<Root>/Command' incorporates:
+     *  Constant: '<S5>/Constant2'
+     */
+    Controller_P7_Y.Command = Controller_P7_P.Constant2_Value;
+  } else {
+    /* Outport: '<Root>/Command' */
+    Controller_P7_Y.Command = Controller_P7_B.Saturation1;
+  }
+
+  /* End of Switch: '<S5>/Switch' */
+  /* Update for UnitDelay: '<S220>/Unit Delay2' incorporates:
+   *  Assignment: '<S228>/Assignment'
    */
   Controller_P7_DW.UnitDelay2_DSTATE[0] = Controller_P7_B.Assignment_g[0];
   Controller_P7_DW.UnitDelay2_DSTATE[1] = Controller_P7_B.Assignment_g[1];
   Controller_P7_DW.UnitDelay2_DSTATE[2] = Controller_P7_B.Assignment_g[2];
   Controller_P7_DW.UnitDelay2_DSTATE[3] = Controller_P7_B.Assignment_g[3];
 
-  /* Update for UnitDelay: '<S219>/Unit Delay3' incorporates:
-   *  Assignment: '<S225>/Assignment'
+  /* Update for UnitDelay: '<S220>/Unit Delay3' incorporates:
+   *  Assignment: '<S226>/Assignment'
    */
   memcpy(&Controller_P7_DW.UnitDelay3_DSTATE[0], &Controller_P7_B.Assignment_d[0],
          sizeof(real32_T) << 4U);
 
-  /* Update for UnitDelay: '<S220>/Unit Delay2' incorporates:
-   *  Assignment: '<S238>/Assignment'
+  /* Update for UnitDelay: '<S221>/Unit Delay2' incorporates:
+   *  Assignment: '<S239>/Assignment'
    */
   Controller_P7_DW.UnitDelay2_DSTATE_b[0] = Controller_P7_B.Assignment_m[0];
   Controller_P7_DW.UnitDelay2_DSTATE_b[1] = Controller_P7_B.Assignment_m[1];
 
-  /* Update for UnitDelay: '<S220>/Unit Delay3' incorporates:
-   *  Assignment: '<S236>/Assignment'
+  /* Update for UnitDelay: '<S221>/Unit Delay3' incorporates:
+   *  Assignment: '<S237>/Assignment'
    */
   Controller_P7_DW.UnitDelay3_DSTATE_f[0] = Controller_P7_B.Assignment[0];
   Controller_P7_DW.UnitDelay3_DSTATE_f[1] = Controller_P7_B.Assignment[1];
@@ -1709,7 +1764,7 @@ void Controller_P7_step(void)
     Controller_P7_M->Timing.stepSize0 + Controller_P7_M->Timing.clockTickH0 *
     Controller_P7_M->Timing.stepSize0 * 4294967296.0;
 }
-// Controller_P7_P.Prop_GR_High = 25.0;
+
 /* Model initialize function */
 void Controller_P7_initialize(void)
 {
@@ -1718,7 +1773,7 @@ void Controller_P7_initialize(void)
   /* initialize real-time model */
   (void) memset((void *)Controller_P7_M, 0,
                 sizeof(RT_MODEL_Controller_P7_T));
-  rtmSetTFinal(Controller_P7_M, 5.0);
+  rtmSetTFinal(Controller_P7_M, 10.0);
   Controller_P7_M->Timing.stepSize0 = 0.001;
 
   /* Setup for data logging */
@@ -1766,7 +1821,7 @@ void Controller_P7_initialize(void)
   {
     int32_T i;
 
-    /* InitializeConditions for UnitDelay: '<S219>/Unit Delay2' */
+    /* InitializeConditions for UnitDelay: '<S220>/Unit Delay2' */
     Controller_P7_DW.UnitDelay2_DSTATE[0] =
       Controller_P7_P.UnitDelay2_InitialCondition[0];
     Controller_P7_DW.UnitDelay2_DSTATE[1] =
@@ -1776,160 +1831,160 @@ void Controller_P7_initialize(void)
     Controller_P7_DW.UnitDelay2_DSTATE[3] =
       Controller_P7_P.UnitDelay2_InitialCondition[3];
 
-    /* InitializeConditions for UnitDelay: '<S220>/Unit Delay2' */
+    /* InitializeConditions for UnitDelay: '<S221>/Unit Delay2' */
     Controller_P7_DW.UnitDelay2_DSTATE_b[0] =
       Controller_P7_P.UnitDelay2_InitialCondition_j[0];
     Controller_P7_DW.UnitDelay2_DSTATE_b[1] =
       Controller_P7_P.UnitDelay2_InitialCondition_j[1];
 
-    /* InitializeConditions for UnitDelay: '<S220>/Unit Delay3' */
+    /* InitializeConditions for UnitDelay: '<S221>/Unit Delay3' */
     Controller_P7_DW.UnitDelay3_DSTATE_f[0] =
       Controller_P7_P.UnitDelay3_InitialCondition_m[0];
 
-    /* SystemInitialize for Iterator SubSystem: '<S219>/Control' */
-    /* SystemInitialize for Assignment: '<S226>/Assignment' incorporates:
-     *  Outport: '<S222>/X_est'
+    /* SystemInitialize for Iterator SubSystem: '<S220>/Control' */
+    /* SystemInitialize for Assignment: '<S227>/Assignment' incorporates:
+     *  Outport: '<S223>/X_est'
      */
     Controller_P7_B.Assignment_dh[0] = Controller_P7_P.X_est_Y0;
 
-    /* SystemInitialize for Assignment: '<S227>/Assignment' incorporates:
-     *  Outport: '<S222>/X_prd'
+    /* SystemInitialize for Assignment: '<S228>/Assignment' incorporates:
+     *  Outport: '<S223>/X_prd'
      */
     Controller_P7_B.Assignment_g[0] = Controller_P7_P.X_prd_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S219>/Control' */
+    /* End of SystemInitialize for SubSystem: '<S220>/Control' */
 
-    /* InitializeConditions for UnitDelay: '<S220>/Unit Delay3' */
+    /* InitializeConditions for UnitDelay: '<S221>/Unit Delay3' */
     Controller_P7_DW.UnitDelay3_DSTATE_f[1] =
       Controller_P7_P.UnitDelay3_InitialCondition_m[1];
 
-    /* SystemInitialize for Iterator SubSystem: '<S219>/Control' */
-    /* SystemInitialize for Assignment: '<S226>/Assignment' incorporates:
-     *  Outport: '<S222>/X_est'
+    /* SystemInitialize for Iterator SubSystem: '<S220>/Control' */
+    /* SystemInitialize for Assignment: '<S227>/Assignment' incorporates:
+     *  Outport: '<S223>/X_est'
      */
     Controller_P7_B.Assignment_dh[1] = Controller_P7_P.X_est_Y0;
 
-    /* SystemInitialize for Assignment: '<S227>/Assignment' incorporates:
-     *  Outport: '<S222>/X_prd'
+    /* SystemInitialize for Assignment: '<S228>/Assignment' incorporates:
+     *  Outport: '<S223>/X_prd'
      */
     Controller_P7_B.Assignment_g[1] = Controller_P7_P.X_prd_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S219>/Control' */
+    /* End of SystemInitialize for SubSystem: '<S220>/Control' */
 
-    /* InitializeConditions for UnitDelay: '<S220>/Unit Delay3' */
+    /* InitializeConditions for UnitDelay: '<S221>/Unit Delay3' */
     Controller_P7_DW.UnitDelay3_DSTATE_f[2] =
       Controller_P7_P.UnitDelay3_InitialCondition_m[2];
 
-    /* SystemInitialize for Iterator SubSystem: '<S219>/Control' */
-    /* SystemInitialize for Assignment: '<S226>/Assignment' incorporates:
-     *  Outport: '<S222>/X_est'
+    /* SystemInitialize for Iterator SubSystem: '<S220>/Control' */
+    /* SystemInitialize for Assignment: '<S227>/Assignment' incorporates:
+     *  Outport: '<S223>/X_est'
      */
     Controller_P7_B.Assignment_dh[2] = Controller_P7_P.X_est_Y0;
 
-    /* SystemInitialize for Assignment: '<S227>/Assignment' incorporates:
-     *  Outport: '<S222>/X_prd'
+    /* SystemInitialize for Assignment: '<S228>/Assignment' incorporates:
+     *  Outport: '<S223>/X_prd'
      */
     Controller_P7_B.Assignment_g[2] = Controller_P7_P.X_prd_Y0;
 
-    /* End of SystemInitialize for SubSystem: '<S219>/Control' */
+    /* End of SystemInitialize for SubSystem: '<S220>/Control' */
 
-    /* InitializeConditions for UnitDelay: '<S220>/Unit Delay3' */
+    /* InitializeConditions for UnitDelay: '<S221>/Unit Delay3' */
     Controller_P7_DW.UnitDelay3_DSTATE_f[3] =
       Controller_P7_P.UnitDelay3_InitialCondition_m[3];
 
-    /* SystemInitialize for Iterator SubSystem: '<S219>/Control' */
-    /* SystemInitialize for Assignment: '<S226>/Assignment' incorporates:
-     *  Outport: '<S222>/X_est'
+    /* SystemInitialize for Iterator SubSystem: '<S220>/Control' */
+    /* SystemInitialize for Assignment: '<S227>/Assignment' incorporates:
+     *  Outport: '<S223>/X_est'
      */
     Controller_P7_B.Assignment_dh[3] = Controller_P7_P.X_est_Y0;
 
-    /* SystemInitialize for Assignment: '<S227>/Assignment' incorporates:
-     *  Outport: '<S222>/X_prd'
+    /* SystemInitialize for Assignment: '<S228>/Assignment' incorporates:
+     *  Outport: '<S223>/X_prd'
      */
     Controller_P7_B.Assignment_g[3] = Controller_P7_P.X_prd_Y0;
     for (i = 0; i < 16; i++) {
-      /* InitializeConditions for UnitDelay: '<S219>/Unit Delay3' */
+      /* InitializeConditions for UnitDelay: '<S220>/Unit Delay3' */
       Controller_P7_DW.UnitDelay3_DSTATE[i] =
         Controller_P7_P.UnitDelay3_InitialCondition[i];
 
-      /* SystemInitialize for Assignment: '<S225>/Assignment' incorporates:
-       *  Outport: '<S222>/P_prd'
+      /* SystemInitialize for Assignment: '<S226>/Assignment' incorporates:
+       *  Outport: '<S223>/P_prd'
        */
       Controller_P7_B.Assignment_d[i] = Controller_P7_P.P_prd_Y0;
     }
 
-    /* End of SystemInitialize for SubSystem: '<S219>/Control' */
+    /* End of SystemInitialize for SubSystem: '<S220>/Control' */
 
-    /* SystemInitialize for Iterator SubSystem: '<S220>/Control' */
-    /* SystemInitialize for Assignment: '<S237>/Assignment' incorporates:
-     *  Outport: '<S233>/X_est'
+    /* SystemInitialize for Iterator SubSystem: '<S221>/Control' */
+    /* SystemInitialize for Assignment: '<S238>/Assignment' incorporates:
+     *  Outport: '<S234>/X_est'
      */
     Controller_P7_B.Assignment_j[0] = Controller_P7_P.X_est_Y0_f;
 
-    /* SystemInitialize for Assignment: '<S238>/Assignment' incorporates:
-     *  Outport: '<S233>/X_prd'
+    /* SystemInitialize for Assignment: '<S239>/Assignment' incorporates:
+     *  Outport: '<S234>/X_prd'
      */
     Controller_P7_B.Assignment_m[0] = Controller_P7_P.X_prd_Y0_l;
 
-    /* SystemInitialize for Assignment: '<S237>/Assignment' incorporates:
-     *  Outport: '<S233>/X_est'
+    /* SystemInitialize for Assignment: '<S238>/Assignment' incorporates:
+     *  Outport: '<S234>/X_est'
      */
     Controller_P7_B.Assignment_j[1] = Controller_P7_P.X_est_Y0_f;
 
-    /* SystemInitialize for Assignment: '<S238>/Assignment' incorporates:
-     *  Outport: '<S233>/X_prd'
+    /* SystemInitialize for Assignment: '<S239>/Assignment' incorporates:
+     *  Outport: '<S234>/X_prd'
      */
     Controller_P7_B.Assignment_m[1] = Controller_P7_P.X_prd_Y0_l;
 
-    /* SystemInitialize for Assignment: '<S236>/Assignment' incorporates:
-     *  Outport: '<S233>/P_prd'
+    /* SystemInitialize for Assignment: '<S237>/Assignment' incorporates:
+     *  Outport: '<S234>/P_prd'
      */
     Controller_P7_B.Assignment[0] = Controller_P7_P.P_prd_Y0_e;
     Controller_P7_B.Assignment[1] = Controller_P7_P.P_prd_Y0_e;
     Controller_P7_B.Assignment[2] = Controller_P7_P.P_prd_Y0_e;
     Controller_P7_B.Assignment[3] = Controller_P7_P.P_prd_Y0_e;
 
-    /* End of SystemInitialize for SubSystem: '<S220>/Control' */
+    /* End of SystemInitialize for SubSystem: '<S221>/Control' */
 
     /* SystemInitialize for IfAction SubSystem: '<S1>/GR HI' */
-    /* InitializeConditions for DiscreteIntegrator: '<S37>/Filter' */
+    /* InitializeConditions for DiscreteIntegrator: '<S38>/Filter' */
     Controller_P7_DW.Filter_DSTATE_dz =
       Controller_P7_P.PIDController_InitialConditionF;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S42>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S43>/Integrator' */
     Controller_P7_DW.Integrator_DSTATE_n =
       Controller_P7_P.PIDController_InitialConditio_e;
 
     /* End of SystemInitialize for SubSystem: '<S1>/GR HI' */
 
     /* SystemInitialize for IfAction SubSystem: '<S1>/Omega HI' */
-    /* InitializeConditions for DiscreteIntegrator: '<S143>/Filter' */
+    /* InitializeConditions for DiscreteIntegrator: '<S144>/Filter' */
     Controller_P7_DW.Filter_DSTATE_i =
       Controller_P7_P.PIDController_InitialConditio_k;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S148>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S149>/Integrator' */
     Controller_P7_DW.Integrator_DSTATE_j =
       Controller_P7_P.PIDController_InitialConditio_i;
 
     /* End of SystemInitialize for SubSystem: '<S1>/Omega HI' */
 
     /* SystemInitialize for IfAction SubSystem: '<S1>/GR LO' */
-    /* InitializeConditions for DiscreteIntegrator: '<S90>/Filter' */
+    /* InitializeConditions for DiscreteIntegrator: '<S91>/Filter' */
     Controller_P7_DW.Filter_DSTATE_d =
       Controller_P7_P.PIDController_InitialConditio_n;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S95>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S96>/Integrator' */
     Controller_P7_DW.Integrator_DSTATE_l =
       Controller_P7_P.PIDController_InitialConditio_g;
 
     /* End of SystemInitialize for SubSystem: '<S1>/GR LO' */
 
     /* SystemInitialize for IfAction SubSystem: '<S1>/Omega LO' */
-    /* InitializeConditions for DiscreteIntegrator: '<S196>/Filter' */
+    /* InitializeConditions for DiscreteIntegrator: '<S197>/Filter' */
     Controller_P7_DW.Filter_DSTATE =
       Controller_P7_P.PIDController_InitialConditio_h;
 
-    /* InitializeConditions for DiscreteIntegrator: '<S201>/Integrator' */
+    /* InitializeConditions for DiscreteIntegrator: '<S202>/Integrator' */
     Controller_P7_DW.Integrator_DSTATE =
       Controller_P7_P.PIDController_InitialConditio_m;
 
