@@ -1,0 +1,4 @@
+../Drivers/adrian_controller_old/rt_nonfinite.c:33:11:rtIsInf	3
+../Drivers/adrian_controller_old/rt_nonfinite.c:39:11:rtIsInfF	3
+../Drivers/adrian_controller_old/rt_nonfinite.c:45:11:rtIsNaN	2
+../Drivers/adrian_controller_old/rt_nonfinite.c:51:11:rtIsNaNF	2
