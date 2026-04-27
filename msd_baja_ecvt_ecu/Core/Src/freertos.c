@@ -437,8 +437,8 @@ void Start_Sensor_Reading(void *argument)
     sensor_data.motor_curr = motor_curr_avg;
 
 
-    osMessageQueuePut(sensor_data_mc_qHandle, &sensor_data, 0, TIMEOUT);
-    osMessageQueuePut(sensor_data_log_qHandle, &sensor_data, 0, TIMEOUT);
+    osMessageQueuePut(sensor_data_mc_qHandle, &sensor_data, 0, 0);
+    osMessageQueuePut(sensor_data_log_qHandle, &sensor_data, 0, 0);
 
 #if DEBUG == 1
 
@@ -569,6 +569,7 @@ void Start_Motor_Control(void *argument)
 	    //Get all current sensor values
 
 	    //Update sensor inputs
+
         Controller_P7_U.Omega_Primary = sensor_data_mc.prim_rpm; // ReadEngineSpeedSensor(); // e.g., 1500.0f
 
         Controller_P7_U.Omega_Secondary = sensor_data_mc.sec_rpm; // ReadSecondarySpeedSensor(); // e.g., 1500.0f

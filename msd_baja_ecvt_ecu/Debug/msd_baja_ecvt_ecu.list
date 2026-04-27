@@ -2148,7 +2148,7 @@ void Start_Sensor_Reading(void *argument)
 
   for(;;)
   {
-    osDelay(MC_OS_DELAY);
+    osDelay(1);
  8001398:	2001      	movs	r0, #1
  800139a:	f01c fa0d 	bl	801d7b8 <osDelay>
 
@@ -2408,21 +2408,21 @@ __STATIC_FORCEINLINE void __DSB(void)
  8001546:	61fb      	str	r3, [r7, #28]
 
 
-    osMessageQueuePut(sensor_data_mc_qHandle, &sensor_data, 0, TIMEOUT);
+    osMessageQueuePut(sensor_data_mc_qHandle, &sensor_data, 0, 0);
  8001548:	4b15      	ldr	r3, [pc, #84]	@ (80015a0 <Start_Sensor_Reading+0x31c>)
  800154a:	6818      	ldr	r0, [r3, #0]
  800154c:	f107 010c 	add.w	r1, r7, #12
- 8001550:	6f7b      	ldr	r3, [r7, #116]	@ 0x74
+ 8001550:	2300      	movs	r3, #0
  8001552:	2200      	movs	r2, #0
  8001554:	f01c fb02 	bl	801db5c <osMessageQueuePut>
-    osMessageQueuePut(sensor_data_log_qHandle, &sensor_data, 0, TIMEOUT);
+    osMessageQueuePut(sensor_data_log_qHandle, &sensor_data, 0, 0);
  8001558:	4b12      	ldr	r3, [pc, #72]	@ (80015a4 <Start_Sensor_Reading+0x320>)
  800155a:	6818      	ldr	r0, [r3, #0]
  800155c:	f107 010c 	add.w	r1, r7, #12
- 8001560:	6f7b      	ldr	r3, [r7, #116]	@ 0x74
+ 8001560:	2300      	movs	r3, #0
  8001562:	2200      	movs	r2, #0
  8001564:	f01c fafa 	bl	801db5c <osMessageQueuePut>
-    osDelay(MC_OS_DELAY);
+    osDelay(1);
  8001568:	e716      	b.n	8001398 <Start_Sensor_Reading+0x114>
  800156a:	bf00      	nop
  800156c:	24001988 	.word	0x24001988
@@ -2623,6 +2623,7 @@ void Start_Motor_Control(void *argument)
 	    //Get all current sensor values
 
 	    //Update sensor inputs
+
         Controller_P7_U.Omega_Primary = sensor_data_mc.prim_rpm; // ReadEngineSpeedSensor(); // e.g., 1500.0f
  80016c4:	4b50      	ldr	r3, [pc, #320]	@ (8001808 <Start_Motor_Control+0x260>)
  80016c6:	689b      	ldr	r3, [r3, #8]

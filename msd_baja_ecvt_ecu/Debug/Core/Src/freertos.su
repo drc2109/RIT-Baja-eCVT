@@ -2,7 +2,7 @@
 ../Core/Src/freertos.c:308:6:StartDefaultTask	16	static
 ../Core/Src/freertos.c:326:6:Start_Sensor_Reading	184	static,ignoring_inline_asm
 ../Core/Src/freertos.c:470:6:Start_Motor_Control	144	static
-../Core/Src/freertos.c:621:6:Start_Debug_Disp	72	static
-../Core/Src/freertos.c:685:6:receiveRFCommand	32	static
-../Core/Src/freertos.c:727:6:processRFCommand	72	static
-../Core/Src/freertos.c:797:6:logData	64	static
+../Core/Src/freertos.c:622:6:Start_Debug_Disp	72	static
+../Core/Src/freertos.c:686:6:receiveRFCommand	32	static
+../Core/Src/freertos.c:728:6:processRFCommand	72	static
+../Core/Src/freertos.c:798:6:logData	64	static
