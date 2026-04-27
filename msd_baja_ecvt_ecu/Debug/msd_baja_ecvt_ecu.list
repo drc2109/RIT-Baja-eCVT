@@ -2148,7 +2148,7 @@ void Start_Sensor_Reading(void *argument)
 
   for(;;)
   {
-    osDelay(1);
+    osDelay(MC_OS_DELAY);
  8001398:	2001      	movs	r0, #1
  800139a:	f01c fa0d 	bl	801d7b8 <osDelay>
 
@@ -2422,7 +2422,7 @@ __STATIC_FORCEINLINE void __DSB(void)
  8001560:	2300      	movs	r3, #0
  8001562:	2200      	movs	r2, #0
  8001564:	f01c fafa 	bl	801db5c <osMessageQueuePut>
-    osDelay(1);
+    osDelay(MC_OS_DELAY);
  8001568:	e716      	b.n	8001398 <Start_Sensor_Reading+0x114>
  800156a:	bf00      	nop
  800156c:	24001988 	.word	0x24001988
