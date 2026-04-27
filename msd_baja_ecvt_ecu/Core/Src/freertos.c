@@ -96,7 +96,11 @@ extern uint8_t record_log_flag;
 extern bool isLogging;
 extern uint8_t logSwitchflg;
 
-
+uint32_t sensor_task_loop_time = 0;
+uint32_t mc_task_loop_time = 0;
+uint32_t log_task_loop_time = 0;
+uint32_t rfrec_task_loop_time = 0;
+uint32_t proc_rf_task_loop_time = 0;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -349,7 +353,10 @@ void Start_Sensor_Reading(void *argument)
 
 	sensor_data_t sensor_data = {0};
 	int i = 0;
-
+#if DEBUG == 1
+	uint32_t prev_sensor_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	uint32_t curr_sensor_task_tick = prev_sensor_task_tick;
+#endif
 	dma_speed_fifo_init(&prim_speed_fifo);
 	dma_speed_fifo_init(&sec_speed_fifo);
 
@@ -370,6 +377,11 @@ void Start_Sensor_Reading(void *argument)
   {
     osDelay(MC_OS_DELAY);
 
+#if DEBUG == 1
+    curr_sensor_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	sensor_task_loop_time = curr_sensor_task_tick - prev_sensor_task_tick;
+    prev_sensor_task_tick = curr_sensor_task_tick;
+#endif
     //Read and convert angles
     helix_angle = adc12b_to_rad(helix_angle_buf[0]);
 
@@ -479,7 +491,10 @@ void Start_Motor_Control(void *argument)
   float helix_offset = 2.2;
 
 //  sensor_data_t sensor_data_mc = {0};
-
+#if DEBUG == 1
+	uint32_t prev_mc_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	uint32_t curr_mc_task_tick = prev_mc_task_tick;
+#endif
 
   PIDConfig mode_pid_sp = {0};
   uint8_t mode_pid_sp_prio = 0;
@@ -501,6 +516,11 @@ void Start_Motor_Control(void *argument)
   {
     osDelay(MC_OS_DELAY);
 
+#if DEBUG == 1
+    curr_mc_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+    mc_task_loop_time = curr_mc_task_tick - prev_mc_task_tick;
+	prev_mc_task_tick = curr_mc_task_tick;
+#endif
 //    BSP_LED_Toggle(LED_BLUE);
 #if MOTOR_CONTROL == 0
 
@@ -667,8 +687,21 @@ void receiveRFCommand(void *argument)
   /* USER CODE BEGIN receiveRFCommand */
   /* Infinite loop */
   const uint32_t QUEUE_TIMEOUT= 10;
+
+#if DEBUG == 1
+	uint32_t prev_rfrec_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	uint32_t curr_rfrec_task_tick = prev_rfrec_task_tick;
+#endif
+
   for(;;)
   {
+
+#if DEBUG == 1
+	curr_rfrec_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	rfrec_task_loop_time = curr_rfrec_task_tick - prev_rfrec_task_tick;
+	prev_rfrec_task_tick = curr_rfrec_task_tick;
+#endif
+
 	if(nrf_irq_flag){
 		if (nrf24_data_available()){
 			// Receive in command
@@ -677,6 +710,8 @@ void receiveRFCommand(void *argument)
 			nrf24_flush_rx();
 		}
 	}
+
+
     osDelay(10);
   }
   /* USER CODE END receiveRFCommand */
@@ -694,8 +729,20 @@ void processRFCommand(void *argument)
   /* USER CODE BEGIN processRFCommand */
   /* Infinite loop */
   static char command[16];
+#if DEBUG == 1
+	uint32_t prev_proc_rf_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	uint32_t curr_proc_rf_task_tick = prev_proc_rf_task_tick;
+#endif
+
   for(;;)
   {
+
+#if DEBUG == 1
+	  curr_proc_rf_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	  proc_rf_task_loop_time = curr_proc_rf_task_tick - prev_proc_rf_task_tick;
+	prev_proc_rf_task_tick = curr_proc_rf_task_tick;
+#endif
+
 	if(osMessageQueueGet(RFCommandQueueHandle, command, NULL, 10) == osOK){
 		if (strncmp((char*)command, "PID", 3) == 0){ // Change PID Values
 			BSP_LED_Toggle(LED_GREEN);
@@ -756,8 +803,19 @@ void logData(void *argument)
 	uint32_t log_number = 0; //incoming data is most recent value at 1ms timesteps
 	uint16_t log_rate = 1; //log timestep in ms
   /* Infinite loop */
+#if DEBUG == 1
+	uint32_t prev_log_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	uint32_t curr_log_task_tick = prev_log_task_tick;
+#endif
+
   for(;;)
   {
+
+#if DEBUG == 1
+	  curr_log_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+	  log_task_loop_time = curr_log_task_tick - prev_log_task_tick;
+	  prev_log_task_tick = curr_log_task_tick;
+#endif
 	BSP_LED_Toggle(LED_RED);
 	if (logSwitchflg){
 		logSwitchflg = 0;

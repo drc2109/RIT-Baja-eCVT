@@ -45,6 +45,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define PLD_SIZE 16
+#define DEBUG 1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -156,6 +157,7 @@ int main(void)
   MX_FATFS_Init();
   MX_ADC3_Init();
   MX_TIM15_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
   printf("\x1B[?25l\x1B[2J\x1B[H");
 
@@ -171,6 +173,8 @@ int main(void)
   nrf24_auto_retr_delay(5);       // Set delay (5 = 1500us). Critical for reliable ACKs.
   nrf24_auto_retr_limit(15);      // Try up to 15 times before giving up
   nrf24_mode_rx(addr_ecvt);
+
+  HAL_TIM_Base_Start(&htim5);
   /* USER CODE END 2 */
 
   /* Init scheduler */
