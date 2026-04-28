@@ -5,4 +5,4 @@
 ../Core/Src/freertos.c:601:6:Start_Debug_Disp	72	static
 ../Core/Src/freertos.c:665:6:receiveRFCommand	24	static
 ../Core/Src/freertos.c:692:6:processRFCommand	64	static
-../Core/Src/freertos.c:750:6:logData	56	static
+../Core/Src/freertos.c:752:6:logData	56	static
