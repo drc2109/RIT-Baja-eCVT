@@ -352,14 +352,14 @@ void HAL_TIM_IC_MspInit(TIM_HandleTypeDef* tim_icHandle)
     */
     GPIO_InitStruct.Pin = pri_speed_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
     HAL_GPIO_Init(pri_speed_GPIO_Port, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = sec_speed_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
     HAL_GPIO_Init(sec_speed_GPIO_Port, &GPIO_InitStruct);
