@@ -724,6 +724,8 @@ void processRFCommand(void *argument)
 			  BSP_LED_On(LED_GREEN);
 			  HAL_Delay(100);
 //			  TRANSMIT_LOG();
+			  TRANSMIT_LOG_USB();
+
 			  BSP_LED_Off(LED_GREEN);
 		  } else if(strncmp((char*)command, "CHANGE_RATE", 11) == 0){ // Change the logging rate
 			  BSP_LED_Toggle(LED_GREEN);

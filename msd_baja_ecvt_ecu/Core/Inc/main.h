@@ -63,6 +63,8 @@ void STOP_LOG			   (void);
 int  LOG_DATA_POINT		   (int time, int engine_rpm, int box_rpm);
 int  FIND_LOG_LINES		   (void);
 int  TRANSMIT_LOG		   (void);
+void TRANSMIT_LOG_USB      (void);
+
 void TIM6_SetPeriod_us     (uint32_t us);
 void PRINT_PID   		   (void);
 /* USER CODE END EFP */

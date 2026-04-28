@@ -107,6 +107,9 @@ volatile bool isLogging = 0;
 volatile uint8_t logSwitchflg = 0;
 volatile uint8_t record_log_flag = 0;
 char line_buffer[64];
+
+int log_index = 0;
+
 /* USER CODE END 0 */
 
 /**
@@ -543,19 +546,57 @@ int CHANGE_PID(char* code, float value){
 // Creates "LOG.txt" which overwrites (clears) the previously created log file
 // Opens the global file variable
 // Returns 1 if successful and 0 if unsuccessful
+// Creates "LOG.txt" which overwrites (clears) the previously created log file
+// Opens the global file variable
+// Returns 1 if successful and 0 if unsuccessful
 int START_LOG(){
-	// Mount drive
-//	fres = f_mount(&FatFs, "", 1);
-//	if (fres != FR_OK) {
-//		return 0;
-//	}
-	// Clear file
-	fres = f_open(&fil_LOG, "LOG.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
-	if (fres != FR_OK) {
-		return 0;
-	}
+    FILINFO fno;
+    int max_logs = 100;
+    char log_file_str[32];
 
-	return 1;
+    // Check for what log files exist
+    for(int i = 0; i < max_logs; i++){
+        snprintf(log_file_str, sizeof(log_file_str), "LOG%d.txt", i);
+        fres = f_stat(log_file_str, &fno);
+        if(fres == FR_NO_FILE){
+            log_index = i;
+            break;
+        }
+        // Maximum log file limit reached
+        if(i == max_logs-1){
+            return 0;
+        }
+    }
+
+    // Clear file
+    fres = f_open(&fil_LOG, log_file_str, FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
+    if (fres != FR_OK) {
+        return 0;
+    }
+
+    // Log Current PID values at the start of the log
+    sprintf(msg, "P1:%.2f I1:%.2f D1:%.2f SP1:%d\r\n",
+            (double)Controller_P7_P.Prop_RPM_Low, (double)Controller_P7_P.Int_RPM_Low, (double)Controller_P7_P.Der_RPM_Low, (int)Controller_P7_P.Omega_Low);
+    if (f_puts(msg, &fil_LOG) < 0) {
+        return 0;
+    }
+    sprintf(msg, "P2:%.2f I2:%.2f D2:%.2f SP2:%.2f\r\n",
+            (double)Controller_P7_P.Prop_GR_Low, (double)Controller_P7_P.Int_GR_Low, (double)Controller_P7_P.Der_GR_Low, (double)Controller_P7_P.Phi_max);
+    if (f_puts(msg, &fil_LOG) < 0) {
+        return 0;
+    }
+    sprintf(msg, "P3:%.2f I3:%.2f D3:%.2f SP3:%d\r\n",
+            (double)Controller_P7_P.Prop_RPM_High, (double)Controller_P7_P.Int_RPM_High, (double)Controller_P7_P.Der_RPM_High, (int)Controller_P7_P.Omega_High);
+    if (f_puts(msg, &fil_LOG) < 0) {
+        return 0;
+    }
+    sprintf(msg, "P4:%.2f I4:%.2f D4:%.2f SP4:%.2f\r\n",
+            (double)Controller_P7_P.Prop_GR_High, (double)Controller_P7_P.Int_GR_High, (double)Controller_P7_P.Der_GR_High, (double)Controller_P7_P.Phi_min);
+    if (f_puts(msg, &fil_LOG) < 0) {
+        return 0;
+    }
+
+    return 1;
 }
 
 // Closes the global log file (LOG.txt)
@@ -597,20 +638,46 @@ int FIND_LOG_LINES(){
 	return lines_count;
 }
 
+void TRANSMIT_LOG_USB(){
+    int log_transmitted_index = 0;
+    char log_file_str[32];
+    char log_line[64];
+    // Open log files starting from index 0
+    snprintf(log_file_str, sizeof(log_file_str), "LOG%d.txt", log_transmitted_index);
+
+    // While the file LOGx.txt exists
+    while(f_open(&fil_LOG, log_file_str, FA_READ) == FR_OK){
+        // Indicate to the GUI the start of a log file by printing the log file's name
+        printf(log_file_str);
+        printf("\r\n");
+        // Loop through the log points if the log file exists
+        while(f_gets(log_line, sizeof(log_line), &fil_LOG)){
+            // Send the log line over USART
+            printf(log_line);
+        }
+        // Move on to the next log file
+        log_transmitted_index++;
+        snprintf(log_file_str, sizeof(log_file_str), "LOG%d.txt", log_transmitted_index);
+    }
+    printf("COMPLETE\r\n");
+}
+
 // Logs a data point (one line) into LOG.txt (Assumes LOG.txt is open)
 // Takes in the data to be logged (time, engine_rpm, and box_rpm)
 // Returns 1 if the data point was siccessfully logged and 0 if the f_puts fails
 int LOG_DATA_POINT(int time, int engine_rpm, int box_rpm){
-	int f_lseekreturn = 0;
-	f_lseekreturn = f_lseek(&fil_LOG, f_size(&fil_LOG));
 
-	// Write logging rate
-	sprintf(line_buffer, "%d %d %d\n", time, engine_rpm, box_rpm);
-	if (f_puts(line_buffer, &fil_LOG) < 0) {
-		return 0;
-	}
+    if(f_lseek(&fil_LOG, f_size(&fil_LOG)) != FR_OK){
+        return 0;
+    }
 
-	return 1;
+    // Write logging rate
+    sprintf(line_buffer, "%d %d %d\n", time, engine_rpm, box_rpm);
+    if (f_puts(line_buffer, &fil_LOG) < 0) {
+        return 0;
+    }
+
+    return 1;
 }
 
 int TRANSMIT_LOG(){
