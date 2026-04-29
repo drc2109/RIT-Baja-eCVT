@@ -30,7 +30,6 @@ extern "C" {
 #include "stm32h7xx_hal.h"
 
 #include "stm32h7xx_nucleo.h"
-#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -78,6 +77,8 @@ void PRINT_PID   		   (void);
 #define RF_CSN_GPIO_Port GPIOC
 #define RF_CE_Pin GPIO_PIN_5
 #define RF_CE_GPIO_Port GPIOC
+#define MC_Enable_Pin GPIO_PIN_2
+#define MC_Enable_GPIO_Port GPIOB
 #define test_Pin GPIO_PIN_0
 #define test_GPIO_Port GPIOG
 #define test_EXTI_IRQn EXTI0_IRQn

@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "print_debug.h"
+#include <stdio.h>
 #include <stddef.h>
 #include "adc.h"
 #include "tim.h"
@@ -95,8 +96,10 @@ uint8_t data_Rx[PLD_SIZE*5];
 extern uint8_t record_log_flag;
 extern bool isLogging;
 extern uint8_t logSwitchflg;
+extern uint8_t uart_command_flag;
+extern uint8_t rx_uart3_buffer[64];
 
-
+extern UART_HandleTypeDef huart3;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -581,8 +584,12 @@ void Start_Motor_Control(void *argument)
         	flag_no_safety = 1;
         }
 
-        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor_pwm_setpoint);
 
+        if (HAL_GPIO_ReadPin(MC_Enable_GPIO_Port, MC_Enable_Pin) == GPIO_PIN_RESET){
+            __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor_pwm_setpoint);
+        }else{
+        	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, NEUTRAL_SPEED);
+        }
 
 #else
 	#error "invalid MOTOR_CONTROL value"
@@ -667,6 +674,7 @@ void receiveRFCommand(void *argument)
   /* USER CODE BEGIN receiveRFCommand */
   /* Infinite loop */
   const uint32_t QUEUE_TIMEOUT= 10;
+
   for(;;)
   {
 	if(nrf_irq_flag){
@@ -676,6 +684,11 @@ void receiveRFCommand(void *argument)
 			osMessageQueuePut(RFCommandQueueHandle, data_Rx, 0, QUEUE_TIMEOUT);
 			nrf24_flush_rx();
 		}
+	}
+	if(uart_command_flag){
+		uart_command_flag = 0;
+		osMessageQueuePut(RFCommandQueueHandle, rx_uart3_buffer, 0, QUEUE_TIMEOUT);
+		memset(rx_uart3_buffer,0, sizeof(rx_uart3_buffer));
 	}
     osDelay(10);
   }
@@ -720,13 +733,11 @@ void processRFCommand(void *argument)
 			}
 //		    PRINT_PID();
 
-		  } else if(strcmp((char*)command, "DOWNLOAD_LOG") == 0){ // Download log file from SD card
-			  BSP_LED_On(LED_GREEN);
+		  } else if(strncmp((char*)command, "DOWNLOAD_LOG",12) == 0){ // Download log file from SD card
+			  BSP_LED_Toggle(LED_GREEN);
 			  HAL_Delay(100);
 //			  TRANSMIT_LOG();
 			  TRANSMIT_LOG_USB();
-
-			  BSP_LED_Off(LED_GREEN);
 		  } else if(strncmp((char*)command, "CHANGE_RATE", 11) == 0){ // Change the logging rate
 			  BSP_LED_Toggle(LED_GREEN);
 			  sscanf((char*)data_Rx, "%*s %d", &log_rate);

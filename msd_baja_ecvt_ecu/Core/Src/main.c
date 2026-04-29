@@ -25,6 +25,7 @@
 #include "fatfs.h"
 #include "spi.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -53,8 +54,6 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
-COM_InitTypeDef BspCOMInit;
 
 /* USER CODE BEGIN PV */
 
@@ -106,9 +105,12 @@ typedef struct __attribute__((packed)) {
 volatile bool isLogging = 0;
 volatile uint8_t logSwitchflg = 0;
 volatile uint8_t record_log_flag = 0;
+volatile uint8_t uart_command_flag = 0;
 char line_buffer[64];
-
+uint8_t rx_uart3_buffer[64];
+int rx_uart3_index = 0;
 int log_index = 0;
+uint8_t rx_byte;
 
 /* USER CODE END 0 */
 
@@ -159,6 +161,7 @@ int main(void)
   MX_FATFS_Init();
   MX_ADC3_Init();
   MX_TIM15_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
   printf("\x1B[?25l\x1B[2J\x1B[H");
 
@@ -174,6 +177,8 @@ int main(void)
   nrf24_auto_retr_delay(5);       // Set delay (5 = 1500us). Critical for reliable ACKs.
   nrf24_auto_retr_limit(15);      // Try up to 15 times before giving up
   nrf24_mode_rx(addr_ecvt);
+
+  HAL_UART_Receive_IT(&huart3, &rx_byte, 1);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -187,17 +192,6 @@ int main(void)
 
   /* Initialize USER push-button, will be used to trigger an interrupt each time it's pressed.*/
   BSP_PB_Init(BUTTON_USER, BUTTON_MODE_EXTI);
-
-  /* Initialize COM1 port (115200, 8 bits (7-bit data + 1 stop bit), no parity */
-  BspCOMInit.BaudRate   = 115200;
-  BspCOMInit.WordLength = COM_WORDLENGTH_8B;
-  BspCOMInit.StopBits   = COM_STOPBITS_1;
-  BspCOMInit.Parity     = COM_PARITY_NONE;
-  BspCOMInit.HwFlowCtl  = COM_HWCONTROL_NONE;
-  if (BSP_COM_Init(COM1, &BspCOMInit) != BSP_ERROR_NONE)
-  {
-    Error_Handler();
-  }
 
   /* Start scheduler */
   osKernelStart();
@@ -304,14 +298,14 @@ void PeriphCommonClock_Config(void)
 /* USER CODE BEGIN 4 */
 int _read(int file, char *ptr, int len)
 {
-    HAL_UART_Receive(&hcom_uart[COM1], (uint8_t *)ptr, 1, HAL_MAX_DELAY);
+    //HAL_UART_Receive(&hcom_uart[COM1], (uint8_t *)ptr, 1, HAL_MAX_DELAY);
     return 1;
 }
 
 int __io_getchar(void)
 {
     uint8_t ch;
-    HAL_UART_Receive(&hcom_uart[COM1], &ch, 1, HAL_MAX_DELAY);
+    //HAL_UART_Receive(&hcom_uart[COM1], &ch, 1, HAL_MAX_DELAY);
     return ch;
 }
 
@@ -324,6 +318,38 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
     if(GPIO_Pin == LOG_SW_Pin){
     	logSwitchflg = 1;
+    }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART3)
+    {
+        // 1. DO SOMETHING with the data (e.g., save it to a buffer)
+    	rx_uart3_buffer[rx_uart3_index++] = rx_byte;
+
+    	if(rx_byte == '\n' || rx_byte == '\r'){
+    		uart_command_flag = 1;
+    		rx_uart3_index = 0;
+    	}
+        // 2. RE-ENABLE the interrupt
+        HAL_UART_Receive_IT(&huart3, &rx_byte, 1);
+    }
+}
+
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+    if (huart->Instance == USART3)
+    {
+    	// Force the UART state back to "Ready"
+    	huart3.RxState = HAL_UART_STATE_READY;
+    	huart3.Lock = HAL_UNLOCKED;
+
+    	// Clear all hardware error flags
+    	__HAL_UART_CLEAR_OREFLAG(&huart3);
+
+    	// Try to start again
+    	HAL_UART_Receive_IT(&huart3, &rx_byte, 1);
     }
 }
 

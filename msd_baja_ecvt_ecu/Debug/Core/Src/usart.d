@@ -1,5 +1,5 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
+Core/Src/usart.o: ../Core/Src/usart.c ../Core/Inc/usart.h \
+ ../Core/Inc/main.h ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h \
@@ -38,41 +38,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
  ../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo.h \
  ../Core/Inc/stm32h7xx_nucleo_conf.h \
- ../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo_errno.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
- ../Core/Inc/FreeRTOSConfig.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
- ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
- ../Core/Inc/adc.h ../Core/Inc/main.h ../Core/Inc/bdma.h \
- ../Core/Inc/dma.h ../FATFS/App/fatfs.h \
- ../Middlewares/Third_Party/FatFs/src/ff.h \
- ../Middlewares/Third_Party/FatFs/src/integer.h ../FATFS/Target/ffconf.h \
- ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
- ../Middlewares/Third_Party/FatFs/src/diskio.h \
- ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/user_diskio.h \
- ../Core/Inc/spi.h ../Core/Inc/tim.h ../Core/Inc/usart.h \
- ../Core/Inc/gpio.h ../Drivers/adrian_controller/Controller_P7.h \
- ../Drivers/adrian_controller/rtwtypes.h \
- ../Drivers/adrian_controller/tmwtypes.h \
- ../Drivers/adrian_controller/rtw_continuous.h \
- ../Drivers/adrian_controller/rtw_solver.h \
- ../Drivers/adrian_controller/rt_logging.h \
- ../Drivers/adrian_controller/builtin_typeid_types.h \
- ../Drivers/adrian_controller/multiword_types.h \
- ../Drivers/adrian_controller/rt_mxclassid.h \
- ../Drivers/adrian_controller/rtw_matlogging.h \
- ../Drivers/adrian_controller/sl_types_def.h \
- ../Drivers/adrian_controller/rt_nonfinite.h \
- ../Drivers/adrian_controller/Controller_P7_types.h \
- C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24.h \
- C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24_reg_addresses.h
+ ../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo_errno.h
+../Core/Inc/usart.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -114,45 +81,3 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo.h:
 ../Core/Inc/stm32h7xx_nucleo_conf.h:
 ../Drivers/BSP/STM32H7xx_Nucleo/stm32h7xx_nucleo_errno.h:
-../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h:
-../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
-../Core/Inc/FreeRTOSConfig.h:
-../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
-../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h:
-../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h:
-../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h:
-../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h:
-../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
-../Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
-../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
-../Core/Inc/adc.h:
-../Core/Inc/main.h:
-../Core/Inc/bdma.h:
-../Core/Inc/dma.h:
-../FATFS/App/fatfs.h:
-../Middlewares/Third_Party/FatFs/src/ff.h:
-../Middlewares/Third_Party/FatFs/src/integer.h:
-../FATFS/Target/ffconf.h:
-../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
-../Middlewares/Third_Party/FatFs/src/diskio.h:
-../Middlewares/Third_Party/FatFs/src/ff.h:
-../FATFS/Target/user_diskio.h:
-../Core/Inc/spi.h:
-../Core/Inc/tim.h:
-../Core/Inc/usart.h:
-../Core/Inc/gpio.h:
-../Drivers/adrian_controller/Controller_P7.h:
-../Drivers/adrian_controller/rtwtypes.h:
-../Drivers/adrian_controller/tmwtypes.h:
-../Drivers/adrian_controller/rtw_continuous.h:
-../Drivers/adrian_controller/rtw_solver.h:
-../Drivers/adrian_controller/rt_logging.h:
-../Drivers/adrian_controller/builtin_typeid_types.h:
-../Drivers/adrian_controller/multiword_types.h:
-../Drivers/adrian_controller/rt_mxclassid.h:
-../Drivers/adrian_controller/rtw_matlogging.h:
-../Drivers/adrian_controller/sl_types_def.h:
-../Drivers/adrian_controller/rt_nonfinite.h:
-../Drivers/adrian_controller/Controller_P7_types.h:
-C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24.h:
-C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24_reg_addresses.h:

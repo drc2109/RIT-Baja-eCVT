@@ -61,6 +61,7 @@ void DMA1_Stream3_IRQHandler(void);
 void EXTI9_5_IRQHandler(void);
 void TIM4_IRQHandler(void);
 void SPI1_IRQHandler(void);
+void USART3_IRQHandler(void);
 void EXTI15_10_IRQHandler(void);
 void TIM17_IRQHandler(void);
 void BDMA_Channel0_IRQHandler(void);
