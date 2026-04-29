@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ../Core/Src/freertos.c:225:6:MX_FREERTOS_Init	8	static
 ../Core/Src/freertos.c:313:6:StartDefaultTask	16	static
 ../Core/Src/freertos.c:331:6:Start_Sensor_Reading	184	static,ignoring_inline_asm
@@ -6,3 +7,13 @@
 ../Core/Src/freertos.c:700:6:receiveRFCommand	32	static
 ../Core/Src/freertos.c:745:6:processRFCommand	72	static
 ../Core/Src/freertos.c:815:6:logData	64	static
+=======
+../Core/Src/freertos.c:213:6:MX_FREERTOS_Init	8	static
+../Core/Src/freertos.c:304:6:StartDefaultTask	16	static
+../Core/Src/freertos.c:322:6:Start_Sensor_Reading	584	static
+../Core/Src/freertos.c:406:6:Start_Motor_Control	136	static
+../Core/Src/freertos.c:527:6:Start_Debug_Disp	48	static
+../Core/Src/freertos.c:575:6:receiveRFCommand	24	static
+../Core/Src/freertos.c:604:6:processRFCommand	56	static
+../Core/Src/freertos.c:652:6:logData	16	static
+>>>>>>> branch 'master' of https://github.com/drc2109/RIT-Baja-eCVT.git
