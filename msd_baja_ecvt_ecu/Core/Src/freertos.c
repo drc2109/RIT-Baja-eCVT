@@ -443,7 +443,6 @@ void Start_Sensor_Reading(void *argument)
 
 
     osMessageQueuePut(sensor_data_mc_qHandle, &sensor_data, 0, 0);
-    osMessageQueuePut(sensor_data_log_qHandle, &sensor_data, 0, 0);
 
 #if DEBUG == 1
 
@@ -494,6 +493,7 @@ void Start_Motor_Control(void *argument)
   uint8_t throttle_pos_prio = 0;
   float helix_pos = 0;
   float helix_offset = 2.2;
+  sensor_data_t sensor_data_log = {0};
 
 //  sensor_data_t sensor_data_mc = {0};
 #if DEBUG == 1
@@ -608,11 +608,16 @@ void Start_Motor_Control(void *argument)
         }
 
 
-        if (HAL_GPIO_ReadPin(MC_Enable_GPIO_Port, MC_Enable_Pin) == GPIO_PIN_RESET){
-            __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor_pwm_setpoint);
-        }else{
-        	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, NEUTRAL_SPEED);
+        if (HAL_GPIO_ReadPin(MC_Enable_GPIO_Port, MC_Enable_Pin) == GPIO_PIN_SET){
+        	motor_pwm_setpoint = NEUTRAL_SPEED;
         }
+
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor_pwm_setpoint);
+
+
+        sensor_data_log.prim_rpm = Controller_P7_Y.Primary_Speed;
+        sensor_data_log.sec_rpm = Controller_P7_Y.Secondary_Speed;
+        osMessageQueuePut(sensor_data_log_qHandle, &sensor_data_log, 0, 0);
 
 #else
 	#error "invalid MOTOR_CONTROL value"
