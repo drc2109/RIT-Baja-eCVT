@@ -46,6 +46,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define PLD_SIZE 16
+#define DEBUG 1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -179,6 +180,7 @@ int main(void)
   nrf24_mode_rx(addr_ecvt);
 
   HAL_UART_Receive_IT(&huart3, &rx_byte, 1);
+  HAL_TIM_Base_Start(&htim5);
   /* USER CODE END 2 */
 
   /* Init scheduler */
