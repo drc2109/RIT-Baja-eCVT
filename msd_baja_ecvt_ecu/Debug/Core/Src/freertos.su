@@ -1,19 +1,8 @@
-<<<<<<< HEAD
-../Core/Src/freertos.c:219:6:MX_FREERTOS_Init	8	static
-../Core/Src/freertos.c:307:6:StartDefaultTask	16	static
-../Core/Src/freertos.c:325:6:Start_Sensor_Reading	176	static,ignoring_inline_asm
-../Core/Src/freertos.c:461:6:Start_Motor_Control	136	static
-../Core/Src/freertos.c:608:6:Start_Debug_Disp	72	static
-../Core/Src/freertos.c:672:6:receiveRFCommand	24	static
-../Core/Src/freertos.c:705:6:processRFCommand	64	static
-../Core/Src/freertos.c:763:6:logData	56	static
-=======
-../Core/Src/freertos.c:220:6:MX_FREERTOS_Init	8	static
-../Core/Src/freertos.c:308:6:StartDefaultTask	16	static
-../Core/Src/freertos.c:326:6:Start_Sensor_Reading	184	static,ignoring_inline_asm
-../Core/Src/freertos.c:470:6:Start_Motor_Control	144	static
-../Core/Src/freertos.c:622:6:Start_Debug_Disp	72	static
-../Core/Src/freertos.c:686:6:receiveRFCommand	32	static
-../Core/Src/freertos.c:728:6:processRFCommand	72	static
-../Core/Src/freertos.c:798:6:logData	64	static
->>>>>>> refs/heads/task_timing_monitor
+../Core/Src/freertos.c:225:6:MX_FREERTOS_Init	8	static
+../Core/Src/freertos.c:313:6:StartDefaultTask	16	static
+../Core/Src/freertos.c:331:6:Start_Sensor_Reading	184	static,ignoring_inline_asm
+../Core/Src/freertos.c:475:6:Start_Motor_Control	144	static
+../Core/Src/freertos.c:631:6:Start_Debug_Disp	72	static
+../Core/Src/freertos.c:695:6:receiveRFCommand	32	static
+../Core/Src/freertos.c:740:6:processRFCommand	72	static
+../Core/Src/freertos.c:810:6:logData	64	static

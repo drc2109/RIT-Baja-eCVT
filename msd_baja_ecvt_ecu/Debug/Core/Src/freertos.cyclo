@@ -1,19 +1,8 @@
-<<<<<<< HEAD
-../Core/Src/freertos.c:219:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:307:6:StartDefaultTask	1
-../Core/Src/freertos.c:325:6:Start_Sensor_Reading	11
-../Core/Src/freertos.c:461:6:Start_Motor_Control	9
-../Core/Src/freertos.c:608:6:Start_Debug_Disp	1
-../Core/Src/freertos.c:672:6:receiveRFCommand	4
-../Core/Src/freertos.c:705:6:processRFCommand	11
-../Core/Src/freertos.c:763:6:logData	6
-=======
-../Core/Src/freertos.c:220:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:308:6:StartDefaultTask	1
-../Core/Src/freertos.c:326:6:Start_Sensor_Reading	11
-../Core/Src/freertos.c:470:6:Start_Motor_Control	8
-../Core/Src/freertos.c:622:6:Start_Debug_Disp	1
-../Core/Src/freertos.c:686:6:receiveRFCommand	3
-../Core/Src/freertos.c:728:6:processRFCommand	11
-../Core/Src/freertos.c:798:6:logData	6
->>>>>>> refs/heads/task_timing_monitor
+../Core/Src/freertos.c:225:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:313:6:StartDefaultTask	1
+../Core/Src/freertos.c:331:6:Start_Sensor_Reading	11
+../Core/Src/freertos.c:475:6:Start_Motor_Control	9
+../Core/Src/freertos.c:631:6:Start_Debug_Disp	1
+../Core/Src/freertos.c:695:6:receiveRFCommand	4
+../Core/Src/freertos.c:740:6:processRFCommand	11
+../Core/Src/freertos.c:810:6:logData	6

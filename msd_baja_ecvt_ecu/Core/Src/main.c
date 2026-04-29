@@ -152,6 +152,7 @@ int main(void)
   MX_BDMA_Init();
   MX_ADC1_Init();
   MX_TIM6_Init();
+  MX_TIM5_Init();
   MX_ADC2_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();

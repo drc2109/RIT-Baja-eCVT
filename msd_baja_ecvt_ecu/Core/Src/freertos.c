@@ -100,6 +100,7 @@ extern uint8_t uart_command_flag;
 extern uint8_t rx_uart3_buffer[64];
 
 extern UART_HandleTypeDef huart3;
+
 uint32_t sensor_task_loop_time = 0;
 uint32_t mc_task_loop_time = 0;
 uint32_t log_task_loop_time = 0;
