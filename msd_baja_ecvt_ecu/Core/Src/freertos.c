@@ -99,15 +99,12 @@ extern uint8_t logSwitchflg;
 extern uint8_t uart_command_flag;
 extern uint8_t rx_uart3_buffer[64];
 
-<<<<<<< HEAD
 extern UART_HandleTypeDef huart3;
-=======
 uint32_t sensor_task_loop_time = 0;
 uint32_t mc_task_loop_time = 0;
 uint32_t log_task_loop_time = 0;
 uint32_t rfrec_task_loop_time = 0;
 uint32_t proc_rf_task_loop_time = 0;
->>>>>>> refs/heads/task_timing_monitor
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -700,14 +697,11 @@ void receiveRFCommand(void *argument)
   /* Infinite loop */
   const uint32_t QUEUE_TIMEOUT= 10;
 
-<<<<<<< HEAD
-=======
 #if DEBUG == 1
-	uint32_t prev_rfrec_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
-	uint32_t curr_rfrec_task_tick = prev_rfrec_task_tick;
+  uint32_t prev_rfrec_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
+  uint32_t curr_rfrec_task_tick = prev_rfrec_task_tick;
 #endif
 
->>>>>>> refs/heads/task_timing_monitor
   for(;;)
   {
 
@@ -725,16 +719,11 @@ void receiveRFCommand(void *argument)
 			nrf24_flush_rx();
 		}
 	}
-<<<<<<< HEAD
 	if(uart_command_flag){
 		uart_command_flag = 0;
 		osMessageQueuePut(RFCommandQueueHandle, rx_uart3_buffer, 0, QUEUE_TIMEOUT);
 		memset(rx_uart3_buffer,0, sizeof(rx_uart3_buffer));
 	}
-=======
-
-
->>>>>>> refs/heads/task_timing_monitor
     osDelay(10);
   }
   /* USER CODE END receiveRFCommand */
