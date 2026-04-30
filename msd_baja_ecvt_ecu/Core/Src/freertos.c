@@ -101,11 +101,13 @@ extern uint8_t rx_uart3_buffer[64];
 
 extern UART_HandleTypeDef huart3;
 
+#if DEBUG == 1
 uint32_t sensor_task_loop_time = 0;
 uint32_t mc_task_loop_time = 0;
 uint32_t log_task_loop_time = 0;
 uint32_t rfrec_task_loop_time = 0;
 uint32_t proc_rf_task_loop_time = 0;
+#endif
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -324,6 +326,9 @@ void StartDefaultTask(void *argument)
 /* USER CODE BEGIN Header_Start_Sensor_Reading */
 /**
 * @brief Function implementing the Sensor_Reading thread.
+* 		 This function takes in all sensor values from DMA
+* 		 converts it to the required units,
+* 		 then sends it to other threads for use
 * @param argument: Not used
 * @retval None
 */
@@ -337,12 +342,10 @@ void Start_Sensor_Reading(void *argument)
 	float throttle_angle = 0;
 	uint8_t throttle_angle_prio = 0;
 	uint32_t prim_rpm_uint32 = 0;
-//	uint32_t curr_prim_rpm_tic = 0;
-//	uint32_t prev_prim_rpm_tic = 0;
 	uint8_t prim_rpm_prio = 0;
 	uint32_t sec_rpm_uint32 = 0;
 	uint8_t sec_rpm_prio = 0;
-	const uint32_t TIMEOUT = 10;
+	const uint32_t TIMEOUT = 0;
 	SPEED_FIFO prim_speed_fifo = {0};
 	uint32_t curr_prim_rpm_tic = 0;
 	uint32_t prev_prim_rpm_tic = 0;
@@ -358,14 +361,19 @@ void Start_Sensor_Reading(void *argument)
 
 	sensor_data_t sensor_data = {0};
 	int i = 0;
+
+
 #if DEBUG == 1
+	//Initialize timestep values
 	uint32_t prev_sensor_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
 	uint32_t curr_sensor_task_tick = prev_sensor_task_tick;
 #endif
+
+	//Initialize fifo buffers for speed sensors
 	dma_speed_fifo_init(&prim_speed_fifo);
 	dma_speed_fifo_init(&sec_speed_fifo);
 
-	//Start ADCs and DMAs
+	//Start ADCs and DMAs for analog sensors
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)helix_angle_buf, HELIX_ANGLE_BUF_LEN);
 	HAL_ADC_Start_DMA(&hadc2, (uint32_t*)throttle_angle_buf, THROTTLE_ANGLE_BUF_LEN);
 	HAL_ADC_Start_DMA(&hadc3, (uint32_t*)motor_curr_buf, MOTOR_CURR_BUF_LEN);
@@ -380,57 +388,47 @@ void Start_Sensor_Reading(void *argument)
 
   for(;;)
   {
+
+	//Delay time for sensor task (1ms) needed for giving up control to other functions
     osDelay(MC_OS_DELAY);
 
 #if DEBUG == 1
+    // Debug only for verifying correct time step of this thread
     curr_sensor_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
 	sensor_task_loop_time = curr_sensor_task_tick - prev_sensor_task_tick;
     prev_sensor_task_tick = curr_sensor_task_tick;
 #endif
+
     //Read and convert angles
-    helix_angle = adc12b_to_rad(helix_angle_buf[0]);
+    sensor_data.helix_angle = adc12b_to_rad(helix_angle_buf[0]);
+    sensor_data.throttle_angle = adc12b_to_rad(throttle_angle_buf[0]);
 
-    throttle_angle = adc12b_to_rad(throttle_angle_buf[0]);
-
-    sensor_data.helix_angle = helix_angle;
-    sensor_data.throttle_angle = throttle_angle;
-    // Inside the for(;;) loop of Start_Sensor_Reading
-    // Invalidate the 2 bytes (uint16_t) at the buffer address
+    //Needed for using BDMA
     SCB_InvalidateDCache_by_Addr((uint32_t*)motor_curr_buf, 2);
+
     motor_curr = adc12b_to_motor_curr(motor_curr_buf[0]);
-    motor_curr_avg = moving_average_filter_curr(motor_curr);
+    sensor_data.motor_curr = moving_average_filter_curr(motor_curr);
 
     //Read and empty prim rpm fifo so always most recent
+    //While data available in either fifo
     while(dma_speed_fifo_available(&prim_speed_fifo, &hdma_tim2_ch1)
     		||dma_speed_fifo_available(&sec_speed_fifo, &hdma_tim2_ch2)){
-		if (dma_speed_fifo_available(&prim_speed_fifo, &hdma_tim2_ch1)){
+		//If prim rpm fifo data available
+    	if (dma_speed_fifo_available(&prim_speed_fifo, &hdma_tim2_ch1)){
+    		//Take current pickup tick value
 			curr_prim_rpm_tic = dma_speed_fifo_read_single(&prim_speed_fifo);
-			prim_rpm_sense_overflow = curr_prim_rpm_tic > prev_prim_rpm_tic ? 0 : 1;
-			if (prim_rpm_sense_overflow){
-				prev_prim_rpm_tic = curr_prim_rpm_tic;
-				continue;
-			}
 			prim_rpm_uint32 = curr_prim_rpm_tic - prev_prim_rpm_tic;
 			prev_prim_rpm_tic = curr_prim_rpm_tic;
-			if (!prim_rpm_sense_overflow){
-				prim_rpm = pickup_dt_to_rad_per_sec(prim_rpm_uint32);
-			}
-		}
+			prim_rpm = pickup_dt_to_rad_per_sec(prim_rpm_uint32);
 
+		}
 
 		//Read and empty sec rpm fifo so always most recent
 		if (dma_speed_fifo_available(&sec_speed_fifo, &hdma_tim2_ch2)){
 			curr_sec_rpm_tic = dma_speed_fifo_read_single(&sec_speed_fifo);
-			sec_rpm_sense_overflow = curr_sec_rpm_tic > prev_sec_rpm_tic ? 0 : 1;
-			if (sec_rpm_sense_overflow){
-				prev_sec_rpm_tic = curr_sec_rpm_tic;
-				continue;
-			}
 			sec_rpm_uint32 = curr_sec_rpm_tic - prev_sec_rpm_tic;
 			prev_sec_rpm_tic = curr_sec_rpm_tic;
-			if (!prim_rpm_sense_overflow){
-				sec_rpm = pickup_dt_to_rad_per_sec_gb(sec_rpm_uint32);
-			}
+			sec_rpm = pickup_dt_to_rad_per_sec_gb(sec_rpm_uint32);
 		}
 
 	    sensor_data.prim_rpm = prim_rpm;
@@ -438,19 +436,8 @@ void Start_Sensor_Reading(void *argument)
 
     }
 
-
-    sensor_data.motor_curr = motor_curr_avg;
-
-
+    //Once all sensor data collected, send to motor control
     osMessageQueuePut(sensor_data_mc_qHandle, &sensor_data, 0, 0);
-
-#if DEBUG == 1
-
-//    osMessageQueuePut(sensor_data_debug_qHandle, &sensor_data, 0, TIMEOUT);
-
-#endif
-
-
   }
   /* USER CODE END Start_Sensor_Reading */
 }
@@ -465,6 +452,7 @@ uint8_t flag_max_pos_safety = 0;
 uint8_t flag_no_safety = 0;
 
 real_T controller_mode = 0;
+
 /**
 * @brief Function implementing the Motor_Control thread.
 * @param argument: Not used
@@ -480,7 +468,7 @@ void Start_Motor_Control(void *argument)
   uint16_t pos_setpoint = 0;
   uint16_t helix_angle = 0;
   uint8_t helix_angle_prio = 0;
-  const uint32_t QUEUE_TIMEOUT= 10;
+  const uint32_t QUEUE_TIMEOUT= 0;
   uint8_t speed_percent = 0xff;
   uint8_t current_percent = 50;
   char lr_dir = '\0';
@@ -495,33 +483,35 @@ void Start_Motor_Control(void *argument)
   float helix_offset = 2.2;
   sensor_data_t sensor_data_log = {0};
 
-//  sensor_data_t sensor_data_mc = {0};
 #if DEBUG == 1
+  	// DEBUG Tick
 	uint32_t prev_mc_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
 	uint32_t curr_mc_task_tick = prev_mc_task_tick;
 #endif
 
   PIDConfig mode_pid_sp = {0};
   uint8_t mode_pid_sp_prio = 0;
-	INIT_PID();
-//	PRINT_PID();
-	init_pidconfig(&mode_pid_sp);
 
-//	helix_offset = init_helix_offset();
 
 #if MOTOR_CONTROL == 2
   // Initialize controller variables
   Controller_P7_initialize();
-#endif
 
+  //Initialize PID values with stored values on SD card
+  INIT_PID();
+  init_pidconfig(&mode_pid_sp);
+#endif
+  // Start PWM timer
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, NEUTRAL_SPEED);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 
   for(;;)
   {
+	  //Delay 1ms
     osDelay(MC_OS_DELAY);
 
 #if DEBUG == 1
+    //measure task execution time
     curr_mc_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
     mc_task_loop_time = curr_mc_task_tick - prev_mc_task_tick;
 	prev_mc_task_tick = curr_mc_task_tick;
@@ -562,32 +552,44 @@ void Start_Motor_Control(void *argument)
 	  speed_percent = 0xffff;
 #elif MOTOR_CONTROL == 2
 
-	    while(osMessageQueueGetCount(pidconfig_queueHandle)){
-	    	osMessageQueueGet(pidconfig_queueHandle, &mode_pid_sp, &mode_pid_sp_prio, QUEUE_TIMEOUT);
-		    update_pidconfig(&mode_pid_sp);
-	    }
-
-
+//	    while(osMessageQueueGetCount(pidconfig_queueHandle)){
+//	    	osMessageQueueGet(pidconfig_queueHandle, &mode_pid_sp, &mode_pid_sp_prio, QUEUE_TIMEOUT);
+//		    update_pidconfig(&mode_pid_sp);
+//	    }
+	  //Receive sensor data
 	    while(osMessageQueueGetCount(sensor_data_mc_qHandle)){
 	    	osMessageQueueGet(sensor_data_mc_qHandle, &sensor_data_mc, &helix_angle_prio, QUEUE_TIMEOUT);
 	    }
-	    //Get all current sensor values
 
-	    //Update sensor inputs
-
+	    //Update controller inputs
         Controller_P7_U.Omega_Primary = sensor_data_mc.prim_rpm; // ReadEngineSpeedSensor(); // e.g., 1500.0f
-
         Controller_P7_U.Omega_Secondary = sensor_data_mc.sec_rpm; // ReadSecondarySpeedSensor(); // e.g., 1500.0f
 
+        //Remove helix angle offset
         helix_angle_offset_removed = sensor_data_mc.helix_angle - MIN_H_ANGLE;
         Controller_P7_U.Theta_Helix = helix_angle_offset_removed > 0 ? helix_angle_offset_removed : 0; //ReadGearRatioSensor(); // e.g., 1.5f
-
 
         // calculate speed command
         Controller_P7_step();
 
+        //Convert output to PWM value
         motor_pwm_setpoint = scale_command(Controller_P7_Y.Command);
 
+        //If engine off, limit speed of opening
+        if (sensor_data_mc.prim_rpm <= 25.0 && motor_pwm_setpoint < NEUTRAL_SPEED - 1500){
+        	motor_pwm_setpoint = NEUTRAL_SPEED - 1500;
+        	flag_min_pos_safety = 1;
+        	flag_max_pos_safety = 0;
+        	flag_no_safety = 0;
+        }
+        //If engine off, prevent from closing at all
+        else if (sensor_data_mc.prim_rpm <= 25.0 && motor_pwm_setpoint > NEUTRAL_SPEED){
+        	motor_pwm_setpoint = NEUTRAL_SPEED;
+        	flag_min_pos_safety = 0;
+        	flag_max_pos_safety = 1;
+        	flag_no_safety = 0;
+        }
+        //Software limit to limit how far helix can open
         if (sensor_data_mc.helix_angle >= MAX_H_ANGLE && motor_pwm_setpoint > NEUTRAL_SPEED){
         	motor_pwm_setpoint = NEUTRAL_SPEED;
         	flag_min_pos_safety = 0;
@@ -607,17 +609,20 @@ void Start_Motor_Control(void *argument)
         	flag_no_safety = 1;
         }
 
-
+        //If motor enable button is not pressed, set motor speed to neutral
         if (HAL_GPIO_ReadPin(MC_Enable_GPIO_Port, MC_Enable_Pin) == GPIO_PIN_SET){
         	motor_pwm_setpoint = NEUTRAL_SPEED;
         }
 
+        //Update PWM
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, motor_pwm_setpoint);
 
-
-        sensor_data_log.prim_rpm = Controller_P7_Y.Primary_Speed;
-        sensor_data_log.sec_rpm = Controller_P7_Y.Secondary_Speed;
-        osMessageQueuePut(sensor_data_log_qHandle, &sensor_data_log, 0, 0);
+        // Send filtered data to log
+    	if(isLogging){
+    		sensor_data_log.prim_rpm = Controller_P7_Y.Primary_Speed;
+    		sensor_data_log.sec_rpm = Controller_P7_Y.Secondary_Speed;
+    		osMessageQueuePut(sensor_data_log_qHandle, &sensor_data_log, 0, 0);
+    	}
 
 #else
 	#error "invalid MOTOR_CONTROL value"
@@ -647,7 +652,7 @@ void Start_Debug_Disp(void *argument)
 	uint8_t throttle_angle_prio = 0;
 	float helix_angle = 0;
 	uint8_t helix_angle_prio = 0;
-	const uint32_t QUEUE_TIMEOUT= 10;
+	const uint32_t QUEUE_TIMEOUT= 0;
 	sensor_data_t sensor_data_debug = {0};
 #endif
 
@@ -701,7 +706,7 @@ void receiveRFCommand(void *argument)
 {
   /* USER CODE BEGIN receiveRFCommand */
   /* Infinite loop */
-  const uint32_t QUEUE_TIMEOUT= 10;
+  const uint32_t QUEUE_TIMEOUT= 0;
 
 #if DEBUG == 1
   uint32_t prev_rfrec_task_tick = __HAL_TIM_GET_COUNTER(&htim5);
@@ -817,7 +822,7 @@ void logData(void *argument)
   /* USER CODE BEGIN logData */
 	sensor_data_t sensor_data_log = {0};
 	uint8_t prio = 0;
-	const uint32_t QUEUE_TIMEOUT = 10;
+	const uint32_t QUEUE_TIMEOUT = 0;
 	uint32_t log_number = 0; //incoming data is most recent value at 1ms timesteps
 	uint16_t log_rate = 1; //log timestep in ms
   /* Infinite loop */
