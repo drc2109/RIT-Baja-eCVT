@@ -164,12 +164,9 @@ int main(void)
   MX_SPI2_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-<<<<<<< HEAD
   printf("\x1B[?25l\x1B[2J\x1B[H");
 
   // NRF24 init
-=======
->>>>>>> branch 'master' of https://github.com/drc2109/RIT-Baja-eCVT.git
   csn_high();
   nrf24_init();
   nrf24_tx_pwr(_0dbm);
