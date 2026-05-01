@@ -71,8 +71,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/adrian_controller/sl_types_def.h \
  ../Drivers/adrian_controller/rt_nonfinite.h \
  ../Drivers/adrian_controller/Controller_P7_types.h \
- C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24.h \
- C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24_reg_addresses.h
+ ../Drivers/nrf24/NRF24.h ../Drivers/nrf24/NRF24_reg_addresses.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -154,5 +153,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/adrian_controller/sl_types_def.h:
 ../Drivers/adrian_controller/rt_nonfinite.h:
 ../Drivers/adrian_controller/Controller_P7_types.h:
-C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24.h:
-C:/Users/jells/git/RIT-Baja-eCVT/msd_baja_ecvt_ecu/Drivers/nrf24/NRF24_reg_addresses.h:
+../Drivers/nrf24/NRF24.h:
+../Drivers/nrf24/NRF24_reg_addresses.h:

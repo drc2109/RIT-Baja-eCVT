@@ -1,19 +1,8 @@
-<<<<<<< HEAD
-../Core/Src/freertos.c:225:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:313:6:StartDefaultTask	1
-../Core/Src/freertos.c:331:6:Start_Sensor_Reading	11
-../Core/Src/freertos.c:474:6:Start_Motor_Control	9
-../Core/Src/freertos.c:636:6:Start_Debug_Disp	1
-../Core/Src/freertos.c:700:6:receiveRFCommand	4
-../Core/Src/freertos.c:745:6:processRFCommand	11
-../Core/Src/freertos.c:815:6:logData	6
-=======
-../Core/Src/freertos.c:213:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:304:6:StartDefaultTask	1
-../Core/Src/freertos.c:322:6:Start_Sensor_Reading	3
-../Core/Src/freertos.c:406:6:Start_Motor_Control	6
-../Core/Src/freertos.c:527:6:Start_Debug_Disp	5
-../Core/Src/freertos.c:575:6:receiveRFCommand	3
-../Core/Src/freertos.c:604:6:processRFCommand	7
-../Core/Src/freertos.c:652:6:logData	3
->>>>>>> branch 'master' of https://github.com/drc2109/RIT-Baja-eCVT.git
+../Core/Src/freertos.c:227:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:315:6:StartDefaultTask	1
+../Core/Src/freertos.c:336:6:Start_Sensor_Reading	7
+../Core/Src/freertos.c:462:6:Start_Motor_Control	13
+../Core/Src/freertos.c:641:6:Start_Debug_Disp	1
+../Core/Src/freertos.c:705:6:receiveRFCommand	4
+../Core/Src/freertos.c:750:6:processRFCommand	11
+../Core/Src/freertos.c:820:6:logData	6
