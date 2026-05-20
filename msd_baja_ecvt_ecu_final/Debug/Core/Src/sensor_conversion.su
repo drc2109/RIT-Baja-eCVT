@@ -1,0 +1,4 @@
+../Core/Src/sensor_conversion.c:9:7:pickup_dt_to_rad_per_sec	16	static
+../Core/Src/sensor_conversion.c:14:7:pickup_dt_to_rad_per_sec_gb	16	static
+../Core/Src/sensor_conversion.c:19:7:adc12b_to_rad	24	static
+../Core/Src/sensor_conversion.c:26:7:adc12b_to_motor_curr	32	static

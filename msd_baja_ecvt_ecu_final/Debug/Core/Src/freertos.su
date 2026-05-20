@@ -1,0 +1,8 @@
+../Core/Src/freertos.c:225:6:MX_FREERTOS_Init	8	static
+../Core/Src/freertos.c:313:6:StartDefaultTask	16	static
+../Core/Src/freertos.c:331:6:Start_Sensor_Reading	184	static,ignoring_inline_asm
+../Core/Src/freertos.c:474:6:Start_Motor_Control	168	static
+../Core/Src/freertos.c:636:6:Start_Debug_Disp	72	static
+../Core/Src/freertos.c:700:6:receiveRFCommand	32	static
+../Core/Src/freertos.c:745:6:processRFCommand	72	static
+../Core/Src/freertos.c:820:6:logData	64	static
